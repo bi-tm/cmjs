@@ -1,7 +1,7 @@
 /*global QUnit*/
 
 sap.ui.define([
-	"cmjs/model/formatter"
+	"cmjs/util/formatter"
 ], function() {
 	"use strict";
 

@@ -6,11 +6,12 @@
 	<Page>
 		<content>
 			<Tree
+				busy="{view>/busy}"
 				mode="SingleSelectMaster"				
-				items="{path: '/tree'}" 
+				items="{path: 'view>/tree'}" 
 				selectionChange=".onSelectionChange">
 				<StandardTreeItem 
-					title="{text}" selected="{selected}" />
+					title="{view>title}" selected="{= ${view>_id} === ${view>/selectedId} }" />
 			</Tree>
 		</content>
 	</Page>

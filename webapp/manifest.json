@@ -75,22 +75,31 @@
 				{
 					"pattern": "",
 					"name": "home",
-					"target": ["home","empty"]
+					"target": ["tree","empty"]
+				},
+				{
+					"pattern": "/page/{_id}",
+					"name": "page",
+					"target": ["tree","page"]
 				}
 			],
 			"targets": {
-				"home": {
+				"tree": {
 					"viewName": "PageTree",
 					"viewId": "tree",
 					"viewLevel": 1,
-					"title": "{i18n>title}",
 					"controlAggregation": "masterPages"
+				},
+				"page": {
+					"viewName": "Page",
+					"viewId": "page",
+					"viewLevel": 1,
+					"controlAggregation": "detailPages"
 				},
 				"empty": {
 					"viewName": "Empty",
 					"viewId": "empty",
 					"viewLevel": 1,
-					"title": "{i18n>title}",
 					"controlAggregation": "detailPages"
 				}
 			}
