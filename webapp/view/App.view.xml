@@ -1,8 +1,11 @@
 <mvc:View
+	controllerName="cmjs.controller.App"
 	displayBlock="true"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc">
-	<Shell>
-		<App id="app"/>
+	<Shell
+		appWidthLimited="false"
+		title="{i18n>title}">
+		<SplitApp id="app" />
 	</Shell>
 </mvc:View>

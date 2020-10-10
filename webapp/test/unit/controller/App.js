@@ -1,7 +1,7 @@
 /*global QUnit*/
 
 sap.ui.define([
-	"sap/ui/demo/basicTemplate/controller/Home.controller"
+	"cmjs/controller/Home.controller"
 ], function(oController) {
 	"use strict";
 

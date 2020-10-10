@@ -1,7 +1,7 @@
 {
 	"_version": "1.12.0",
 	"sap.app": {
-		"id": "sap.ui.demo.basicTemplate",
+		"id": "cmjs",
 		"type": "application",
 		"i18n": "i18n/i18n.properties",
 		"applicationVersion": {
@@ -32,7 +32,7 @@
 
 	"sap.ui5": {
 		"rootView": {
-			"viewName": "sap.ui.demo.basicTemplate.view.App",
+			"viewName": "cmjs.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "app"
@@ -53,7 +53,7 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "sap.ui.demo.basicTemplate.i18n.i18n"
+					"bundleName": "cmjs.i18n.i18n"
 				}
 			}
 		},
@@ -66,7 +66,7 @@
 			"config": {
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
-				"viewPath": "sap.ui.demo.basicTemplate.view",
+				"viewPath": "cmjs.view",
 				"controlId": "app",
 				"controlAggregation": "pages",
 				"async": true
@@ -75,15 +75,23 @@
 				{
 					"pattern": "",
 					"name": "home",
-					"target": ["home"]
+					"target": ["home","empty"]
 				}
 			],
 			"targets": {
 				"home": {
-					"viewName": "Home",
-					"viewId": "home",
+					"viewName": "PageTree",
+					"viewId": "tree",
 					"viewLevel": 1,
-					"title": "{i18n>title}"
+					"title": "{i18n>title}",
+					"controlAggregation": "masterPages"
+				},
+				"empty": {
+					"viewName": "Empty",
+					"viewId": "empty",
+					"viewLevel": 1,
+					"title": "{i18n>title}",
+					"controlAggregation": "detailPages"
 				}
 			}
 		}
