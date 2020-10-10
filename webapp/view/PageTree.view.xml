@@ -1,0 +1,17 @@
+<mvc:View
+	controllerName="cmjs.controller.PageTree"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc">
+	<Page>
+		<content>
+			<Tree
+				mode="SingleSelectMaster"				
+				items="{path: '/tree'}" 
+				selectionChange=".onSelectionChange">
+				<StandardTreeItem 
+					title="{text}" selected="{selected}" />
+			</Tree>
+		</content>
+	</Page>
+</mvc:View>
