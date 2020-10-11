@@ -91,6 +91,7 @@
 					"controlAggregation": "masterPages"
 				},
 				"page": {
+					"viewType": "JS",
 					"viewName": "Page",
 					"viewId": "page",
 					"viewLevel": 1,
