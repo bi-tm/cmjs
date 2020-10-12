@@ -1,9 +1,10 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/model/json/JSONModel",
+	"sap/m/MessageBox",
 	"../util/formatter",
 	"../util/Database"
-], function(Controller, JSONModel, formatter, Database) {
+], function(Controller, JSONModel, MessageBox, formatter, Database) {
 	"use strict";
 
 	return Controller.extend("cmjs.controller.PageTree", {
@@ -19,7 +20,8 @@ sap.ui.define([
 			this.getView().setModel(oModel,"view");
 			this._loadTree();
 			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-			oRouter.getRoute("page").attachPatternMatched(this._onObjectMatched, this);
+			oRouter.getRoute("home").attachPatternMatched(this._onHomeMatched, this);
+			oRouter.getRoute("page").attachPatternMatched(this._onPageMatched, this);
 		},
 
 		_loadTree: function(oEvent) {
@@ -33,23 +35,33 @@ sap.ui.define([
 			}
 			Database.getTree()
 			.then(docs => {
-				oModel.setProperty("/tree", docs);
+				oModel.setProperty("/tree", _getChildren(docs, "0"));
 				oModel.setProperty("/busy", false);
 			})
 			.catch(error => {
-				sap.m.MesssageBox.show(error, {
-						icon: MessageBox.Icon.ERROR,
-						title: "getTree",
-						actions: [MessageBox.Action.CLOSE]
-				});
+				if(error.status == 401) {
+					var oRouter = this.getOwnerComponent().getRouter();
+					oRouter.navTo("logon");		
+				}
+				else {
+					MessageBox.show(error, {
+							icon: MessageBox.Icon.ERROR,
+							title: "getTree",
+							actions: [MessageBox.Action.CLOSE]
+					});
+				}
 			});
 		},
 
-		_onObjectMatched: function(oEvent) {
+		_onHomeMatched: function(oEvent) {
+			this._loadTree();
+		},
+
+		_onPageMatched: function(oEvent) {
+			this._loadTree();
 			var _id = oEvent.getParameter("arguments")._id;
-			var itemId = "item_" + _id;
 			var oModel = this.getView().getModel("view");
-			var oTree = oModel.setProperty("/selectedId", _id);
+			oModel.setProperty("/selectedId", _id);
 		},
 
 		onSelectionChange: function(oEvent) {
@@ -57,6 +69,17 @@ sap.ui.define([
 			var oContext = oItem.getBindingContext("view");
 			var oRouter = this.getOwnerComponent().getRouter();
             oRouter.navTo("page", {_id: oContext.getProperty("_id") });
+		},
+
+		onNewpagePressed: function(oEvent) {
+			var oModel = this.getView().getModel("view");
+			var selectedId = oModel.getProperty("/selectedId");
+			var iSort = 1;
+			if (!selectedId) {
+				selectedId = "0"
+			}
+			var oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo("newpage", {parentId: selectedId, sort: iSort});
 		}
 
 	});

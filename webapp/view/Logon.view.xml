@@ -1,0 +1,37 @@
+<mvc:View
+	controllerName="cmjs.controller.Logon"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:f="sap.ui.layout.form"
+    xmlns:mvc="sap.ui.core.mvc">
+	<Page title="{i18n>logonTitle}">
+		<content>
+            <f:SimpleForm 
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="1"
+                labelSpanL="1"
+                labelSpanM="2"
+                labelSpanS="12"
+                adjustLabelSpan="false"
+                emptySpanXL="6"
+                emptySpanL="4"
+                emptySpanM="4"
+                emptySpanS="0"
+                columnsXL="1"
+                columnsL="1"
+                columnsM="1"
+                singleContainerFullSize="false" >
+                <f:content>
+                    <Label text="{i18n>user}" />
+                    <Input value="{view>/user}" submit=".onLogin"/>
+                    <Label text="{i18n>password}" />
+                    <Input value="{view>/password}" type="Password" submit=".onLogin" />
+
+                    <Label/>
+                    <Button icon="sap-icon://accept" text="{i18n>login}" type="Accept" press=".onLogin" />
+                </f:content>
+            </f:SimpleForm>            
+		</content>
+	</Page>
+</mvc:View>

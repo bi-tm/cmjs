@@ -78,9 +78,19 @@
 					"target": ["tree","empty"]
 				},
 				{
-					"pattern": "/page/{_id}",
+					"pattern": "page/{_id}",
 					"name": "page",
 					"target": ["tree","page"]
+				},
+				{
+					"pattern": "newpage/{parentId}-{sort}",
+					"name": "newpage",
+					"target": ["tree","page"]
+				},
+				{
+					"pattern": "logon",
+					"name": "logon",
+					"target": ["tree","logon"]
 				}
 			],
 			"targets": {
@@ -94,6 +104,12 @@
 					"viewType": "JS",
 					"viewName": "Page",
 					"viewId": "page",
+					"viewLevel": 1,
+					"controlAggregation": "detailPages"
+				},
+				"logon": {
+					"viewName": "Logon",
+					"viewId": "logon",
 					"viewLevel": 1,
 					"controlAggregation": "detailPages"
 				},

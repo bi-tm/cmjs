@@ -1,1 +1,6 @@
 /* add your custom styles here */
+
+.sapMIBar.sapMHeader-CTX, .sapMIBar-CTX .sapMTitle {
+    background-color: #32363a;
+    color: #fff;
+}

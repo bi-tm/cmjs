@@ -3,7 +3,14 @@
 	displayBlock="true"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc">
-	<Page>
+	<Page title="Hierarchie">
+		<subHeader>
+			<OverflowToolbar>
+				<ToolbarSpacer/>
+				<Button icon="sap-icon://add-document" press=".onNewpagePressed"/>
+				<Button icon="sap-icon://delete" enabled="{= ${view>/selectedId} !== null }"/>
+			</OverflowToolbar>
+		</subHeader>
 		<content>
 			<Tree
 				busy="{view>/busy}"
