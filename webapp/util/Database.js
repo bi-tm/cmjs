@@ -9,7 +9,7 @@ sap.ui.define([
     }
 
     // const url = "https://couchdb.feste-feiern-in-bielefeld.de/";
-    const url = "/api/";
+    const url = "./api/";
     const authorization = { "Authorization": "Basic YWRtaW46UnY4ZVJEQnAjSnAy" };
     var pageTypes = null;
 
