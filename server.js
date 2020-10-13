@@ -1,7 +1,8 @@
 var express = require('express');
 var proxy = require('express-http-proxy');
 const port = 8080;
-const basePath = '/admin';
+//const basePath = '/admin';
+const basePath = '';
 
 var app = express();
 var morgan = require('morgan');
