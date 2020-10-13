@@ -10,7 +10,8 @@
     "karma-ci": "karma start karma-ci.conf.js",
     "watch": "npm run karma",
     "test": "npm run lint && rimraf coverage && npm run karma-ci",
-    "build": "rimraf dist && ui5 build --a"
+    "build": "rimraf dist && ui5 build --a",
+    "server": "node server.js"
   },
   "devDependencies": {
     "@ui5/cli": "^2.2.6",
@@ -26,5 +27,9 @@
     "dependencies": [
       "ui5-middleware-simpleproxy"
     ]
+  },
+  "dependencies": {
+    "express-http-proxy": "^1.6.2",
+    "morgan": "^1.10.0"
   }
 }
