@@ -2,15 +2,7 @@ sap.ui.define([
 ], function() {
     'use strict';
 
-    function _getChildren(docs,parentId) {
-        var result = docs.filter(doc => doc.parentId == parentId);
-        result.forEach(child => { child.nodes = _getChildren(docs, child._id); });
-        return result;
-    }
-
-    // const url = "https://couchdb.feste-feiern-in-bielefeld.de/";
     const url = "./api/";
-    const authorization = { "Authorization": "Basic YWRtaW46UnY4ZVJEQnAjSnAy" };
     var pageTypes = null;
 
     function ajax(params) {
@@ -28,7 +20,6 @@ sap.ui.define([
             jQuery.ajax(params);
         });
     }
-
     
     return {
         
@@ -44,7 +35,7 @@ sap.ui.define([
            });
         },
 
-        getTree: function() {
+        getPages: function() {
             return ajax({
                 type: "POST",
                 contentType: "application/json",

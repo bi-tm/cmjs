@@ -39,7 +39,22 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
 				title: "Seite",
 				subHeader: new sap.m.OverflowToolbar({
 					content:  [
-						new sap.m.Text({text:"{view>/page/title}"}),
+						new sap.m.HBox({
+							items: [
+								new sap.m.Breadcrumbs({ 
+									links: { 
+										model: "view",
+										path: "/path",
+										template: new sap.m.Link({
+											text: "{view>title}", 
+											href: "#/page/{view>_id}"
+										}),
+									},
+									
+								}),
+								new sap.m.Label({text: "{view>/page/title}", design:"Bold"}),
+							]
+						}),
 						new sap.m.ToolbarSpacer(),
 						new sap.m.Button({icon:"sap-icon://edit", text:"Bearbeiten", type:"Emphasized", visible:"{= ! ${view>/editable} }", press:[controller.onEditPress, controller]}),
 						new sap.m.Button({icon:"sap-icon://accept", text:"Sichern", type:"Accept", visible:"{view>/editable}", press:[controller.onSavePress, controller]}),

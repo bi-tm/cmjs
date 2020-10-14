@@ -4,13 +4,15 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
 	"../util/formatter",
-	"../util/Database"
+	"../util/Database",
+	"../util/SiteTree"
 ], function(Controller,
 	JSONModel,
 	MessageBox,
 	MessageToast,
 	formatter,
-	Database) {
+	Database,
+	SiteTree) {
 	"use strict";
 
 	return Controller.extend("cmjs.controller.Page", {
@@ -21,6 +23,7 @@ sap.ui.define([
 			var oModel = new JSONModel({
 				page: {},
 				pageTypes: [],
+				path: [],
 				newPage: false,
 				editable: false,
 				busy: true
@@ -70,15 +73,24 @@ sap.ui.define([
 			.then(result => {
 				oModel.setProperty("/page", result[0]);
 				oModel.setProperty("/pageTypes", result[1]);
-				oModel.setProperty("/busy", false);
 				oView.rerender();
+				SiteTree.getPath(result[0].parentId).then(path => {
+					oModel.setProperty("/path", path);
+					oModel.setProperty("/busy", false);
+				})
 			})
 			.catch(error => {
-				MessageBox.show(error, {
-						icon: MessageBox.Icon.ERROR,
-						title: "getPage",
-						actions: [MessageBox.Action.CLOSE]
-				});
+				if(error.status == 401) {
+					var oRouter = this.getOwnerComponent().getRouter();
+					oRouter.navTo("logon");		
+				}
+				else {
+					MessageBox.show(JSON.stringify(error), {
+							icon: MessageBox.Icon.ERROR,
+							title: "readPage",
+							actions: [MessageBox.Action.CLOSE]
+					});
+				}
 			});
 			
 		},

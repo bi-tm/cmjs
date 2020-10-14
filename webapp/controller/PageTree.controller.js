@@ -3,8 +3,8 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"../util/formatter",
-	"../util/Database"
-], function(Controller, JSONModel, MessageBox, formatter, Database) {
+	"../util/SiteTree"
+], function(Controller, JSONModel, MessageBox, formatter, SiteTree) {
 	"use strict";
 
 	return Controller.extend("cmjs.controller.PageTree", {
@@ -28,14 +28,9 @@ sap.ui.define([
 			var oModel = this.getView().getModel("view");
 			oModel.setProperty("/busy", true);
 
-			function _getChildren(docs,parentId) {
-				var result = docs.filter(doc => doc.parentId == parentId);
-				result.forEach(child => { child.nodes = _getChildren(docs, child._id); });
-				return result;
-			}
-			Database.getTree()
+			SiteTree.read()
 			.then(docs => {
-				oModel.setProperty("/tree", _getChildren(docs, "0"));
+				oModel.setProperty("/tree", docs);
 				oModel.setProperty("/busy", false);
 			})
 			.catch(error => {
@@ -44,7 +39,7 @@ sap.ui.define([
 					oRouter.navTo("logon");		
 				}
 				else {
-					MessageBox.show(error, {
+					MessageBox.show(JSON.stringify(error), {
 							icon: MessageBox.Icon.ERROR,
 							title: "getTree",
 							actions: [MessageBox.Action.CLOSE]
@@ -80,6 +75,14 @@ sap.ui.define([
 			}
 			var oRouter = this.getOwnerComponent().getRouter();
             oRouter.navTo("newpage", {parentId: selectedId, sort: iSort});
+		},
+
+		onDrop: function(oEvent) {
+			console.log("drop position       " + oEvent.getParameter("dropPosition"));
+			var draggedControl = oEvent.getParameter("draggedControl");
+			console.log("drop draggedControl " + draggedControl.getBindingContext("view").getProperty("_id") + " " + draggedControl.getBindingContext("view").getProperty("title"));
+			var droppedControl = oEvent.getParameter("droppedControl");
+			console.log("drop droppedControl " + droppedControl.getBindingContext("view").getProperty("_id") + " " + droppedControl.getBindingContext("view").getProperty("title"));
 		}
 
 	});
