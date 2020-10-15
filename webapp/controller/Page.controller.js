@@ -20,9 +20,8 @@ sap.ui.define([
 
 		onInit: function () {
 			var oModel = new JSONModel({
-				page: {},
 				pageTypes: [],
-				path: [],
+				breadcrumbs: [],
 				newPage: false,
 				editable: false,
 				busy: true
@@ -42,6 +41,7 @@ sap.ui.define([
 			var oArguments = oEvent.getParameter("arguments");
 			var oView = this.getView();
 			var oModel = this.getModel("view");
+			var oTreeMode = this.getModel("tree");
 			oModel.setProperty("/busy", true);
 			oModel.setProperty("/editable", true);
 			oModel.setProperty("/newPage", true);
@@ -67,11 +67,13 @@ sap.ui.define([
 			oModel.setProperty("/editable", false);
 			oModel.setProperty("/newPage", false);
 			oModel.setProperty("/busy", true);
-			Promise.all([Database.getPage(_id), Database.getPageTypes()])
+			Promise.all([Database.getPageTypes(), oTreeModel.read()])
 			.then(result => {
-				oModel.setProperty("/page", result[0]);
-				oModel.setProperty("/pageTypes", result[1]);
-				oModel.setProperty("/path", oTreeModel.getParentNodes(result[0].parentId));
+				var sPath = oTreeModel.getPath(_id);
+				var oPage = oTreeModel.getProperty(sPath);
+				oModel.setProperty("/pageTypes", result[0]);
+				oModel.setProperty("/breadcrumbs", oTreeModel.getPathNodes(oPage.parentId));
+				oView.bindObject({model:"tree", path:sPath});
 				oView.rerender();
 				oModel.setProperty("/busy", false);
 			})

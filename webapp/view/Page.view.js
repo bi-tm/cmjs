@@ -44,7 +44,7 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
 								new sap.m.Breadcrumbs({ 
 									links: { 
 										model: "view",
-										path: "/path",
+										path: "/breadcrumbs",
 										template: new sap.m.Link({
 											text: "{view>title}", 
 											href: "#/page/{view>_id}"
@@ -52,7 +52,7 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
 									},
 									
 								}),
-								new sap.m.Label({text: "{view>/page/title}", design:"Bold"}),
+								new sap.m.Label({text: "{tree>title}", design:"Bold"}),
 							]
 						}),
 						new sap.m.ToolbarSpacer(),
@@ -69,7 +69,7 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
 		},
  
 		rerender: function() {
-			var oPage = this.getModel("view").getProperty("/page");
+			var sPageType = this.getBindingContext("tree").getProperty("pageType");
 			var aPageTypes = this.getModel("view").getProperty("/pageTypes");
 			var parent = this.form;
 			var oController = this.getController();
@@ -77,17 +77,17 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
 			parent.destroyContent();
 
 			parent.addContent( new Label({text: "{i18n>pageId}"}));
-			parent.addContent( new Input({value: "{view>/page/_id}", required: true, editable:"{view>/newPage}"}));
+			parent.addContent( new Input({value: "{tree>_id}", required: true, editable:"{view>/newPage}"}));
 			parent.addContent( new Label({text: "{i18n>pageType}"}));
 			parent.addContent( new Select({
 				required: true, 
 				editable:"{view>/editable}",
-				selectedKey: "{view>/page/pageType}",
+				selectedKey: "{tree>pageType}",
 				change: [oController.onPageTypeChanged, oController],
 				items: aPageTypes.map(item => new Item({text:item._id, key:item._id}))
 			}));
 
-			var oPageType = aPageTypes.find(t => t._id === oPage.pageType);
+			var oPageType = aPageTypes.find(t => t._id === sPageType);
 			if (oPageType) {
 				var bFirst = true;
 				oPageType.fields.forEach(field => {
@@ -96,7 +96,7 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
 
 						case 'Text':
 							parent.addContent( new Input({
-								value:"{view>/page/" + field.id + "}", 
+								value:"{tree>" + field.id + "}", 
 								editable:"{view>/editable}",
 								required: bFirst, 
 								valueLiveUpdate:bFirst, 
@@ -107,7 +107,7 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
 
 						case 'RichText':
 							var oRichTextEditor = new RichTextEditor( {
-								value: "{view>/page/text}",
+								value: "{tree>text}",
 								editable:"{view>/editable}",
 								editorType: sap.ui.richtexteditor.EditorType.TinyMCE4,
 								width: "100%",

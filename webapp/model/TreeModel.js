@@ -35,27 +35,39 @@ sap.ui.define([
 
         _changedPages: [],
         _newPages: [],
+        _readPromise: null,
 
-        read: function() {
+        read: function(refresh) {
             var that = this;
-            return Database.getPages(["_id", "title", "parentId"])
+            if (refresh || ! that._readPromise) {
+                that.setProperty("/nodes", []);
+                that._readPromise = Database.getPages() //["_id", "title", "parentId"])
                 .then( docs => {
                     var tree = _buildTree(docs, "0");
                     that.setProperty("/nodes", tree);
                     return tree;
                 });
+            }
+            return that._readPromise;
         },
 
-        getParentNodes: function(parentId, aPath) {  
-            var result = aPath || [];
-            if (typeof(parentId) === "string" && parentId !== "0") {
-                var oParent = this.getNode(parentId);
-                if (oParent) {
-                    result = [oParent].concat(result);
-                    if (typeof(oParent.parentId) === "string" && oParent.parentId !== "0") {
-                        result =  this.getParentNodes(oParent.parentId, result);
-                    }
-                }
+        getPathNodes: function(_id) {  
+            var oNode = this.getNode(_id);
+            if (oNode) {
+                return this.getPathNodes(oNode.parentId).concat([oNode]);
+            }
+            else {
+                return [];
+            }
+        },
+
+        getPath: function(_id) {
+            var result = "";
+            var aNodes = this.getProperty("/nodes");
+            for (var oNode of this.getPathNodes(_id)) {
+                var index = aNodes.findIndex(n => n._id === oNode._id);
+                result += "/nodes/" + index;
+                aNodes = aNodes[index].nodes;
             }
             return result;
         },
