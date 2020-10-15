@@ -1,17 +1,17 @@
 sap.ui.define([
-	"sap/ui/core/mvc/Controller",
+	"cmjs/controller/Base.controller",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"../util/Database"
 ], function(
-	Controller,
+	BaseController,
 	JSONModel,
 	MessageBox,
 	Database
 ) {
 	"use strict";
 
-	return Controller.extend("cmjs.controller.Logon", {
+	return BaseController.extend("cmjs.controller.Logon", {
 
 		onInit: function() {
 			this.getView().setModel(new JSONModel({
@@ -21,7 +21,7 @@ sap.ui.define([
 		},
 
 		onLogin: function(oEvent) {
-			var oModel = this.getView().getModel("view");
+			var oModel = this.getModel("view");
 			var user = oModel.getProperty("/user");
 			var password = oModel.getProperty("/password");
 			Database.logon(user,password)

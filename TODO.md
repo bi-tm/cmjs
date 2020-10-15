@@ -32,6 +32,7 @@ Images
 Datenbank
 ---------
 - parentID = "0" gegen parentID = null austauschen
+- sort -> numerisch
 - Import der Hochzeitsmessen - Seiten
 - User für Administration mit Schreib-Berechtigung
 - User für Frontent ohne Schreib-Berechtigung

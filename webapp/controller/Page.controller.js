@@ -1,21 +1,20 @@
 sap.ui.define([
-	"sap/ui/core/mvc/Controller",
+	"cmjs/controller/Base.controller",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
 	"../util/formatter",
-	"../util/Database",
-	"../util/SiteTree"
-], function(Controller,
+	"../util/Database"
+], function(
+	BaseController,
 	JSONModel,
 	MessageBox,
 	MessageToast,
 	formatter,
-	Database,
-	SiteTree) {
+	Database) {
 	"use strict";
 
-	return Controller.extend("cmjs.controller.Page", {
+	return BaseController.extend("cmjs.controller.Page", {
 
 		formatter: formatter,
 
@@ -36,15 +35,13 @@ sap.ui.define([
 
 		_onPageMatched: function(oEvent) {
 			var _id = oEvent.getParameter("arguments")._id;
-			var oView = this.getView();
-			var oModel = oView.getModel("view");
 			this._readPage(_id);
 		},
 
 		_onNewPageMatched: function(oEvent) {
 			var oArguments = oEvent.getParameter("arguments");
 			var oView = this.getView();
-			var oModel = oView.getModel("view");
+			var oModel = this.getModel("view");
 			oModel.setProperty("/busy", true);
 			oModel.setProperty("/editable", true);
 			oModel.setProperty("/newPage", true);
@@ -65,7 +62,8 @@ sap.ui.define([
 
 		_readPage: function(_id) {
 			var oView = this.getView();
-			var oModel = oView.getModel("view");
+			var oModel = this.getModel("view");
+			var oTreeModel = this.getModel("tree");
 			oModel.setProperty("/editable", false);
 			oModel.setProperty("/newPage", false);
 			oModel.setProperty("/busy", true);
@@ -73,11 +71,9 @@ sap.ui.define([
 			.then(result => {
 				oModel.setProperty("/page", result[0]);
 				oModel.setProperty("/pageTypes", result[1]);
+				oModel.setProperty("/path", oTreeModel.getParentNodes(result[0].parentId));
 				oView.rerender();
-				SiteTree.getPath(result[0].parentId).then(path => {
-					oModel.setProperty("/path", path);
-					oModel.setProperty("/busy", false);
-				})
+				oModel.setProperty("/busy", false);
 			})
 			.catch(error => {
 				if(error.status == 401) {
@@ -100,14 +96,14 @@ sap.ui.define([
 		},
 
 		onEditPress: function(oEvent) {
-			var oModel = this.getView().getModel("view");
+			var oModel = this.getModel("view");
 			var _id = oModel.getProperty("/page/_id");
 			this._readPage(_id);
 			oModel.setProperty("/editable", true);
 		},
 
 		onSavePress: function(oEvent) {
-			var oModel = this.getView().getModel("view");
+			var oModel = this.getModel("view");
 			var oPage = oModel.getProperty("/page");
 			oModel.setProperty("/busy", true);
 			Database.savePage(oPage)
@@ -127,7 +123,7 @@ sap.ui.define([
 		},
 		
 		onCancelPress: function(oEvent) {
-			var oModel = this.getView().getModel("view");
+			var oModel = this.getModel("view");
 			var _id = oModel.getProperty("/page/_id");
 			var bNewPage = oModel.getProperty("/newPage");
 			if (bNewPage) {
@@ -141,7 +137,7 @@ sap.ui.define([
 		},
 
 		onTitleChange: function(oEvent) {
-			var oModel = this.getView().getModel("view");
+			var oModel = this.getModel("view");
 			var bNewPage = oModel.getProperty("/newPage");
 			if (bNewPage) {
 				var id = oEvent.getSource().getValue()

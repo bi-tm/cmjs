@@ -1,19 +1,18 @@
 sap.ui.define([
-	"sap/ui/core/mvc/Controller",
+	"cmjs/controller/Base.controller",
+	"sap/ui/core/Fragment",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
-	"../util/formatter",
-	"../util/SiteTree"
-], function(Controller, JSONModel, MessageBox, formatter, SiteTree) {
+	"../util/formatter"
+], function(BaseController, Fragment, JSONModel, MessageBox, formatter) {
 	"use strict";
 
-	return Controller.extend("cmjs.controller.PageTree", {
+	return BaseController.extend("cmjs.controller.PageTree", {
 
 		formatter: formatter,
 
 		onInit: function () {
 			var oModel = new JSONModel({
-				tree: [],
 				busy: true,
 				selectedId: null
 			});
@@ -25,12 +24,11 @@ sap.ui.define([
 		},
 
 		_loadTree: function(oEvent) {
-			var oModel = this.getView().getModel("view");
+			var oModel = this.getModel("view");
 			oModel.setProperty("/busy", true);
 
-			SiteTree.read()
+			this.getModel("tree").read()
 			.then(docs => {
-				oModel.setProperty("/tree", docs);
 				oModel.setProperty("/busy", false);
 			})
 			.catch(error => {
@@ -55,26 +53,65 @@ sap.ui.define([
 		_onPageMatched: function(oEvent) {
 			this._loadTree();
 			var _id = oEvent.getParameter("arguments")._id;
-			var oModel = this.getView().getModel("view");
+			var oModel = this.getModel("view");
 			oModel.setProperty("/selectedId", _id);
+		},
+
+
+		_laodMenu() {
+			if (!this._menuLoader) {
+				var that = this;
+				that._menuLoader = new Promise(resolve => {
+					Fragment.load({
+						name: "cmjs.view.MenuNewPage",
+						controller: that
+					}).then( oMenu => {
+						that.getView().addDependent(oMenu);
+						resolve(oMenu);
+					});
+				});
+			}
+			return this._menuLoader;
+		},
+
+		_insertPage(parentId, iSort) {
+			var oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo("newpage", {parentId: parentId, sort: iSort});
 		},
 
 		onSelectionChange: function(oEvent) {
 			var oItem = oEvent.getParameter("listItem");
-			var oContext = oItem.getBindingContext("view");
+			var oContext = oItem.getBindingContext("tree");
 			var oRouter = this.getOwnerComponent().getRouter();
             oRouter.navTo("page", {_id: oContext.getProperty("_id") });
 		},
 
 		onNewpagePressed: function(oEvent) {
-			var oModel = this.getView().getModel("view");
-			var selectedId = oModel.getProperty("/selectedId");
-			var iSort = 1;
-			if (!selectedId) {
-				selectedId = "0"
+			var oSelectedItem = this.getView().byId("PageTree").getSelectedItem();
+			if (oSelectedItem) {
+				this._laodMenu()
+				.then(oMenu => {
+					oMenu.open(false, null, sap.ui.core.Popup.Dock.EndCenter, sap.ui.core.Popup.Dock.EndCenter, oSelectedItem);
+				});
 			}
-			var oRouter = this.getOwnerComponent().getRouter();
-            oRouter.navTo("newpage", {parentId: selectedId, sort: iSort});
+			else {
+				_insertPage("0",1);
+			}
+		},
+
+		onInsertBefore: function(oEvent) {
+			var oContext = this.getView().byId("PageTree").getSelectedItem().getBindingContext("tree");
+			this._insertPage(oContext.getProperty("parentId"), parseInt(oContext.getProperty("sort"))-1)
+		},
+
+		onInsertAfter: function(oEvent) {
+			var oContext = this.getView().byId("PageTree").getSelectedItem().getBindingContext("tree");
+			this._insertPage(oContext.getProperty("parentId"), parseInt(oContext.getProperty("sort"))+1)
+		},
+
+		onInsertUnder: function(oEvent) {
+			var oContext = this.getView().byId("PageTree").getSelectedItem().getBindingContext("tree");
+			this._insertPage(oContext.getProperty("_id"), 1)
 		},
 
 		onDrop: function(oEvent) {

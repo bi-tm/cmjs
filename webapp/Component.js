@@ -1,8 +1,7 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
-	"sap/ui/Device",
-	"./model/models"
-], function(UIComponent, Device, models) {
+	"./model/TreeModel"
+], function(UIComponent, TreeModel) {
 	"use strict";
 
 	return UIComponent.extend("cmjs.Component", {
@@ -21,7 +20,7 @@ sap.ui.define([
 			UIComponent.prototype.init.apply(this, arguments);
 
 			// set the device model
-			this.setModel(models.createDeviceModel(), "device");
+			this.setModel(new TreeModel(), "tree");
 
 			// create the views based on the url/hash
 			this.getRouter().initialize();

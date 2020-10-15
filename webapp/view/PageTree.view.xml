@@ -10,15 +10,16 @@
 			<OverflowToolbar>
 				<ToolbarSpacer/>
 				<Button icon="sap-icon://add-document" press=".onNewpagePressed"/>
-				<Button icon="sap-icon://delete" enabled="{= ${view>/selectedId} !== null }"/>
+				<Button icon="sap-icon://delete" enabled="{= ${tree>/selectedId} !== null }"/>
 			</OverflowToolbar>
 		</subHeader>
 		<content>
 			<Tree
+				id="PageTree"
 				busy="{view>/busy}"
 				mode="SingleSelectMaster"				
-				items="{path: 'view>/tree'}" 
-				selectionChange=".onSelectionChange">
+				items="{path: 'tree>/nodes'}" 
+				selectionChange=".onSelectionChange" >
 				<dragDropConfig>
 					<dnd:DragDropInfo
 						sourceAggregation="items"
@@ -28,8 +29,8 @@
 				</dragDropConfig>
 				<items>
 					<StandardTreeItem 
-						title="{view>title}" 
-						selected="{= ${view>_id} === ${view>/selectedId} }" />
+						title="{tree>title}" 
+						selected="{= ${tree>_id} === ${view>/selectedId} }" />
 				</items>
 			</Tree>
 		</content>

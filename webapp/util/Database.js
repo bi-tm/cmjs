@@ -35,14 +35,14 @@ sap.ui.define([
            });
         },
 
-        getPages: function() {
+        getPages: function(fields) {
             return ajax({
                 type: "POST",
                 contentType: "application/json",
                 url: url + "pages/_find",
                 data: JSON.stringify({
                     "selector": {},
-                    "fields": ["_id", "title", "parentId"],
+                    "fields": fields,
                     "sort": ["parentId", "sort"],
                     "limit": 10000
                 })
@@ -76,7 +76,9 @@ sap.ui.define([
                         "selector": {},
                         "limit": 10000
                     })
-                }).then(data => data.docs);
+                })
+                .then(data => data.docs)
+                .catch(error => pageType = null)
             }
             return pageTypes;
         },

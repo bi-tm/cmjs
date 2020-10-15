@@ -1,10 +1,10 @@
 sap.ui.define([
-	"sap/ui/core/mvc/Controller",
+	"cmjs/controller/Base.controller",
 	"../util/formatter"
-], function(Controller, formatter) {
+], function(BaseController, formatter) {
 	"use strict";
 
-	return Controller.extend("cmjs.controller.Empty", {
+	return BaseController.extend("cmjs.controller.Empty", {
 
 		formatter: formatter,
 
