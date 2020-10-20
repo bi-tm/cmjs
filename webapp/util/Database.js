@@ -2,7 +2,7 @@ sap.ui.define([
 ], function() {
     'use strict';
 
-    const url = "./api/";
+    const url = "./db/";
     var pageTypes = null;
 
     function ajax(params) {
@@ -16,7 +16,10 @@ sap.ui.define([
             params.xhrFields = {
                 withCredentials: true
             };
+            params.contentType= "application/json";
             params.crossDomain = true;
+            params.dataType = "json";
+            params.data = params.data && JSON.stringify(params.data);
             jQuery.ajax(params);
         });
     }
@@ -27,26 +30,28 @@ sap.ui.define([
            return ajax({
                type: "POST",
                url: url + "_session",
-               contentType: "application/json",
-               data: JSON.stringify({ 
+               data: { 
                     name: user,
                     password: password
-               })
+               }
            });
         },
 
         getPages: function(fields) {
             return ajax({
                 type: "POST",
-                contentType: "application/json",
                 url: url + "pages/_find",
-                data: JSON.stringify({
-                    "selector": {},
-                    "fields": fields,
-                    "sort": ["parentId", "sort"],
+                data: {
+                    "selector": {
+                        "_id": {
+                            "$gte": null
+                        }
+                    },
                     "limit": 10000
-                })
-            }).then(data=> data.docs);
+                }
+            }).then(function(data) {
+                return data.docs
+            });
         },
 
         getPage: function(_id) {
@@ -60,9 +65,7 @@ sap.ui.define([
             return ajax({
                 type: "PUT",
                 url: url + "pages/" + oPage._id,
-                async: true,
-                dataType: "json",
-                data: JSON.stringify(oPage),                 
+                data: oPage,                 
             });
         },
 
@@ -70,15 +73,22 @@ sap.ui.define([
             if (refresh || !pageTypes) {
                 pageTypes = ajax({
                     type: "POST",
-                    contentType: "application/json",
                     url: url + "page_types/_find",
-                    data: JSON.stringify({
-                        "selector": {},
+                    data: {
+                        "selector": {
+                            "_id": {
+                                "$gte": null
+                            }
+                        },
                         "limit": 10000
-                    })
+                    }
+                    }).then(function(data) {
+                    return data.docs
                 })
-                .then(data => data.docs)
-                .catch(error => pageType = null)
+                .catch(error => {
+                    pageTypes = null;
+                    throw(error);
+                });
             }
             return pageTypes;
         },

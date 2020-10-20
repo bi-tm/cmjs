@@ -34,7 +34,10 @@ sap.ui.define([
 
 		_onPageMatched: function(oEvent) {
 			var _id = oEvent.getParameter("arguments")._id;
-			this._readPage(_id);
+			var oModel = this.getModel("view");
+			oModel.setProperty("/editable", false);
+			oModel.setProperty("/newPage", false);
+			this._showPage(_id);
 		},
 
 		_onNewPageMatched: function(oEvent) {
@@ -60,20 +63,18 @@ sap.ui.define([
 			});
 		},
 
-		_readPage: function(_id) {
+		_showPage: function(_id) {
 			var oView = this.getView();
 			var oModel = this.getModel("view");
 			var oTreeModel = this.getModel("tree");
-			oModel.setProperty("/editable", false);
-			oModel.setProperty("/newPage", false);
 			oModel.setProperty("/busy", true);
-			Promise.all([Database.getPageTypes(), oTreeModel.read()])
+			Promise.all([Database.getPageTypes(), oTreeModel.readPage(_id)])
 			.then(result => {
-				var sPath = oTreeModel.getPath(_id);
-				var oPage = oTreeModel.getProperty(sPath);
-				oModel.setProperty("/pageTypes", result[0]);
+				var pageTypes = result[0];
+				var oPage = result[1];
+				oModel.setProperty("/pageTypes", pageTypes);
 				oModel.setProperty("/breadcrumbs", oTreeModel.getPathNodes(oPage.parentId));
-				oView.bindObject({model:"tree", path:sPath});
+				oView.bindObject({model:"tree", path: oTreeModel.getPath(_id)});
 				oView.rerender();
 				oModel.setProperty("/busy", false);
 			})
@@ -83,7 +84,7 @@ sap.ui.define([
 					oRouter.navTo("logon");		
 				}
 				else {
-					MessageBox.show(JSON.stringify(error), {
+					MessageBox.show(error.message, {
 							icon: MessageBox.Icon.ERROR,
 							title: "readPage",
 							actions: [MessageBox.Action.CLOSE]
@@ -98,17 +99,17 @@ sap.ui.define([
 		},
 
 		onEditPress: function(oEvent) {
-			var oModel = this.getModel("view");
-			var _id = oModel.getProperty("/page/_id");
-			this._readPage(_id);
+			var oModel = this.getModel("view");			
+			var oContext = this.getView().getBindingContext("tree");
+			this._showPage(oContext.getProperty("_id"));
 			oModel.setProperty("/editable", true);
 		},
 
 		onSavePress: function(oEvent) {
 			var oModel = this.getModel("view");
-			var oPage = oModel.getProperty("/page");
-			oModel.setProperty("/busy", true);
-			Database.savePage(oPage)
+			var oTreeModel = this.getModel("tree");
+			var sPath = this.getView().getBindingContext("tree").getPath();
+			oTreeModel.savePage(sPath)
 			.then( () => {
 				oModel.setProperty("/busy", false);
 				oModel.setProperty("/newPage", false);
@@ -126,16 +127,19 @@ sap.ui.define([
 		
 		onCancelPress: function(oEvent) {
 			var oModel = this.getModel("view");
-			var _id = oModel.getProperty("/page/_id");
 			var bNewPage = oModel.getProperty("/newPage");
+			var oContext = this.getView().getBindingContext("tree");
+			var _id = oContext.getProperty("_id");
 			if (bNewPage) {
-				_id = oModel.getProperty("/page/parentId");
+				var parentId = this.getModel("tree").getProperty("/page/parentId");
 				var oRouter = this.getOwnerComponent().getRouter();
-				oRouter.navTo("page", {_id: _id});
+				oRouter.navTo("page", {_id: parentId});
 			}
-			else {
-				this._readPage(_id);
+			else {	
+				this._showPage(_id);
 			}
+			oModel.setProperty("/editable", false);
+			oModel.setProperty("/newPage", false);
 		},
 
 		onTitleChange: function(oEvent) {

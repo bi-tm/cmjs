@@ -1,0 +1,15 @@
+{
+  "static": [
+    "/dist"
+  ],
+  "proxy": [
+    {
+      "mountPath": "/db",
+      "url_DEL": "https://couchdb.feste-feiern-in-bielefeld.de",
+      "url": "http://couchdb:5984/"
+    }
+  ],
+  "express": {
+    "port": "8080"
+  }
+}

@@ -115,11 +115,17 @@ sap.ui.define([
 		},
 
 		onDrop: function(oEvent) {
-			console.log("drop position       " + oEvent.getParameter("dropPosition"));
 			var draggedControl = oEvent.getParameter("draggedControl");
-			console.log("drop draggedControl " + draggedControl.getBindingContext("view").getProperty("_id") + " " + draggedControl.getBindingContext("view").getProperty("title"));
 			var droppedControl = oEvent.getParameter("droppedControl");
-			console.log("drop droppedControl " + droppedControl.getBindingContext("view").getProperty("_id") + " " + droppedControl.getBindingContext("view").getProperty("title"));
+			console.log("drop " + draggedControl.getBindingContext("tree").getProperty("_id") + " " + draggedControl.getBindingContext("tree").getProperty("title") 
+						 + " " + oEvent.getParameter("dropPosition")
+						 + " " + droppedControl.getBindingContext("tree").getProperty("_id") + " " + droppedControl.getBindingContext("tree").getProperty("title"));
+			var oTreeModel = this.getModel("tree");
+			oTreeModel.insertIntoTree(
+				draggedControl.getBindingContext("tree").getPath(), 
+				oEvent.getParameter("dropPosition"), 
+				droppedControl.getBindingContext("tree").getPath()
+			);
 		}
 
 	});
