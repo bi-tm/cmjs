@@ -8,7 +8,7 @@ sap.ui.define([
 	"use strict";
 
     function _buildTree(docs,parentId) {
-        var result = docs.filter(doc => doc.parentId == parentId);
+        var result = docs.filter(doc => doc.parentId == parentId).sort( (a,b) => a.sort - b.sort );
         result.forEach(child => { child.nodes = _buildTree(docs, child._id); });
         return result;
     }
@@ -93,62 +93,63 @@ sap.ui.define([
         },
 
         /**
-         * inserts page into tree at specified position.
-         * @param {string} sPagePath 
-         * @param {sap.ui.core.dnd.DropPositio} sRelation  Before, On, After 
-         * @param {string} sRelationPath 
+         * removes node from tree
+         * @param {string} sPath 
+         * @returns {object} removed node
          */
-        insertIntoTree: function(sPagePath, sRelation, sRelationPath) {
-            var aBulk = [];
-            var oPage = this.getProperty(sPagePath);
-            var oRelationPage = this.getProperty(sRelationPath);
-            // delete page from old position
-            var sNodesPath = this.getPath(oPage.parentId) + "/nodes";
+        removeFromTree: function(sPath) {
+            var oNode = this.getProperty(sPath);
+            var index = parseInt(sPath.replace(/^.*\/(\d+)$/, "$1"));
+            var sNodesPath = sPath.replace(/\/\d+$/, "");
             var aNodes = this.getProperty(sNodesPath);
-            var index = aNodes.findIndex(node => node._id === oPage._id);
-            aNodes.splice(index, 1);
+            aNodes.splice(index,1);
             this.setProperty(sNodesPath, aNodes);
-            // insert new position
+            return oNode;
+        },
+
+        /**
+         * inserts page into tree at specified position.
+         * @param {object} oPage 
+         * @param {sap.ui.core.dnd.DropPositio} sRelation  Before, On, After 
+         * @param {object} oRelationPage 
+         * @returns {array} list of modified nodes
+         */
+        insertIntoTree: function(oPage, sRelation, oRelationPage) {
+            var aModified = [oPage], sNodesPath, aNodes, index;
             switch (sRelation) {
                 case "Before":
                     oPage.parentId = oRelationPage.parentId;
-                    aBulk.push(oPage);
                     sNodesPath = this.getPath(oRelationPage.parentId) + "/nodes";                    
                     aNodes = this.getProperty(sNodesPath);
                     index = aNodes.findIndex(node => node._id == oRelationPage._id);
                     aNodes.splice(index,0,oPage);
-                    aBulk = aBulk.concat(this.renumberChildren(aNodes));
-                    this.setProperty(sNodesPath, aNodes);
                     break;
                 case "On": // insert as sub node
                     oPage.parentId = oRelationPage._id;
-                    aBulk.push(oPage);
                     sNodesPath = this.getPath(oRelationPage._id) + "/nodes";                    
                     aNodes = this.getProperty(sNodesPath);
                     aNodes.push(oPage);                                        
-                    aBulk = aBulk.concat(this.renumberChildren(aNodes));
-                    this.setProperty(sNodesPath, aNodes);
                     break;
                 case "After":
                     oPage.parentId = oRelationPage.parentId;
-                    aBulk.push(oPage);
                     sNodesPath = this.getPath(oRelationPage.parentId) + "/nodes";                    
                     aNodes = this.getProperty(sNodesPath);
                     index = aNodes.findIndex(node => node._id == oRelationPage._id);
                     aNodes.splice(index+1,0,oPage);
-                    aBulk = aBulk.concat(this.renumberChildren(aNodes));
-                    this.setProperty(sNodesPath, aNodes);
                     break;
             }
+            aModified = aModified.concat(this.renumberChildren(aNodes));
+            this.setProperty(sNodesPath, aNodes);
+            return aModified;
         },
 
         /**
          * set sort numbers of children.
          * @param {array} aNodes 
-         * @returns {array} list of changed pages
+         * @returns {array} list of modified pages
          */
         renumberChildren: function(aNodes) {
-            var aBulk = [];
+            var aModified = [];
             var iPrevSort = 0;
             for(var oChild of aNodes) {
                 var iNewSort = typeof(oChild.sort) === "string" ? parseInt(oChild.sort) : oChild.sort;
@@ -157,11 +158,11 @@ sap.ui.define([
                 }
                 if (iNewSort !== oChild.sort) {
                     oChild.sort = iNewSort;
-                    aBulk.push(oChild);
+                    aModified.push(oChild);
                 }
                 iPrevSort = iNewSort;
             }
-            return aBulk;
+            return aModified;
         },
 
         /**

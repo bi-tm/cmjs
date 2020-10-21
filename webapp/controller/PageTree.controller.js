@@ -3,13 +3,11 @@ sap.ui.define([
 	"sap/ui/core/Fragment",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
-	"../util/formatter"
-], function(BaseController, Fragment, JSONModel, MessageBox, formatter) {
+    "../util/Database"
+], function(BaseController, Fragment, JSONModel, MessageBox, Database) {
 	"use strict";
 
 	return BaseController.extend("cmjs.controller.PageTree", {
-
-		formatter: formatter,
 
 		onInit: function () {
 			var oModel = new JSONModel({
@@ -117,15 +115,23 @@ sap.ui.define([
 		onDrop: function(oEvent) {
 			var draggedControl = oEvent.getParameter("draggedControl");
 			var droppedControl = oEvent.getParameter("droppedControl");
-			console.log("drop " + draggedControl.getBindingContext("tree").getProperty("_id") + " " + draggedControl.getBindingContext("tree").getProperty("title") 
-						 + " " + oEvent.getParameter("dropPosition")
-						 + " " + droppedControl.getBindingContext("tree").getProperty("_id") + " " + droppedControl.getBindingContext("tree").getProperty("title"));
 			var oTreeModel = this.getModel("tree");
-			oTreeModel.insertIntoTree(
-				draggedControl.getBindingContext("tree").getPath(), 
+			var oSourceNode = draggedControl.getBindingContext("tree").getObject();
+			var oTargetNode = droppedControl.getBindingContext("tree").getObject();
+
+			oTreeModel.removeFromTree(draggedControl.getBindingContext("tree").getPath());
+			var aModified = oTreeModel.insertIntoTree(
+				oSourceNode, 
 				oEvent.getParameter("dropPosition"), 
-				droppedControl.getBindingContext("tree").getPath()
+				oTargetNode
 			);
+			Database.savePages(aModified)
+			.catch(error => {
+				if(error.status == 401) {
+					var oRouter = this.getOwnerComponent().getRouter();
+					oRouter.navTo("logon");		
+				}
+			});
 		}
 
 	});

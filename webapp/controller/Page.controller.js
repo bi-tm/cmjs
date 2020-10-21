@@ -3,20 +3,16 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
-	"../util/formatter",
 	"../util/Database"
 ], function(
 	BaseController,
 	JSONModel,
 	MessageBox,
 	MessageToast,
-	formatter,
 	Database) {
 	"use strict";
 
 	return BaseController.extend("cmjs.controller.Page", {
-
-		formatter: formatter,
 
 		onInit: function () {
 			var oModel = new JSONModel({

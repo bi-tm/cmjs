@@ -62,11 +62,29 @@ sap.ui.define([
         },
 
         savePage: function(oPage) {
+            // page clone without 'nodes' property
+            var oClone = Object.assign({}, oPage);
+            oClone.property = undefined;
             return ajax({
                 type: "PUT",
                 url: url + "pages/" + oPage._id,
-                data: oPage,                 
+                data: oClone,                 
             });
+        },
+
+        savePages: function(aPages) {
+            if (!aPages || aPages.length === 0) return Promise.resolve([]);
+            var aDocs = aPages.map(oPage => {
+                var oClone = Object.assign({}, oPage);
+                oClone.nodes = undefined;
+                return oClone;
+            });
+            return ajax({
+                type: "POST",
+                url: url + "pages/_bulk_docs",
+                data: {docs:aDocs},                 
+            });
+
         },
 
         getPageTypes: function(refresh) {
