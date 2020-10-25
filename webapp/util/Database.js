@@ -64,7 +64,7 @@ sap.ui.define([
         savePage: function(oPage) {
             // page clone without 'nodes' property
             var oClone = Object.assign({}, oPage);
-            oClone.property = undefined;
+            oClone.nodes = undefined;
             return ajax({
                 type: "PUT",
                 url: url + "pages/" + oPage._id,

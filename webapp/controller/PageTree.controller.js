@@ -137,6 +137,31 @@ sap.ui.define([
 		},
 
 		/**
+		 * event handler for deleting page.
+		 * @param {object} oEvent 
+		 */
+		onDeletePressed: function(oEvent) {
+			var oSelectedItem = this.getView().byId("PageTree").getSelectedItem();
+			var oContext = oSelectedItem.getBindingContext("tree");
+			var oPage = oContext.getObject();
+			var sPath = oContext.getPath();
+			var oTreeModel = this.getModel("tree");
+			var oArchiv = oTreeModel.getNode("archiv");
+			oPage.parentId = "archiv";
+			Database.savePage(oPage);
+			oTreeModel.removeFromTree(sPath);			
+			var aModified = oTreeModel.insertIntoTree(oPage, "On", oArchiv);
+			Database.savePages(aModified)
+			.catch(error => {
+				if(error.status == 401) {
+					var oRouter = this.getOwnerComponent().getRouter();
+					oRouter.navTo("logon");		
+				}
+			});
+		},
+
+
+		/**
 		 * event handler of popop menu.
 		 * inserts new page before selected tree node.
 		 * @param {object} oEvent 
@@ -179,11 +204,7 @@ sap.ui.define([
 			var oTargetNode = droppedControl.getBindingContext("tree").getObject();
 
 			oTreeModel.removeFromTree(draggedControl.getBindingContext("tree").getPath());
-			var aModified = oTreeModel.insertIntoTree(
-				oSourceNode, 
-				oEvent.getParameter("dropPosition"), 
-				oTargetNode
-			);
+			var aModified = oTreeModel.insertIntoTree(oSourceNode, oEvent.getParameter("dropPosition"), oTargetNode);
 			Database.savePages(aModified)
 			.catch(error => {
 				if(error.status == 401) {

@@ -10,7 +10,7 @@
 			<OverflowToolbar>
 				<ToolbarSpacer/>
 				<Button icon="sap-icon://add-document" press=".onNewpagePressed"/>
-				<Button icon="sap-icon://delete" enabled="{= ${tree>/selectedId} !== null }"/>
+				<Button icon="sap-icon://delete" press=".onDeletePressed" enabled="{= ${tree>/selectedId} !== null }"/>
 			</OverflowToolbar>
 		</subHeader>
 		<content>

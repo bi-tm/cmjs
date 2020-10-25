@@ -36,7 +36,7 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
 				singleContainerFullSize: false			
 			});
 			this.page = new sap.m.Page({
-				title: "Seite",
+				title: "{i18n>page}",
 				subHeader: new sap.m.OverflowToolbar({
 					content:  [
 						new sap.m.HBox({
