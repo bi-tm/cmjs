@@ -3,12 +3,14 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
+	"sap/ui/core/routing/History",
 	"../util/Database"
 ], function(
 	BaseController,
 	JSONModel,
 	MessageBox,
 	MessageToast,
+	History,
 	Database) {
 	"use strict";
 
@@ -23,7 +25,7 @@ sap.ui.define([
 				busy: true
 			});
 			this.getView().setModel(oModel,"view");
-			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+			var oRouter = this.getRouter();
 			oRouter.getRoute("page").attachPatternMatched(this._onPageMatched, this);
 			oRouter.getRoute("newpage").attachPatternMatched(this._onNewPageMatched, this);
 		},
@@ -37,25 +39,36 @@ sap.ui.define([
 		},
 
 		_onNewPageMatched: function(oEvent) {
-			var oArguments = oEvent.getParameter("arguments");
-			var oView = this.getView();
+			var args = oEvent.getParameter("arguments");
 			var oModel = this.getModel("view");
-			var oTreeMode = this.getModel("tree");
-			oModel.setProperty("/busy", true);
+			var oTreeModel = this.getModel("tree");
 			oModel.setProperty("/editable", true);
 			oModel.setProperty("/newPage", true);
-			Database.getPageTypes()
-			.then(pageTypes => {
-				oModel.setProperty("/pageTypes", pageTypes);
-				oModel.setProperty("/busy", false);
-				oModel.setProperty("/page", {
-					_id: 'neue-seite',
-					parentId: oArguments.parentId,
-					pageType: pageTypes[0]._id,
+			Promise.all([Database.getPageTypes(), oTreeModel.read()])
+			.then(result => {
+				var aPageTypes = result[0];
+				var oRelationPage = oTreeModel.getNode(args.relationId);
+				var oPage = {
+					_id: Date.now().toString(),
+					pageType: aPageTypes[0]._id,
 					title: "neue Seite",
-					sort: oArguments.sort				
-				});
-				oView.rerender();
+					legacyUrl: "neue-sSeite"
+				};
+				oTreeModel.insertIntoTree(oPage, args.relation, oRelationPage);
+				this._showPage(oPage._id);
+			})
+			.catch(error => {
+				if(error.status == 401) {
+					var oRouter = this.getOwnerComponent().getRouter();
+					oRouter.navTo("logon");		
+				}
+				else {
+					MessageBox.show(error.message, {
+							icon: MessageBox.Icon.ERROR,
+							title: "newPage",
+							actions: [MessageBox.Action.CLOSE]
+					});
+				}
 			});
 		},
 
@@ -64,13 +77,14 @@ sap.ui.define([
 			var oModel = this.getModel("view");
 			var oTreeModel = this.getModel("tree");
 			oModel.setProperty("/busy", true);
-			Promise.all([Database.getPageTypes(), oTreeModel.readPage(_id)])
+			Promise.all([Database.getPageTypes(), oTreeModel.read()])
 			.then(result => {
-				var pageTypes = result[0];
-				var oPage = result[1];
-				oModel.setProperty("/pageTypes", pageTypes);
+				var aPageTypes = result[0];
+				var sPath = oTreeModel.getPath(_id);
+				var oPage = oTreeModel.getProperty(sPath);
+				oView.bindObject({model:"tree", path: sPath});
+				oModel.setProperty("/pageTypes", aPageTypes);
 				oModel.setProperty("/breadcrumbs", oTreeModel.getPathNodes(oPage.parentId));
-				oView.bindObject({model:"tree", path: oTreeModel.getPath(_id)});
 				oView.rerender();
 				oModel.setProperty("/busy", false);
 			})
@@ -104,14 +118,15 @@ sap.ui.define([
 		onSavePress: function(oEvent) {
 			var oModel = this.getModel("view");
 			var oTreeModel = this.getModel("tree");
-			var sPath = this.getView().getBindingContext("tree").getPath();
-			oTreeModel.savePage(sPath)
-			.then( () => {
+			var oPage = this.getView().getBindingContext("tree").getObject();
+			oTreeModel.savePage(oPage)
+			.then( function() {
 				oModel.setProperty("/busy", false);
 				oModel.setProperty("/newPage", false);
 				oModel.setProperty("/editable", false);
 				MessageToast.show("Seite gespeichert", {closeOnBrowserNavigation:false})
-			})
+				this.navTo("page", {_id: oPage._id});
+			}.bind(this))
 			.catch(error => {
 				MessageBox.show(error, {
 						icon: MessageBox.Icon.ERROR,
@@ -126,31 +141,34 @@ sap.ui.define([
 			var bNewPage = oModel.getProperty("/newPage");
 			var oContext = this.getView().getBindingContext("tree");
 			var _id = oContext.getProperty("_id");
+			this.getModel("tree").read(true);
 			if (bNewPage) {
-				var parentId = this.getModel("tree").getProperty("/page/parentId");
-				var oRouter = this.getOwnerComponent().getRouter();
-				oRouter.navTo("page", {_id: parentId});
+				var oHistory = History.getInstance();
+				var sPreviousHash = oHistory.getPreviousHash();	
+				if (sPreviousHash !== undefined) {
+					window.history.go(-1);
+				} else {
+					this.navTo("home");
+				}
 			}
 			else {	
-				this._showPage(_id);
+				this.getModel("tree").readPage(_id)
+				.then( function() { this._showPage(_id) }.bind(this));
 			}
 			oModel.setProperty("/editable", false);
 			oModel.setProperty("/newPage", false);
 		},
 
 		onTitleChange: function(oEvent) {
-			var oModel = this.getModel("view");
-			var bNewPage = oModel.getProperty("/newPage");
-			if (bNewPage) {
-				var id = oEvent.getSource().getValue()
-				            .toLowerCase()
-							.replaceAll(/ä/g, "ae")
-							.replaceAll(/ö/g, "oe")
-							.replaceAll(/ü/g, "ue")
-							.replaceAll(/ß/g, "ss")
-							.replaceAll(/[^a-z0-9]/g, "-");
-				oModel.setProperty("/page/_id", id);
-			}
+			var sPath = this.getView().getBindingContext("tree").getPath();
+			var legacyUrl = oEvent.getSource().getValue()
+						.toLowerCase()
+						.replaceAll(/ä/g, "ae")
+						.replaceAll(/ö/g, "oe")
+						.replaceAll(/ü/g, "ue")
+						.replaceAll(/ß/g, "ss")
+						.replaceAll(/[^a-z0-9]/g, "-");
+			this.getModel("tree").setProperty(sPath+"/legacyUrl", legacyUrl);
 		}
 		
 	});

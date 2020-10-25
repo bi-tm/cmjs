@@ -83,13 +83,13 @@ sap.ui.define([
          * @param {string} sPath 
          * @returns {Promise}
          */
-        savePage: function(sPath) {
+        savePage: function(oPage) {
             // clone page without 'node' property
-            var oPage = {};
-            Object.assign(oPage, this.getProperty(sPath));
-            oPage.node = undefined;
+            var oPageWithoutSubnodes = {};
+            Object.assign(oPageWithoutSubnodes, oPage);
+            oPageWithoutSubnodes.node = undefined;
             // save
-            return Database.savePage(oPage);
+            return Database.savePage(oPageWithoutSubnodes);
         },
 
         /**

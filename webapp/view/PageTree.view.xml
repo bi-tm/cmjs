@@ -19,7 +19,8 @@
 				busy="{view>/busy}"
 				mode="SingleSelectMaster"				
 				items="{path: 'tree>/nodes'}" 
-				selectionChange=".onSelectionChange" >
+				selectionChange=".onSelectionChange" 
+				toggleOpenState=".onToggleOpenState">
 				<dragDropConfig>
 					<dnd:DragDropInfo
 						sourceAggregation="items"

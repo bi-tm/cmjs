@@ -11,6 +11,14 @@ sap.ui.define([
 		getModel: function(name) {
 			return this.getView().getModel(name) ||
 			       this.getOwnerComponent().getModel(name);
+		},
+
+		getRouter: function() {
+			return sap.ui.core.UIComponent.getRouterFor(this);
+		},
+
+		navTo: function(route, params) {
+			this.getRouter().navTo(route, params);
 		}
 
 	});

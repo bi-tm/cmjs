@@ -25,7 +25,7 @@ sap.ui.define([
 			var oModel = this.getModel("view");
 			oModel.setProperty("/busy", true);
 
-			this.getModel("tree").read()
+			return this.getModel("tree").read()
 			.then(docs => {
 				oModel.setProperty("/busy", false);
 			})
@@ -49,10 +49,13 @@ sap.ui.define([
 		},
 
 		_onPageMatched: function(oEvent) {
-			this._loadTree();
 			var _id = oEvent.getParameter("arguments")._id;
 			var oModel = this.getModel("view");
-			oModel.setProperty("/selectedId", _id);
+			this._loadTree()
+			.then(function(){
+				oModel.setProperty("/selectedId", _id);
+				this._expand(_id);
+			}.bind(this));
 		},
 
 
@@ -72,18 +75,53 @@ sap.ui.define([
 			return this._menuLoader;
 		},
 
-		_insertPage(parentId, iSort) {
+		/**
+		 * 
+		 * @param {*} parentId 
+		 * @param {*} iSort 
+		 */
+		_newPage(sRelation, oRelationPage) {
 			var oRouter = this.getOwnerComponent().getRouter();
-            oRouter.navTo("newpage", {parentId: parentId, sort: iSort});
+            oRouter.navTo("newpage", {relation:sRelation,  relationId:oRelationPage._id});
 		},
 
+		/**
+		 * expand tree to show specified page
+		 * @param {string} _id 
+		 */
+		_expand: function(_id) {
+			var oTree = this.getView().byId("PageTree");
+		    var oTreeModel = this.getModel("tree");
+			var aNodes = oTreeModel.getPathNodes(_id);
+			for(var oNode of aNodes) {
+				var aItems = oTree.getItems();
+				var index = aItems.findIndex(item => item.getBindingContext("tree").getProperty("_id") === oNode._id);		
+				if (index >= 0)	{
+					oTree.expand(index);
+				}
+			}
+		},
+
+		/**
+		 * event handler when user selects a node tree.
+		 * navigates to detail view if the selectef page.
+		 * @param {object} oEvent 
+		 */
 		onSelectionChange: function(oEvent) {
 			var oItem = oEvent.getParameter("listItem");
 			var oContext = oItem.getBindingContext("tree");
-			var oRouter = this.getOwnerComponent().getRouter();
-            oRouter.navTo("page", {_id: oContext.getProperty("_id") });
+			var bSelected = oEvent.getParameter("selected");
+			if (bSelected) {
+				var oRouter = this.getOwnerComponent().getRouter();
+				oRouter.navTo("page", {_id: oContext.getProperty("_id") });
+			}
 		},
 
+		/**
+		 * event hanlder for creating new page.
+		 * opens menu to select hiararchy level for new page.
+		 * @param {object} oEvent 
+		 */
 		onNewpagePressed: function(oEvent) {
 			var oSelectedItem = this.getView().byId("PageTree").getSelectedItem();
 			if (oSelectedItem) {
@@ -93,25 +131,46 @@ sap.ui.define([
 				});
 			}
 			else {
-				_insertPage("0",1);
+				oSelectedItem = TreeModel.getProperty("/nodes/0");
+				_newPage("Before",oSelectedItem);
 			}
 		},
 
+		/**
+		 * event handler of popop menu.
+		 * inserts new page before selected tree node.
+		 * @param {object} oEvent 
+		 */
 		onInsertBefore: function(oEvent) {
-			var oContext = this.getView().byId("PageTree").getSelectedItem().getBindingContext("tree");
-			this._insertPage(oContext.getProperty("parentId"), parseInt(oContext.getProperty("sort"))-1)
+			var oRelationPage = this.getView().byId("PageTree").getSelectedItem().getBindingContext("tree").getObject();
+			this._newPage("Before", oRelationPage);
 		},
 
+		/**
+		 * event handler of popop menu.
+		 * inserts new page after selected tree node.
+		 * @param {object} oEvent 
+		 */
 		onInsertAfter: function(oEvent) {
-			var oContext = this.getView().byId("PageTree").getSelectedItem().getBindingContext("tree");
-			this._insertPage(oContext.getProperty("parentId"), parseInt(oContext.getProperty("sort"))+1)
+			var oRelationPage = this.getView().byId("PageTree").getSelectedItem().getBindingContext("tree").getObject();
+			this._newPage("After", oRelationPage);
 		},
 
+		/**
+		 * event handler of popop menu.
+		 * inserts new page as first child of selected tree node.
+		 * @param {object} oEvent 
+		 */
 		onInsertUnder: function(oEvent) {
-			var oContext = this.getView().byId("PageTree").getSelectedItem().getBindingContext("tree");
-			this._insertPage(oContext.getProperty("_id"), 1)
+			var oRelationPage = this.getView().byId("PageTree").getSelectedItem().getBindingContext("tree").getObject();
+			this._newPage("On", oRelationPage);
 		},
 
+		/**
+		 * event handler for drag and drop.
+		 * moves page in the tree to another place.
+		 * @param {object} oEvent 
+		 */
 		onDrop: function(oEvent) {
 			var draggedControl = oEvent.getParameter("draggedControl");
 			var droppedControl = oEvent.getParameter("droppedControl");

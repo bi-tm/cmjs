@@ -83,7 +83,7 @@
 					"target": ["tree","page"]
 				},
 				{
-					"pattern": "newpage/{parentId}-{sort}",
+					"pattern": "newpage/{relation}-{relationId}",
 					"name": "newpage",
 					"target": ["tree","page"]
 				},

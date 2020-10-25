@@ -76,8 +76,8 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
 
 			parent.destroyContent();
 
-			parent.addContent( new Label({text: "{i18n>pageId}"}));
-			parent.addContent( new Input({value: "{tree>_id}", required: true, editable:"{view>/newPage}"}));
+			parent.addContent( new Label({text: "{i18n>legacyUrl}"}));
+			parent.addContent( new Input({value: "{tree>legacyUrl}", editable:"{view>/editable}"}));
 			parent.addContent( new Label({text: "{i18n>pageType}"}));
 			parent.addContent( new Select({
 				required: true, 
