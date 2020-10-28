@@ -1,0 +1,9 @@
+<html>
+<head>
+</head>
+<body>
+    <h1>Feste feiern in Bielefeld 2</h1>
+    <h3>{{title}}</h3>
+    {{{text}}}
+</body>
+</html>
