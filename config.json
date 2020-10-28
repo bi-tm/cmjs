@@ -1,12 +1,12 @@
 {
   "static": [
-    "/dist"
+    {"mountPath": "/admin", "localPath": "/dist"}
   ],
   "proxy": [
     {
       "mountPath": "/db",
-      "url_DEL": "https://couchdb.feste-feiern-in-bielefeld.de",
-      "url": "http://couchdb:5984/"
+      "url_DEL": "http://couchdb:5984/",
+      "url": "https://couchdb.feste-feiern-in-bielefeld.de"
     }
   ],
   "express": {

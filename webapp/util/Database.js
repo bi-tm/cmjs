@@ -2,7 +2,7 @@ sap.ui.define([
 ], function() {
     'use strict';
 
-    const url = "./db/";
+    const url = "/db/";
     var pageTypes = null;
 
     function ajax(params) {

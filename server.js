@@ -11,8 +11,8 @@ app.use(morgan('combined'));
 
 // static files of SAPUI5 frontend 
 const statics = config.static || [];
-for (var path of statics) {
-  app.use(express.static(__dirname + path));
+for (var s of statics) {
+  app.use(s.mountPath, express.static(__dirname + s.localPath));
 }
 
 // proxies, i.e. for couchDB
@@ -24,4 +24,4 @@ for(var p of proxies) {
 // express listens 
 const port = config.express.port || "8080";
 app.listen(port);
-console.log(`admin tool runnun on http://localhost:${port}`);
+console.log(`admin tool running on http://localhost:${port}/admin`);
