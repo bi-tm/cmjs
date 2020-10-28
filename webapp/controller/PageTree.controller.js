@@ -2,9 +2,8 @@ sap.ui.define([
 	"cmjs/controller/Base.controller",
 	"sap/ui/core/Fragment",
 	"sap/ui/model/json/JSONModel",
-	"sap/m/MessageBox",
-    "../util/Database"
-], function(BaseController, Fragment, JSONModel, MessageBox, Database) {
+	"sap/m/MessageBox"
+], function(BaseController, Fragment, JSONModel, MessageBox) {
 	"use strict";
 
 	return BaseController.extend("cmjs.controller.PageTree", {
@@ -147,15 +146,20 @@ sap.ui.define([
 			var sPath = oContext.getPath();
 			var oTreeModel = this.getModel("tree");
 			var oArchiv = oTreeModel.getNode("archiv");
-			oPage.parentId = "archiv";
-			Database.savePage(oPage);
 			oTreeModel.removeFromTree(sPath);			
 			var aModified = oTreeModel.insertIntoTree(oPage, "On", oArchiv);
-			Database.savePages(aModified)
+			oTreeModel.savePages(aModified)
 			.catch(error => {
 				if(error.status == 401) {
 					var oRouter = this.getOwnerComponent().getRouter();
 					oRouter.navTo("logon");		
+				}
+				else {
+					MessageBox.show(JSON.stringify(error), {
+						icon: MessageBox.Icon.ERROR,
+						title: "onDeletePressed",
+						actions: [MessageBox.Action.CLOSE]
+					});
 				}
 			});
 		},
@@ -205,11 +209,18 @@ sap.ui.define([
 
 			oTreeModel.removeFromTree(draggedControl.getBindingContext("tree").getPath());
 			var aModified = oTreeModel.insertIntoTree(oSourceNode, oEvent.getParameter("dropPosition"), oTargetNode);
-			Database.savePages(aModified)
+			oTreeModel.savePages(aModified)
 			.catch(error => {
 				if(error.status == 401) {
 					var oRouter = this.getOwnerComponent().getRouter();
 					oRouter.navTo("logon");		
+				}
+				else {
+					MessageBox.show(JSON.stringify(error), {
+						icon: MessageBox.Icon.ERROR,
+						title: "onDrop",
+						actions: [MessageBox.Action.CLOSE]
+					});
 				}
 			});
 		}

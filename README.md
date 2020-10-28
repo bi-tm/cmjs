@@ -1,52 +1,58 @@
-[![Build Status](https://travis-ci.org/SAP/openui5-basic-template-app.svg?branch=master)](https://travis-ci.org/SAP/openui5-basic-template-app)
-[![REUSE status](https://api.reuse.software/badge/github.com/SAP/openui5-basic-template-app)](https://api.reuse.software/info/github.com/SAP/openui5-basic-template-app)
-![OpenUI5 logo](http://openui5.org/images/OpenUI5_new_big_side.png)
+CMS Administration
+==================
 
-# openui5-basic-template-app
-OpenUI5 basic template app using the UI5 Build and Development Tooling. You can use it as a starting point to build custom OpenUI5 apps.
+Seiten
+------
+- Zugriff auf importierte Images im Texteditor
+- Seite mit Versionsverwaltung ?
+- Seite erst privat ändern, dann publizieren ?
 
-## More information
-* [Live Demo](https://sap.github.io/openui5-basic-template-app)
-* [Documentation](https://openui5.hana.ondemand.com/#/topic/7a4d93c0b0bb439b9d889ffc5b02eac9)
-* [UI5 Tooling](https://github.com/SAP/ui5-tooling)
-* [OpenUI5](https://github.com/SAP/openui5)
+Seitentyp
+---------
+- Wo kommt der Menüunkt hin?
+- Seitentyp anlegen
+- Seitentyp ändern
+- Seitentyp löschen
 
-## Prerequisites
-The **UI5 build and development tooling command line interface (UI5 CLI)** has to be installed.
-For installation instructions please see [Installing the UI5 CLI](https://github.com/SAP/ui5-tooling#installing-the-ui5-cli).
+Images
+------
+- Wo kommt der Menüpunkt hin?
+- Image hochladen (Thumbnails erzeugen ?)
+- Image umbenennen
+- Image löschen
 
-## Setup
-1. Clone the repository and navigate into it
-    ```sh
-    git clone https://github.com/SAP/openui5-basic-template-app.git
-    cd openui5-basic-template-app
-    ```
-1. Install all dependencies
-    ```sh
-    npm install
-    ```
+Datenbank
+---------
+- parentID = "0" gegen parentID = null austauschen
+- sort -> numerisch
+- Import der Hochzeitsmessen - Seiten
+- Kennzeichen: im Menü anzeigen ja/nein
+- User für Administration mit Schreib-Berechtigung
+- User für Frontent ohne Schreib-Berechtigung
+- Datenbank für Counter mit Schreibberechtigung auch fürs Frontend
 
-1. Start a local server and run the application (http://localhost:8080/index.html)
-    ```sh
-    ui5 serve -o /index.html
-    ```
+Frontend
+--------
+- Umbau auf andere Template Engine
+- Nicht alle Seiten im Menü anzeigen
+- Template für Hochzeitsmessen - Terminseite
 
-## Testing
-* Run ESLint code validation
-    ```sh
-    npm run lint
-    ```
-* Start a local server and execute the tests automatically after every change
-    ```sh
-    npm run watch
-    ```
-* Run ESLint, start a local server and run the tests in CI mode
-    ```sh
-    npm test
-    ```
+Allgemein
+---------
+- Mehrere Homepages (feste-feiern-in-guetersloh, ...)
+- Seite in mehrere Kategorien (wie machen wir das?)
+- Preview
+- Deployment
+- Backup
+- Configuration in JSON-Datei auslagern
+  - URL zur Datenbank
+  - User für Frontend Zugriff (Für Admin nur User Logon Maske)
 
-For more build and development options please see: [UI5 Build and Development Tooling](https://github.com/SAP/ui5-tooling)
-
-## Support
-This repository is based on the [OpenUI5 template demo apps](https://openui5.hana.ondemand.com/#/demoapps) and updated regularly with our latest recommendations. 
-If you found a bug, please create an [OpenUI5 issue](https://github.com/sap/openui5/issues). Thank you!
+Feste-feiern-in-Bielefeld
+=========================
+- Design
+- Termin-Seite (Hochzeitsmessen)
+    - Gültigkeitsdatum von-bis
+- Zähler der Seitenaufrufe
+- Zähler der Unterseiten
+- Zugriffstatistik (Google Analytics?)

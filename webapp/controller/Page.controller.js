@@ -128,7 +128,7 @@ sap.ui.define([
 				this.navTo("page", {_id: oPage._id});
 			}.bind(this))
 			.catch(error => {
-				MessageBox.show(error, {
+				MessageBox.show(JSON.stringify(error), {
 						icon: MessageBox.Icon.ERROR,
 						title: "savePage",
 						actions: [MessageBox.Action.CLOSE]

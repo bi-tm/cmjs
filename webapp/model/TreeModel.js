@@ -79,17 +79,39 @@ sap.ui.define([
         },
 
         /**
-         * save page, which is in the tree at specified path.
-         * @param {string} sPath 
+         * save page
+         * @param {object} oPage
          * @returns {Promise}
          */
         savePage: function(oPage) {
             // clone page without 'node' property
-            var oPageWithoutSubnodes = {};
-            Object.assign(oPageWithoutSubnodes, oPage);
-            oPageWithoutSubnodes.node = undefined;
+            var sPath = this.getPath(oPage._id);
             // save
-            return Database.savePage(oPageWithoutSubnodes);
+            return Database.savePage(oPage)
+            .then(function(result) {
+                // update revision
+                this.setProperty(sPath+'/_rev', result.rev);
+            }.bind(this));
+        },
+
+        /**
+         * save multiple pages as bulk
+         * @param {array} aPages 
+         */
+        savePages: function(aPages) {
+            return Database.savePages(aPages)
+            .then(function(result) {
+                // update revision
+                for (var oPage of result) {
+                    if (oPage.ok) {
+                        var sPath = this.getPath(oPage.id);
+                        this.setProperty(sPath+'/_rev', oPage.rev);    
+                    }
+                    else {
+                        throw(oPage);
+                    }
+                }
+            }.bind(this));
         },
 
         /**
@@ -115,7 +137,7 @@ sap.ui.define([
          * @returns {array} list of modified nodes
          */
         insertIntoTree: function(oPage, sRelation, oRelationPage) {
-            var aModified = [oPage], sNodesPath, aNodes, index;
+            var aModified = [], sNodesPath, aNodes, index;
             switch (sRelation) {
                 case "Before":
                     oPage.parentId = oRelationPage.parentId;
@@ -138,7 +160,13 @@ sap.ui.define([
                     aNodes.splice(index+1,0,oPage);
                     break;
             }
-            aModified = aModified.concat(this.renumberChildren(aNodes));
+            // renumber sub pages
+            aModified = this.renumberChildren(aNodes);
+            // add insert page to array od modidief pages, if necessary
+            if (aModified.findIndex(p => p._id === oPage._id) < 0) {
+                aModified.push(oPage);
+            }
+
             this.setProperty(sNodesPath, aNodes);
             return aModified;
         },
@@ -159,6 +187,7 @@ sap.ui.define([
                 if (iNewSort !== oChild.sort) {
                     oChild.sort = iNewSort;
                     aModified.push(oChild);
+
                 }
                 iPrevSort = iNewSort;
             }
