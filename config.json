@@ -1,14 +1,23 @@
 {
   "static": [
-    {"mountPath": "/admin", "localPath": "/dist"}
+    {"mountPath": "/admin", "localPath": "/dist"},
+    {"mountPath": "/",      "localPath": "/public"}
   ],
   "proxy": [
-    {
-      "mountPath": "/db",
-      "url_DEL": "http://couchdb:5984/",
-      "url": "https://couchdb.feste-feiern-in-bielefeld.de"
-    }
   ],
+  "database":     {
+    "mountPath": "/db",
+    "url_DEL": "http://couchdb:5984/",
+    "url": "https://couchdb.feste-feiern-in-bielefeld.de",
+    "auth": {
+      "username": "admin",
+      "password": "Rv8eRDBp#Jp2"
+    }
+  },
+  "mustache": {
+    "mountPath": "/",
+    "localPath": "/template"
+  },
   "express": {
     "port": "8080"
   }
