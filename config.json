@@ -1,24 +1,45 @@
 {
   "static": [
-    {"mountPath": "/admin", "localPath": "/dist"},
-    {"mountPath": "/",      "localPath": "/public"}
+    {
+      "mountPath": "/admin",
+      "localPath": "/dist"
+    },
+    {
+      "mountPath": "/",
+      "localPath": "/public"
+    }
   ],
   "proxy": [
+    { "mountPath": "/db", "url": "https://couchdb.feste-feiern-in-bielefeld.de" }
   ],
-  "database":     {
-    "mountPath": "/db",
-    "url_DEL": "http://couchdb:5984/",
-    "url": "https://couchdb.feste-feiern-in-bielefeld.de",
-    "auth": {
-      "username": "admin",
-      "password": "Rv8eRDBp#Jp2"
+  "pouchdb": [
+    {
+      "name": "pages",
+      "sync": {
+        "url_DEL": "http://couchdb:5984/",
+        "url": "https://couchdb.feste-feiern-in-bielefeld.de/pages",
+        "username": "admin",
+        "password": "Rv8eRDBp#Jp2"
+      }
+    },
+    {
+      "name": "pageTypes",
+      "sync": {
+        "url_DEL": "http://couchdb:5984/",
+        "url": "https://couchdb.feste-feiern-in-bielefeld.de/page_types",
+        "username": "admin",
+        "password": "Rv8eRDBp#Jp2"
+      }
     }
-  },
+  ],
   "mustache": {
     "mountPath": "/",
     "localPath": "/template"
   },
   "express": {
     "port": "8080"
+  },
+  "couchdb": {
+    "uuid": "dcfd931c-0efc-42fb-a2e1-91c5b8135320"
   }
 }
