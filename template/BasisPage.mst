@@ -1,0 +1,9 @@
+<h1>{{title}}</h1>
+<p>
+{{name1}}<br/>
+{{name2}}<br/>
+{{street}}<br/>
+{{city}}<br/>
+{{phone}}<br/>
+{{mobil}}
+</p>

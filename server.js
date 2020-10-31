@@ -1,16 +1,18 @@
-const express  = require('express')
-    , proxy    = require('express-http-proxy')
-    , morgan   = require('morgan')
-    , mustache = require('mustache-express')
-    , config   = require("./config.json")
-    , { pouchDB, database } = require("./cmjs/database")
-    , renderer = require("./cmjs/renderer")
+const express    = require('express')
+    , proxy      = require('express-http-proxy')
+    , morgan     = require('morgan')
+    , fs         = require('fs')
+    , path       = require('path')
+    , config     = require("./config.json")
+    , renderer   = require("./cmjs/renderer")
     ;
 
 var app = express();
 
 // log
-app.use(morgan('combined'));
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
+app.use(morgan('combined', { stream: accessLogStream }));
 
 // static files (.i. SAPUI5 frontend, public images, ...)
 const statics = config.static || [];
@@ -24,12 +26,13 @@ for(var p of proxies) {
   app.use(p.mountPath, proxy(p.url));
 }
 
-// mustache
-const engine = mustache(__dirname + config.mustache.localPath + "/partials", ".mst");
-app.engine("mst", engine);
-app.set("view engine", "mst");
-app.set("views", __dirname + config.mustache.localPath);
-app.get(config.mustache.mountPath + ":id", renderer);
+// template engine
+const engine = require(config.engine.module)(config.engine.config);
+app.engine(config.engine.config.extname, engine);
+app.set('view engine', config.engine.config.extname);
+app.set("views", config.engine.config.viewDir); 
+app.enable("view cache");
+app.get(config.engine.mountPath + ":id", renderer);
 
 // express listens 
 const port = config.express.port || "8080";

@@ -11,16 +11,16 @@ pouchDB.defaults({
     adapter: 'memory'
 });
 
-for(var pouchConfig of config.pouchdb) {
+for(var db of config.pouchdb.databases) {
   
-  var localDB = new pouchDB(pouchConfig.name, {adapter: "memory"});
-  database[pouchConfig.name] = localDB;
+  var localDB = new pouchDB(db.name, {adapter: "memory"});
+  database[db.name] = localDB;
 
-  if (pouchConfig.sync) {
-    var remoteDB = new pouchDB(pouchConfig.sync.url, {
+  if (config.pouchdb.sync) {
+    var remoteDB = new pouchDB(config.pouchdb.sync.url + db.name, {
         auth: {
-            username: pouchConfig.sync.username,
-            password: pouchConfig.sync.password
+            username: config.pouchdb.sync.username,
+            password: config.pouchdb.sync.password
         },
         ajax: {
             rejectUnauthorized: false

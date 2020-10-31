@@ -1,0 +1,54 @@
+#AddressList {
+	border:1px dotted #ccc;
+	background:#f0f0f0;
+	padding:10px;
+	margin-top:20px;
+}
+
+#AddressList li {
+	list-style-type: none;
+}
+	#AddressList li.newsDateTitle span {
+		color:#666;
+		line-height:1.7em;
+	}
+	#AddressList li.AddressItem a {
+		/*font-size:1.1em;*/
+		font-weight:bold;
+		color:#183884;
+		text-decoration:none;
+		padding-left:20px;
+		background:url(../images/treeicons/news-file.gif) no-repeat left center;
+	}
+		#AddressList li.AddressItem a:hover {
+			border-bottom:1px dotted #183884;
+		}
+		
+ 	#AddressList span.AddressInfo {
+ 		color:#999;
+ 		margin-left: 20px;
+ 		font-size: 0.8em;
+ 		font-weight: normal;
+  	}
+ 	
+.Address {
+	background:#f0f0f0;
+	border:1px dotted #ccc;
+	padding:10px;
+	margin-top:15px;
+	/* width:495px; */
+}
+	.Address #Prev {
+		margin-top: 0px;
+		float: left;
+		text-align: left;
+		left: 10px;
+	}
+	.Address #Next {
+			margin-top: 0px;
+			right: 10px;
+       	text-align: right;
+		}
+	.Address a {
+		text-decoration: none;
+	}

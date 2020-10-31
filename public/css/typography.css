@@ -1,0 +1,115 @@
+/**
+ * This typography file is included in the WYSIWYG editor
+ */
+.typography * {
+}
+.typography blockquote {
+	margin-left:20px;
+}
+.typography hr {
+	padding:5px;
+}
+.typography p,
+.typography ul li,
+.typography ol li,
+.typography a {
+	color:#333;
+       line-height: 150%;
+}
+.typography p {
+	margin-bottom:20px;
+}
+
+
+/** CMS LIST STYLES **/
+.typography ul,
+.typography ol {
+	margin-top:20px;
+	margin-bottom:20px;
+}
+	.typography ul li,
+	.typography ol li {
+		margin:4px 10px;
+	}
+		.typography ul li {
+		 list-style-type:disc;
+		}
+		.typography ol li {
+			list-style-type:decimal;
+    }
+
+/* HEADER STYLES */
+
+.typography h1,
+.typography h2,
+.typography h3,
+.typography h4 {
+	margin-bottom:8px;
+	color:#183884;
+}
+.typography h1,
+.typography h4 {
+	font-weight:bold;
+}
+.typography h2,
+.typography h3 {
+	font-weight:normal;
+}
+	.typography h1 {
+		font-size:1.5em;
+	}
+	.typography h2 {
+		font-size:1.5em;
+	}
+	.typography h3 {
+		font-size:1.2em;
+	}
+	.typography h4 {
+		font-size:1.2em;
+	}
+
+/* LINK STYLES */
+.typography a {
+	color: #183884;
+	text-decoration:none;
+}
+	.typography a:hover {
+		color: #183884;
+		text-decoration:underline;
+	}
+	.typography a:visited {
+		color: #183884;
+		text-decoration:none;
+	}
+	
+	
+.typography table {
+}
+	.typography table tr td {
+		padding:3px 5px;
+	}
+
+	
+/* WYSIWYG EDITOR ALIGNMENT CLASSES */
+.typography .left {
+	text-align:left;
+}
+.typography .center {
+	text-align:center;
+}
+.typography .right {
+	text-align:right;
+}
+.typography img.right {
+	float:right;
+}
+.typography img.left {
+	float:left;
+}
+
+.typography p {
+	margin-bottom: 6px;
+}
+.typography p.MsoNormal, .typography p.MsoBodyText {
+	margin: 0;
+}

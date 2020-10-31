@@ -1,0 +1,96 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de-de" lang="de-de" dir="ltr" >
+
+	<head>
+        <title>Feiern Sie doch wie und wo Sie wollen !</title>
+        <base href="http://localhost:8080/" />
+        <meta name="google-site-verification" content="Wcoto_fCyc4CqJtt3pC2V7HfX5yL7SiKX_6sVo2i5nw" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link href='https://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700' rel='stylesheet' type='text/css' />
+
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/css/layout.css" />
+        <link rel="stylesheet" type="text/css" href="/css/typography.css" />
+        <link rel="stylesheet" type="text/css" href="/css/form.css" />
+        <link rel="stylesheet" type="text/css" href="/css/datelist.css" />
+        <link rel="stylesheet" type="text/css" href="/css/address.css" />
+    </head>
+
+	<body>
+		<div class="container white">
+
+			<div class="row">
+
+				<div class="col-sm-9 col-xs-12">
+					<img class="header-image" src="/images/Head.jpg" alt="Feste feiern in Bielefeld"/>
+
+					<div class="navbar-inverse visible-xs-block">
+						<div class="navbar-header">
+					      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav" aria-expanded="false">
+					        <span class="sr-only">Toggle navigation</span>
+					        <span class="icon-bar"></span>
+					        <span class="icon-bar"></span>
+					        <span class="icon-bar"></span>
+					      </button>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-3">
+							<nav class="collapse navbar navbar-inverse navbar-collapse" id="nav">
+								<ul class="nav navbar-nav">
+                                    <li class="active"><a href="/13/" title="Gehe zu &quot;Feiern Sie doch wie und wo Sie wollen !&quot;">Willkommen</a></li>
+                                    <li><a href="/7/" title="Gehe zu &quot;Räumlichkeiten&quot;">Räumlichkeiten</a></li>
+                                    <li><a href="/1070/" title="Gehe zu &quot;Helfende Hände&quot;">Helfende Hände</a></li>
+                                    <li><a href="/8/" title="Gehe zu &quot;Kleine und große Köstlichkeiten&quot;">Kleine und große Köstlichkeiten</a></li>
+                                    <li><a href="/9/" title="Gehe zu &quot;Zum Wohle !&quot;">Zum Wohle !</a></li>
+                                    <li><a href="/10/" title="Gehe zu &quot;Dekoration &amp; Ausstattung&quot;">Dekoration &amp; Ausstattung</a></li>
+                                    <li><a href="/11/" title="Gehe zu &quot;Jetzt geht die Party richtig los !&quot;">Jetzt geht die Party richtig los !</a></li>
+                                    <li><a href="/12/" title="Gehe zu &quot;Traumhochzeit&quot;">Traumhochzeit</a></li>
+                                    <li><a href="/6/" title="Gehe zu &quot;Kinder Kinder&quot;">Kinder Kinder</a></li>
+                                    <li><a href="/hier-planen-profis/" title="Gehe zu &quot;Hier planen Profis ...&quot;">Hier planen Profis ...</a></li>
+                                    <li><a href="/ma-h-l-etwas-anderes-2/" title="Gehe zu &quot;Ma(h)l etwas anderes&quot;">Ma(h)l etwas anderes</a></li>
+                                    <li><a href="/teamgeist/" title="Gehe zu &quot;Teamgeist&quot;">Teamgeist</a></li>
+                                    <li><a href="/41/" title="Gehe zu &quot;Mitmachen&quot;">Mitmachen</a></li>
+                                    <li><a href="/22-2/" title="Gehe zu &quot;Impressum&quot;">Impressum</a></li>
+								</ul>
+							</nav>
+						</div>
+						
+						<div class="col-sm-9 col-xs-12 typography">
+
+                            <div class="breadcrumbs">Breadcrumbs</div>
+							
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    {{{body}}}
+                                </div>
+                            </div>
+							<!-- auf dem Smartphone muss die Höhe gesetzt werden -->
+							<div class="hidden-sm fill"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+
+				<div class="col-sm-3 hidden-xs media">
+					<div class="media-right right-bar">
+						<img class="media-object" src="/images/Tisch.jpg" />
+						<img class="media-object" src="/images/Dessert.jpg" />
+						<img class="media-object" src="/images/Tafel.jpg" />
+						<img class="media-object" src="/images/Brautpaar.jpg" />
+						<img class="media-object" src="/images/Kinder.jpg" />
+						<img class="media-object" src="/images/Musik.jpg"/>
+						<img class="media-object" src="/images/Sekt.jpg" />
+						<img class="media-object" src="/images/Geschirr.jpg" />
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script></body>
+</html>
