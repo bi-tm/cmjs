@@ -35,33 +35,33 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
 				columnsM:1,
 				singleContainerFullSize: false			
 			});
-			this.page = new sap.m.Page({
-				title: "{i18n>page}",
-				subHeader: new sap.m.OverflowToolbar({
-					content:  [
-						new sap.m.HBox({
-							items: [
-								new sap.m.Breadcrumbs({ 
-									links: { 
-										model: "view",
-										path: "/breadcrumbs",
-										template: new sap.m.Link({
-											text: "{view>title}", 
-											href: "#/page/{view>_id}"
-										}),
-									},
-									
-								}),
-								new sap.m.Label({text: "{tree>title}", design:"Bold"}),
-							]
-						}),
-						new sap.m.ToolbarSpacer(),
-						new sap.m.Button({icon:"sap-icon://edit", text:"Bearbeiten", type:"Emphasized", visible:"{= ! ${view>/editable} }", press:[controller.onEditPress, controller]}),
-						new sap.m.Button({icon:"sap-icon://accept", text:"Sichern", type:"Accept", visible:"{view>/editable}", press:[controller.onSavePress, controller]}),
-						new sap.m.Button({icon:"sap-icon://decline", text:"Abbrechen", type:"Reject", visible:"{view>/editable}", press:[controller.onCancelPress, controller]})
-					]
-				}),
-				content: [
+			this.page = new sap.m.VBox({
+				visible: "{view>/visible}",
+				items: [ 
+					new sap.m.OverflowToolbar({
+						content:  [
+							new sap.m.HBox({
+								items: [
+									new sap.m.Breadcrumbs({ 
+										links: { 
+											model: "view",
+											path: "/breadcrumbs",
+											template: new sap.m.Link({
+												text: "{view>title}", 
+												href: "#/page/{view>_id}"
+											}),
+										},
+										
+									}),
+									new sap.m.Label({text: "{tree>title}", design:"Bold"}),
+								]
+							}),
+							new sap.m.ToolbarSpacer(),
+							new sap.m.Button({icon:"sap-icon://edit", text:"Bearbeiten", type:"Emphasized", visible:"{= ! ${view>/editable} }", press:[controller.onEditPress, controller]}),
+							new sap.m.Button({icon:"sap-icon://accept", text:"Sichern", type:"Accept", visible:"{view>/editable}", press:[controller.onSavePress, controller]}),
+							new sap.m.Button({icon:"sap-icon://decline", text:"Abbrechen", type:"Reject", visible:"{view>/editable}", press:[controller.onCancelPress, controller]})
+						]
+					}),
 					this.form
 				]
 			});

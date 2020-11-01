@@ -67,57 +67,64 @@
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
 				"viewPath": "cmjs.view",
-				"controlId": "app",
+				"controlId": "pageContainer",
 				"controlAggregation": "pages",
+				"clearAggregation": true,
 				"async": true
 			},
 			"routes": [
 				{
 					"pattern": "",
 					"name": "home",
-					"target": ["tree","empty"]
+					"target": ["empty"]
+				},
+				{
+					"pattern": "pages",
+					"name": "pages",
+					"target": ["pages"]
 				},
 				{
 					"pattern": "page/{_id}",
 					"name": "page",
-					"target": ["tree","page"]
+					"target": ["pages"]
 				},
 				{
 					"pattern": "newpage/{relation}-{relationId}",
 					"name": "newpage",
-					"target": ["tree","page"]
+					"target": ["pages"]
 				},
 				{
 					"pattern": "logon",
 					"name": "logon",
-					"target": ["tree","logon"]
+					"target": ["logon"]
 				}
 			],
 			"targets": {
+				"pages": {
+					"viewName": "Pages",
+					"viewId": "pages",
+					"viewLevel": 1
+				},
 				"tree": {
 					"viewName": "PageTree",
 					"viewId": "tree",
-					"viewLevel": 1,
-					"controlAggregation": "masterPages"
+					"viewLevel": 1
 				},
 				"page": {
 					"viewType": "JS",
 					"viewName": "Page",
 					"viewId": "page",
-					"viewLevel": 1,
-					"controlAggregation": "detailPages"
+					"viewLevel": 1
 				},
 				"logon": {
 					"viewName": "Logon",
 					"viewId": "logon",
-					"viewLevel": 1,
-					"controlAggregation": "detailPages"
+					"viewLevel": 1
 				},
 				"empty": {
 					"viewName": "Empty",
 					"viewId": "empty",
-					"viewLevel": 1,
-					"controlAggregation": "detailPages"
+					"viewLevel": 1
 				}
 			}
 		}

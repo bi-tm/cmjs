@@ -5,15 +5,13 @@
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns:dnd="sap.ui.core.dnd">
 
-	<Page title="Hierarchie">
-		<subHeader>
+	<VBox>
+		<items>
 			<OverflowToolbar>
 				<ToolbarSpacer/>
 				<Button icon="sap-icon://add-document" press=".onNewpagePressed"/>
 				<Button icon="sap-icon://delete" press=".onDeletePressed" enabled="{= ${tree>/selectedId} !== null }"/>
 			</OverflowToolbar>
-		</subHeader>
-		<content>
 			<Tree
 				id="PageTree"
 				busy="{view>/busy}"
@@ -34,6 +32,6 @@
 						selected="{= ${tree>_id} === ${view>/selectedId} }" />
 				</items>
 			</Tree>
-		</content>
-	</Page>
+		</items>
+	</VBox>
 </mvc:View>

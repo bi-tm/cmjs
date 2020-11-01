@@ -14,6 +14,7 @@ sap.ui.define([
 	return BaseController.extend("cmjs.controller.Logon", {
 
 		onInit: function() {
+			BaseController.prototype.onInit.apply(this, arguments);
 			this.getView().setModel(new JSONModel({
 				user:"",
 				password:""

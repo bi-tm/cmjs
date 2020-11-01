@@ -2,10 +2,58 @@
 	controllerName="cmjs.controller.App"
 	displayBlock="true"
 	xmlns="sap.m"
+	xmlns:tnt="sap.tnt"
 	xmlns:mvc="sap.ui.core.mvc">
 	<Shell
 		appWidthLimited="false"
 		title="{i18n>title}">
-		<SplitApp id="app" />
+		<tnt:ToolPage 
+			id="app"
+			sideExpanded="{view>/expanded}">
+			<tnt:header>
+				<tnt:ToolHeader>
+					<Title text="{i18n>title}"/>
+				</tnt:ToolHeader>
+			</tnt:header>
+			<tnt:sideContent>
+				<tnt:SideNavigation
+					selectedKey="{view>/selectedKey}"
+					itemSelect=".onItemSelect">
+					<tnt:item>
+						<tnt:NavigationList>
+							<tnt:NavigationListItem
+								icon="{= ${view>/expanded} ? 'sap-icon://navigation-left-arrow' : 'sap-icon://navigation-right-arrow'}" 
+								select=".onExpandSelect"/>
+							<tnt:NavigationListItem
+								text="{i18n>pages}" 
+								icon="sap-icon://documents" 
+								select=".onPagesSelect"/>
+							<tnt:NavigationListItem
+								text="{i18n>media}" 
+								icon="sap-icon://background" 
+								select=".onMediaSelect"/>							
+						</tnt:NavigationList>
+					</tnt:item>
+					<tnt:fixedItem>
+						<tnt:NavigationList>
+							<tnt:NavigationListItem
+								text="{i18n>Web-Sites}" 
+								icon="sap-icon://internet-browser" 
+								select=".onWebSitesSelect"/>
+							<tnt:NavigationListItem
+								text="{i18n>pageTypes}" 
+								icon="sap-icon://wrench" 
+								select=".onPageTypesSelect"/>
+							<tnt:NavigationListItem 
+								text="{i18n>stettings}" 
+								icon="sap-icon://settings"/>
+						</tnt:NavigationList>
+					</tnt:fixedItem>
+				</tnt:SideNavigation>
+			</tnt:sideContent>
+			<tnt:mainContents>
+			    <NavContainer id="pageContainer"/>
+			</tnt:mainContents>
+		</tnt:ToolPage>
 	</Shell>
 </mvc:View>

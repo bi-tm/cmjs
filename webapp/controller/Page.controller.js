@@ -17,17 +17,32 @@ sap.ui.define([
 	return BaseController.extend("cmjs.controller.Page", {
 
 		onInit: function () {
+			BaseController.prototype.onInit.apply(this, arguments);
 			var oModel = new JSONModel({
 				pageTypes: [],
 				breadcrumbs: [],
 				newPage: false,
 				editable: false,
-				busy: true
+				busy: true,
+				visible:false
 			});
 			this.getView().setModel(oModel,"view");
-			var oRouter = this.getRouter();
-			oRouter.getRoute("page").attachPatternMatched(this._onPageMatched, this);
-			oRouter.getRoute("newpage").attachPatternMatched(this._onNewPageMatched, this);
+			this.getRouter().attachRouteMatched(this._onRouteMatched, this);
+		},
+
+		_onRouteMatched: function(oEvent) {
+			switch(oEvent.getParameter("name")) {
+				case "page":
+					this.getModel("view").setProperty("/visible", true);
+					this._onPageMatched(oEvent);
+					break;
+				case "newpage":
+					this.getModel("view").setProperty("/visible", true);
+					this._onNewPageMatched(oEvent);
+					break;
+				default:
+					this.getModel("view").setProperty("/visible", false);
+			}
 		},
 
 		_onPageMatched: function(oEvent) {

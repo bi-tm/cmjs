@@ -6,7 +6,7 @@ sap.ui.define([
 	return BaseController.extend("cmjs.controller.Empty", {
 
 		onInit: function () {
-
+			BaseController.prototype.onInit.apply(this, arguments);
 		}
 	});
 });

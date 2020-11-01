@@ -10,6 +10,7 @@ framework:
     - name: sap.ui.richtexteditor
     - name: sap.ui.core
     - name: sap.ui.layout
+    - name: sap.tnt
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:

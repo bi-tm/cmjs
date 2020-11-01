@@ -8,6 +8,10 @@ sap.ui.define([
 
 		formatter: formatter,
 
+		onInit: function() {
+			this.getView().addStyleClass("sapUiSizeCompact");
+		},
+
 		getModel: function(name) {
 			return this.getView().getModel(name) ||
 			       this.getOwnerComponent().getModel(name);
