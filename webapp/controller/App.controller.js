@@ -29,7 +29,7 @@ sap.ui.define([
 		},
 
 		onMediaSelect: function(oEvent) {
-			//this.getRouter().navTo("pages");
+			this.getRouter().navTo("media");
 		},
 
 		onWebSitesSelect: function(oEvent) {

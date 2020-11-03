@@ -1,5 +1,6 @@
 const express    = require('express')
     , proxy      = require('express-http-proxy')
+    , emu        = require('express-middleware-upload')
     , morgan     = require('morgan')
     , fs         = require('fs')
     , path       = require('path')
@@ -18,6 +19,12 @@ app.use(morgan('combined', { stream: accessLogStream }));
 const statics = config.static || [];
 for (var s of statics) {
   app.use(s.mountPath, express.static(__dirname + s.localPath));
+}
+
+// uploads
+const uploads = config.uploads || [];
+for(var u of uploads) {
+  app.use(u.mountPath + "/:path?", emu({path: __dirname + u.localPath}));  
 }
 
 // proxies

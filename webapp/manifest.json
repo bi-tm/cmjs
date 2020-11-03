@@ -94,6 +94,11 @@
 					"target": ["pages"]
 				},
 				{
+					"pattern": "media",
+					"name": "media",
+					"target": ["media"]
+				},
+				{
 					"pattern": "logon",
 					"name": "logon",
 					"target": ["logon"]
@@ -114,6 +119,11 @@
 					"viewType": "JS",
 					"viewName": "Page",
 					"viewId": "page",
+					"viewLevel": 1
+				},
+				"media": {
+					"viewName": "Media",
+					"viewId": "media",
 					"viewLevel": 1
 				},
 				"logon": {

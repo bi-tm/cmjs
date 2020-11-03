@@ -1,0 +1,29 @@
+<mvc:View
+	controllerName="cmjs.controller.Media"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:u="sap.m.upload">
+
+	<u:UploadSet
+		id="uploadSet"
+		uploadUrl="/uploads"
+		items="{view>/}" 
+		uploadCompleted=".onUploadCompleted">
+
+		<u:items>
+			<u:UploadSetItem 
+				fileName="{view>name}" 
+				url="/uploads/{view>name}" 
+				mediaType="image/{view>mimeType}" 
+				uploadState="Complete"
+				removePressed=".onRemovePressed" >
+				<u:attributes>
+					<ObjectAttribute text="{view>size} Bytes"/>
+				</u:attributes>
+			</u:UploadSetItem>
+		</u:items>
+
+	</u:UploadSet>
+
+</mvc:View>

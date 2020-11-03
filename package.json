@@ -33,6 +33,7 @@
     "express": "^4.17.1",
     "express-handlebars": "^5.2.0",
     "express-http-proxy": "^1.6.2",
+    "express-middleware-upload": "0.0.4",
     "morgan": "^1.10.0",
     "mustache-express": "^1.3.0",
     "pouchdb": "^7.2.2",
