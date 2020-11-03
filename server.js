@@ -24,7 +24,12 @@ for (var s of statics) {
 // uploads
 const uploads = config.uploads || [];
 for(var u of uploads) {
-  app.use(u.mountPath + "/:path?", emu({path: __dirname + u.localPath}));  
+  app.use(u.mountPath + "/:path?", emu({
+    path: __dirname + u.localPath,
+    postProcess: function(req, res) {
+      debugger;
+    }
+  }));  
 }
 
 // proxies

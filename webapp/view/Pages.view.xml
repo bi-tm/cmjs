@@ -3,9 +3,8 @@
 	displayBlock="true"
 	xmlns="sap.m"
 	xmlns:l="sap.ui.layout"
-    xmlns:mvc="sap.ui.core.mvc"
-	xmlns:dnd="sap.ui.core.dnd">
-
+    xmlns:mvc="sap.ui.core.mvc">
+	
     <NavContainer>
         <pages>
             <l:Splitter

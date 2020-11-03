@@ -48,7 +48,7 @@ sap.ui.define([
                 that.setProperty("/nodes", []);
                 that._readPromise = Database.getPages() //["_id", "title", "parentId"])
                 .then( docs => {
-                    var tree = _buildTree(docs, "0");
+                    var tree = _buildTree(docs);
                     that.setProperty("/nodes", tree);
                     return tree;
                 })
@@ -76,6 +76,23 @@ sap.ui.define([
                 that.setProperty(sPath, oPage);
                 return oPage;
             });
+        },
+
+        /**
+         * instantiate a new page, without saving
+         * @param {string} sPageType _id of pageType
+         */
+        newPage: function(sPageType) {
+            return {
+                _id:         Date.now().toString(),
+                legacyUrl:  "neue-seite",
+                title:      "neue Seite",
+                pageType:   sPageType,
+                showInMenu: true,
+                menuTitle:  null,
+                published:  false,
+                parentId:   null
+            };
         },
 
         /**

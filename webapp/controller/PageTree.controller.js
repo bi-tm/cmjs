@@ -16,7 +16,7 @@ sap.ui.define([
 			});
 			this.getView().setModel(oModel,"view");
 			this._loadTree();
-			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+			var oRouter = this.getRouter();
 			oRouter.getRoute("home").attachPatternMatched(this._onHomeMatched, this);
 			oRouter.getRoute("page").attachPatternMatched(this._onPageMatched, this);
 		},

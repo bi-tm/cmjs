@@ -63,12 +63,7 @@ sap.ui.define([
 			.then(result => {
 				var aPageTypes = result[0];
 				var oRelationPage = oTreeModel.getNode(args.relationId);
-				var oPage = {
-					_id: Date.now().toString(),
-					pageType: aPageTypes[0]._id,
-					title: "neue Seite",
-					legacyUrl: "neue-sSeite"
-				};
+				var oPage = oTreeModel.newPage(aPageTypes[0]._id);
 				oTreeModel.insertIntoTree(oPage, args.relation, oRelationPage);
 				this._showPage(oPage._id);
 			})

@@ -99,6 +99,11 @@
 					"target": ["media"]
 				},
 				{
+					"pattern": "pagetypes",
+					"name": "pagetypes",
+					"target": ["pagetypes"]
+				},
+				{
 					"pattern": "logon",
 					"name": "logon",
 					"target": ["logon"]
@@ -124,6 +129,11 @@
 				"media": {
 					"viewName": "Media",
 					"viewId": "media",
+					"viewLevel": 1
+				},
+				"pagetypes": {
+					"viewName": "PageTypes",
+					"viewId": "pagetypes",
 					"viewLevel": 1
 				},
 				"logon": {

@@ -25,7 +25,7 @@ sap.ui.define([
 		},
 
 		onPageTypesSelect: function(oEvent) {
-			//this.getRouter().navTo("pages");
+			this.getRouter().navTo("pagetypes");
 		},
 
 		onMediaSelect: function(oEvent) {

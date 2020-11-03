@@ -16,30 +16,23 @@ Seitentyp
 
 Images
 ------
-- Wo kommt der Menüpunkt hin?
-- Image hochladen (Thumbnails erzeugen ?)
+- Thumbnails erzeugen
 - Image umbenennen
-- Image löschen
 
 Datenbank
 =========
-- parentID = "0" gegen parentID = null austauschen
-- sort -> numerisch
-- Feld "published" ja/nein
-- Feld "im Menu anzeigen" ja/nein
-- Feld "Menutitel"
+- script to create a new database
 - Import der Hochzeitsmessen - Seiten
-- Kennzeichen: im Menü anzeigen ja/nein
 - User für Administration mit Schreib-Berechtigung
 - User für Frontent ohne Schreib-Berechtigung
 - Datenbank für Counter mit Schreibberechtigung auch fürs Frontend
 
 Frontend
 ========
-- Nicht alle Seiten im Menü anzeigen
-- Hochzeitsmessen - Terminseite
 - Menu 
 - Breadcrumbs
+- Nicht alle Seiten im Menü anzeigen
+- Hochzeitsmessen - Terminseite
 
 Allgemein
 =========

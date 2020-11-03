@@ -1,0 +1,41 @@
+<mvc:View
+	controllerName="cmjs.controller.PageTypes"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:l="sap.ui.layout"
+	xmlns:mvc="sap.ui.core.mvc">
+
+    <l:Splitter
+        id="mainSplitter"
+        height="100%"
+        width="100%">
+        <ScrollContainer>
+            <layoutData>
+                <l:SplitterLayoutData size="300px" />
+            </layoutData>
+            <content>
+                <List 
+                    headerText="{i18n>pageTypes}"
+                    items="{view>/pageTypes}"
+                    mode="SingleSelectMaster">
+                    <items>
+                        <CustomListItem
+                            type="Navigation"
+                            press=".onListItemPress">
+                            <Text text="{view>_id}"/>
+                        </CustomListItem>
+                    </items>
+                </List>
+            </content>
+        </ScrollContainer>
+        <ScrollContainer>
+            <layoutData>
+                <l:SplitterLayoutData size="auto" />
+            </layoutData>
+            <content>
+                
+            </content>
+        </ScrollContainer>
+    </l:Splitter>
+
+</mvc:View>

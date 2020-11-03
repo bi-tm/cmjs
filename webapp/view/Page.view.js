@@ -4,8 +4,10 @@ sap.ui.define([
 	"sap/m/Select",
 	"sap/ui/core/Item",
 	"sap/m/Label", 
-	"sap/m/Input"], 
-function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
+	"sap/m/Input",
+	"sap/m/CheckBox",
+	"sap/m/HBox"], 
+function(SimpleForm, RichTextEditor, Select, Item, Label, Input, CheckBox, HBox) {
 	"use strict";
 
     return sap.ui.jsview("cmjs.view.Page", {  
@@ -21,9 +23,9 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
 			this.form = new SimpleForm({
 				editable: true,
 				layout:"ResponsiveGridLayout",
-				labelSpanXL:1,
-				labelSpanL:1,
-				labelSpanM:2,
+				labelSpanXL:2,
+				labelSpanL:2,
+				labelSpanM:3,
 				labelSpanS:12,
 				adjustLabelSpan: false,
 				emptySpanXL:4,
@@ -76,8 +78,24 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input) {
 
 			parent.destroyContent();
 
+			parent.addContent( new Label({text: "{i18n>published}"}));
+			parent.addContent( new CheckBox({selected: "{tree>published}", editable:"{view>/editable}"}));
 			parent.addContent( new Label({text: "{i18n>legacyUrl}"}));
 			parent.addContent( new Input({value: "{tree>legacyUrl}", editable:"{view>/editable}"}));
+			parent.addContent( new Label({text: "{i18n>title}"}));
+			parent.addContent( new Input({value: "{tree>title}", editable:"{view>/editable}"}));
+			parent.addContent( new Label({text: "{i18n>showInMenu}"}));
+			parent.addContent( new CheckBox({selected: "{tree>showInMenu}", editable:"{view>/editable}"}));
+			parent.addContent( new Input({value: "{tree>menuTitle}", editable:"{= ${view>/editable} && ${tree>showInMenu} }"}));
+			// parent.addContent( new HBox({
+			// 	width: "100%",
+			// 	items: [
+			// 		new CheckBox({selected: "{tree>showInMenu}", editable:"{view>/editable}"}),
+			// 		// new Label({text: "{i18n>menuTitle}"}),
+			// 		new Input({value: "{tree>menuTitle}", editable:"{= ${view>/editable} && ${tree>showInMenu} }", width:"100%"})
+			// 	]
+			// }));
+
 			parent.addContent( new Label({text: "{i18n>pageType}"}));
 			parent.addContent( new Select({
 				required: true, 
