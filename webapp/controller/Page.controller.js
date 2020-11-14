@@ -125,6 +125,38 @@ sap.ui.define([
 			oModel.setProperty("/editable", true);
 		},
 
+		/**
+		 * event handler for deleting page.
+		 * @param {object} oEvent 
+		 */
+		onDeletePress: function(oEvent) {
+			var oModel = this.getModel("view");
+			var oTreeModel = this.getModel("tree");
+			var oContext = this.getView().getBindingContext("tree");
+			var oPage = oContext.getObject();
+			var sPath = oContext.getPath();
+			var oTreeModel = this.getModel("tree");
+			var oArchiv = oTreeModel.getNode("archiv");
+			oTreeModel.removeFromTree(sPath);			
+			var aModified = oTreeModel.insertIntoTree(oPage, "On", oArchiv);
+			oTreeModel.savePages(aModified)
+			.then(function() {
+				this.getRouter().navTo("pages");
+			}.bind(this)) 
+			.catch(function(error) {
+				if(error.status == 401) {
+					this.getRouter().navTo("logon");		
+				}
+				else {
+					MessageBox.show(JSON.stringify(error), {
+						icon: MessageBox.Icon.ERROR,
+						title: "onDeletePressed",
+						actions: [MessageBox.Action.CLOSE]
+					});
+				}
+			}.bind(this));
+		},
+
 		onSavePress: function(oEvent) {
 			var oModel = this.getModel("view");
 			var oTreeModel = this.getModel("tree");

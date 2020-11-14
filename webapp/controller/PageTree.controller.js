@@ -137,36 +137,6 @@ sap.ui.define([
 		},
 
 		/**
-		 * event handler for deleting page.
-		 * @param {object} oEvent 
-		 */
-		onDeletePressed: function(oEvent) {
-			var oSelectedItem = this.getView().byId("PageTree").getSelectedItem();
-			var oContext = oSelectedItem.getBindingContext("tree");
-			var oPage = oContext.getObject();
-			var sPath = oContext.getPath();
-			var oTreeModel = this.getModel("tree");
-			var oArchiv = oTreeModel.getNode("archiv");
-			oTreeModel.removeFromTree(sPath);			
-			var aModified = oTreeModel.insertIntoTree(oPage, "On", oArchiv);
-			oTreeModel.savePages(aModified)
-			.catch(error => {
-				if(error.status == 401) {
-					var oRouter = this.getOwnerComponent().getRouter();
-					oRouter.navTo("logon");		
-				}
-				else {
-					MessageBox.show(JSON.stringify(error), {
-						icon: MessageBox.Icon.ERROR,
-						title: "onDeletePressed",
-						actions: [MessageBox.Action.CLOSE]
-					});
-				}
-			});
-		},
-
-
-		/**
 		 * event handler of popop menu.
 		 * inserts new page before selected tree node.
 		 * @param {object} oEvent 

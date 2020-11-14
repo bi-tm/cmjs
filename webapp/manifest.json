@@ -104,6 +104,11 @@
 					"target": ["pagetypes"]
 				},
 				{
+					"pattern": "pagetype/{_id}",
+					"name": "pagetype",
+					"target": ["pagetypes"]
+				},
+				{
 					"pattern": "logon",
 					"name": "logon",
 					"target": ["logon"]

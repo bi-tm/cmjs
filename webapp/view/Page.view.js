@@ -3,11 +3,12 @@ sap.ui.define([
 	"sap/ui/richtexteditor/RichTextEditor",
 	"sap/m/Select",
 	"sap/ui/core/Item",
+	"sap/m/Button", 
 	"sap/m/Label", 
 	"sap/m/Input",
 	"sap/m/CheckBox",
 	"sap/m/HBox"], 
-function(SimpleForm, RichTextEditor, Select, Item, Label, Input, CheckBox, HBox) {
+function(SimpleForm, RichTextEditor, Select, Item, Button, Label, Input, CheckBox, HBox) {
 	"use strict";
 
     return sap.ui.jsview("cmjs.view.Page", {  
@@ -55,13 +56,14 @@ function(SimpleForm, RichTextEditor, Select, Item, Label, Input, CheckBox, HBox)
 										},
 										
 									}),
-									new sap.m.Label({text: "{tree>title}", design:"Bold"}),
+									new sap.m.Label({text: "{tree>title}", design:"Bold", class:"sapUiSmalllMarginTop"}),
 								]
 							}),
 							new sap.m.ToolbarSpacer(),
-							new sap.m.Button({icon:"sap-icon://edit", text:"Bearbeiten", type:"Emphasized", visible:"{= ! ${view>/editable} }", press:[controller.onEditPress, controller]}),
-							new sap.m.Button({icon:"sap-icon://accept", text:"Sichern", type:"Accept", visible:"{view>/editable}", press:[controller.onSavePress, controller]}),
-							new sap.m.Button({icon:"sap-icon://decline", text:"Abbrechen", type:"Reject", visible:"{view>/editable}", press:[controller.onCancelPress, controller]})
+							new Button({icon:"sap-icon://edit", text:"{i18n>edit}", type:"Emphasized", visible:"{= ! ${view>/editable} }", press:[controller.onEditPress, controller]}),
+							new Button({icon:"sap-icon://delete", text:"{i18n>delete}", type:"Reject", visible:"{= ! ${view>/editable} }", press:[controller.onDeletePress, controller]}),
+							new Button({icon:"sap-icon://accept", text:"{i18n>save}", type:"Accept", visible:"{view>/editable}", press:[controller.onSavePress, controller]}),
+							new Button({icon:"sap-icon://decline", text:"{i18n>cancel}", type:"Reject", visible:"{view>/editable}", press:[controller.onCancelPress, controller]})
 						]
 					}),
 					this.form

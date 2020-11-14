@@ -41,7 +41,7 @@
 					<tnt:fixedItem>
 						<tnt:NavigationList>
 							<tnt:NavigationListItem
-								text="{i18n>Web-Sites}" 
+								text="{i18n>webSites}" 
 								icon="sap-icon://internet-browser" 
 								select=".onWebSitesSelect"/>
 							<tnt:NavigationListItem 

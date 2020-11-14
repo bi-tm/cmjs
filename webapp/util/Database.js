@@ -115,7 +115,15 @@ sap.ui.define([
             return this.getPageTypes(refresh).then(data => {
                 return data.find(t => t._id === _id);
             });
-        }
+        },
+
+        savePageType: function(oPageType) {
+            return ajax({
+                type: "PUT",
+                url: url + "page_types/" + oPageType._id,
+                data: oPageType,                 
+            });
+        },
 
     }
 });

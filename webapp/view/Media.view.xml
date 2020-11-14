@@ -10,7 +10,12 @@
 		uploadUrl="/uploads"
 		items="{view>/}" 
 		uploadCompleted=".onUploadCompleted">
-
+		<u:toolbar>
+			<OverflowToolbar>
+				<Title text="{i18n>media}"/>
+				<ToolbarSpacer/>
+			</OverflowToolbar>
+		</u:toolbar>
 		<u:items>
 			<u:UploadSetItem 
 				fileName="{view>name}" 
