@@ -41,20 +41,12 @@
 						<div class="col-sm-3">
 							<nav class="collapse navbar navbar-inverse navbar-collapse" id="nav">
 								<ul class="nav navbar-nav">
-                                    <li class="active"><a href="/13/" title="Gehe zu &quot;Feiern Sie doch wie und wo Sie wollen !&quot;">Willkommen</a></li>
-                                    <li><a href="/7/" title="Gehe zu &quot;Räumlichkeiten&quot;">Räumlichkeiten</a></li>
-                                    <li><a href="/1070/" title="Gehe zu &quot;Helfende Hände&quot;">Helfende Hände</a></li>
-                                    <li><a href="/8/" title="Gehe zu &quot;Kleine und große Köstlichkeiten&quot;">Kleine und große Köstlichkeiten</a></li>
-                                    <li><a href="/9/" title="Gehe zu &quot;Zum Wohle !&quot;">Zum Wohle !</a></li>
-                                    <li><a href="/10/" title="Gehe zu &quot;Dekoration &amp; Ausstattung&quot;">Dekoration &amp; Ausstattung</a></li>
-                                    <li><a href="/11/" title="Gehe zu &quot;Jetzt geht die Party richtig los !&quot;">Jetzt geht die Party richtig los !</a></li>
-                                    <li><a href="/12/" title="Gehe zu &quot;Traumhochzeit&quot;">Traumhochzeit</a></li>
-                                    <li><a href="/6/" title="Gehe zu &quot;Kinder Kinder&quot;">Kinder Kinder</a></li>
-                                    <li><a href="/hier-planen-profis/" title="Gehe zu &quot;Hier planen Profis ...&quot;">Hier planen Profis ...</a></li>
-                                    <li><a href="/ma-h-l-etwas-anderes-2/" title="Gehe zu &quot;Ma(h)l etwas anderes&quot;">Ma(h)l etwas anderes</a></li>
-                                    <li><a href="/teamgeist/" title="Gehe zu &quot;Teamgeist&quot;">Teamgeist</a></li>
-                                    <li><a href="/41/" title="Gehe zu &quot;Mitmachen&quot;">Mitmachen</a></li>
-                                    <li><a href="/22-2/" title="Gehe zu &quot;Impressum&quot;">Impressum</a></li>
+									{{#menu}}
+										{{#active}}<li class="active">{{/active}}
+										{{^active}}<li>{{/active}}
+											<a href="/{{_id}}">{{menuTitle}}</a>
+										</li>
+									{{/menu}}
 								</ul>
 							</nav>
 						</div>

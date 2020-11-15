@@ -1,2 +1,16 @@
 <h1>{{title}}</h1>
 {{{text}}}
+<ul class="row frame">
+    {{#children}}    
+        <div class="row">
+            <div class="col-xs-offset-1 col-xs-7">
+                <li><a href="/{{_id}}">{{title}}</a></li>
+            </div>
+            <!--
+            <div class="col-xs-4 text-right small">
+                (?? Einträge)
+            </div>
+            -->
+        </div>		
+    {{/children}}    		
+</ul>

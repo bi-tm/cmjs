@@ -9,7 +9,6 @@ Seiten
 
 Seitentyp
 ---------
-- Wo kommt der Menüunkt hin?
 - Seitentyp anlegen
 - Seitentyp ändern
 - Seitentyp löschen
@@ -29,10 +28,9 @@ Datenbank
 
 Frontend
 ========
-- Menu 
 - Breadcrumbs
-- Nicht alle Seiten im Menü anzeigen
 - Hochzeitsmessen - Terminseite
+- Navigation nächster Eintrag - vorheriger Eintrag
 
 Allgemein
 =========
