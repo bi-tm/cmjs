@@ -14,7 +14,18 @@ sap.ui.define([
 				busy: false,
 				showPageType: false,
 				editable: false,
-                pageTypes: []
+				pageTypes: [],
+				fieldTypes: [ 
+					{key:"Text", name:"Text"},
+					{key:"Email", name:"Email"},
+					{key:"URL", name:"URL"},
+					{key:"RichText", name:"RichText"},
+					{key:"Number", name:"Number"},
+					{key:"Date", name:"Date"},
+					{key:"Time", name:"Time"},
+					{key:"DateTime", name:"DateTime"},
+					{key:"Boolean", name:"Boolean"}
+				]
             }),"view");
 			var oRouter = this.getRouter();
 			oRouter.getRoute("pagetypes").attachPatternMatched(this._onPagetypesMatched, this);
@@ -92,10 +103,28 @@ sap.ui.define([
 			oModel.setProperty("/editable", true);
 		},
 
+		/**
+		 * handle field delete button press
+		 * @param {object} oEvenet 
+		 */
+		onFieldDelete: function(oEvenet) {
+
+		},
+
+		/**
+		 * handle delete buttoen press
+		 * checks if page type is still used in any page
+		 * show confirmation popup and delete page type
+		 * @param {object} oEvent 
+		 */
 		onDeletePress: function(oEvent) {
 			// ToDo
 		},
 
+		/**
+		 * 
+		 * @param {object} oEvent 
+		 */
 		onSavePress: function(oEvent) {
 			var oViewModel = this.getModel("view");
 			oViewModel.setProperty("/editable", false);
@@ -108,6 +137,11 @@ sap.ui.define([
 			}.bind(this));
 		},
 
+		/**
+		 * handle cancel button press
+		 * reload page types form database to undo changes
+		 * @param {*} oEvent 
+		 */
 		onCancelPress: function(oEvent) {
 			this.getModel("view").setProperty("/editable", false);
 			this._loadPageTypes(true);

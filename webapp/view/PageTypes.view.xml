@@ -4,6 +4,8 @@
 	xmlns="sap.m"
 	xmlns:l="sap.ui.layout"
     xmlns:f="sap.ui.layout.form"
+    xmlns:t="sap.ui.table"
+    xmlns:core="sap.ui.core"
 	xmlns:mvc="sap.ui.core.mvc">
 
     <l:Splitter
@@ -41,16 +43,17 @@
             </layoutData>            
             <content>
                 <f:SimpleForm
+                    layout="ResponsiveGridLayout"
                     columnsL="1"
                     columnsM="1"
                     columnsXL="1"
                     editable="true"
-                    emptySpanXL="4"
+                    emptySpanXL="6"
                     emptySpanL="4"
                     emptySpanM="0"
                     emptySpanS="0"
                     labelSpanXL="1"
-                    labelSpanL="1"
+                    labelSpanL="2"
                     labelSpanM="2"
                     labelSpanS="12">
                     <f:toolbar>
@@ -68,23 +71,38 @@
                         <Input value="{view>_id}" editable="false"/>
                     </f:content>
                 </f:SimpleForm>
-                <Table 
-                    items="{view>fields}">
-                    <columns>
-                        <Column><Text text="Feld"/></Column>
-                        <Column><Text text="Label"/></Column>
-                        <Column><Text text="Typ"/></Column>
-                    </columns>
-                    <items>
-                        <ColumnListItem>
-                            <cells>
+                <t:Table 
+                    visibleRowCountMode="Auto"
+                    selectionMode="None"
+                    rows="{view>fields}">
+                    <t:columns>
+                        <t:Column width="20em">
+                            <Label text="Feld"/>
+                            <t:template>
                                 <Input value="{view>id}" editable="{view>/editable}"/>
+                            </t:template>
+                        </t:Column>
+                        <t:Column width="20em">
+                            <Label text="Label"/>
+                            <t:template>
                                 <Input value="{view>label}" editable="{view>/editable}"/>
-                                <Input value="{view>fieldType}" editable="{view>/editable}"/>
-                            </cells>
-                        </ColumnListItem>
-                    </items>
-                </Table>
+                            </t:template>
+                        </t:Column>
+                        <t:Column width="8em">
+                            <Label text="Typ"/>
+                            <t:template>
+                                <Select selectedKey="{view>fieldType}" items="{view>/fieldTypes}" editable="{view>/editable}">
+                                    <core:Item key="{view>key}" text="{view>name}" />
+                                </Select>
+                            </t:template>
+                        </t:Column>
+                        <t:Column>
+                            <t:template>
+                                <Button icon="sap-icon://delete" type="Transparent" press=".onFieldDelete"  enabled="{view>/editable}"/>
+                            </t:template>
+                        </t:Column>
+                    </t:columns>
+                </t:Table>
             </content>
         </ScrollContainer>
     </l:Splitter>

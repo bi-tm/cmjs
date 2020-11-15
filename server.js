@@ -44,7 +44,7 @@ app.engine(config.engine.config.extname, engine);
 app.set('view engine', config.engine.config.extname);
 app.set("views", config.engine.config.viewDir); 
 app.enable("view cache");
-app.get(config.engine.mountPath + ":id", renderer);
+app.get(config.engine.mountPath + ":id?", renderer);
 
 // express listens 
 const port = config.express.port || "8080";
