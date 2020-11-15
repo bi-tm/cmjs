@@ -108,7 +108,7 @@ sap.ui.define([
 		 * @param {object} oEvenet 
 		 */
 		onFieldDelete: function(oEvenet) {
-
+			
 		},
 
 		/**
