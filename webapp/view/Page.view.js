@@ -127,6 +127,7 @@ function(SimpleForm, RichTextEditor, Select, Item, Button, Label, Input, CheckBo
 
 						case 'RichText':
 							var oRichTextEditor = new RichTextEditor( {
+								id: "editor",
 								value: "{tree>text}",
 								editable:"{view>/editable}",
 								editorType: sap.ui.richtexteditor.EditorType.TinyMCE4,
@@ -140,7 +141,8 @@ function(SimpleForm, RichTextEditor, Select, Item, Button, Label, Input, CheckBo
 							oRichTextEditor.attachBeforeEditorInit(function(oEvent) {
 								var oConfig = oEvent.getParameter('configuration');
 								oConfig.plugins = oConfig.plugins.replace(/,?powerpaste/, "");
-							});
+								oConfig.image_list = this._load_image_list();
+							}.bind(this));
 							parent.addContent( oRichTextEditor );
 							break;
 
@@ -149,6 +151,29 @@ function(SimpleForm, RichTextEditor, Select, Item, Button, Label, Input, CheckBo
 					}
 				});	
 			};
-		}
+		},
+
+		/**
+		 * load list of images synchronously
+		 */
+		_load_image_list: function() {
+			var result = [];
+			jQuery.ajax(
+				"/uploads", 
+				{
+					async: false,
+					success: function(data, textStatus, jqXHR) {
+						result = data.map(function(img){ 
+							return {title: img.name, value:`/uploads/${img.name}`};
+						});
+					}.bind(this),
+					error: function(jqXHR, textStatus,errorThrown ) {
+						console.error("_load_image_list error " + errorThrown);
+					}
+				}
+			);
+			return result;
+		},
+
 	});
 });

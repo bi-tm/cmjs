@@ -12,6 +12,7 @@ Seitentyp
 - Seitentyp anlegen
 - Seitentyp ändern
 - Seitentyp löschen
+- Seitentyp "Link" ?
 
 Images
 ------

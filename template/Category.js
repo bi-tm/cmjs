@@ -10,7 +10,7 @@ module.exports = {
      */
     init: function(content) {
         return database.pages.find({
-            selector: { parentId: content._id },
+            selector: { parentId: content._id, published:true },
             fields: ["_id","title"],
             sort: ['parentId', 'sort']
         })

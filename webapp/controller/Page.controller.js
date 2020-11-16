@@ -30,6 +30,18 @@ sap.ui.define([
 			this.getRouter().attachRouteMatched(this._onRouteMatched, this);
 		},
 
+		/**
+		 * dom was rendered
+		 * init tinymce richtext editor
+		 */
+		afterRendering: function(oEvent) {
+			
+		},
+
+		/**
+		 * route matched
+		 * @param {*} oEvent 
+		 */
 		_onRouteMatched: function(oEvent) {
 			switch(oEvent.getParameter("name")) {
 				case "page":
@@ -45,6 +57,10 @@ sap.ui.define([
 			}
 		},
 
+		/**
+		 * route "page" matched
+		 * @param {*} oEvent 
+		 */
 		_onPageMatched: function(oEvent) {
 			var _id = oEvent.getParameter("arguments")._id;
 			var oModel = this.getModel("view");
@@ -53,6 +69,10 @@ sap.ui.define([
 			this._showPage(_id);
 		},
 
+		/**
+		 * route "newpage" matched
+		 * @param {*} oEvent 
+		 */
 		_onNewPageMatched: function(oEvent) {
 			var args = oEvent.getParameter("arguments");
 			var oModel = this.getModel("view");
