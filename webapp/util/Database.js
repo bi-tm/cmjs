@@ -120,10 +120,16 @@ sap.ui.define([
         savePageType: function(oPageType) {
             return ajax({
                 type: "PUT",
-                url: url + "page_types/" + oPageType._id,
+                url: `${url}page_types/${oPageType._id}`,
                 data: oPageType,                 
             });
         },
 
+        deletePageType: function(oPageType) {
+            return ajax({
+                type: "DELETE",
+                url: `${url}page_types/${oPageType._id}?rev=${oPageType._rev}`
+            });
+        },
     }
 });

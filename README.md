@@ -3,16 +3,14 @@ CMS Administration
 
 Seiten
 ------
-- Zugriff auf importierte Images im Texteditor
 - Seite mit Versionsverwaltung ?
 - Seite erst privat ändern, dann publizieren ?
+- Zugriff auf importierte Images im Texteditor schöner machen
 
 Seitentyp
 ---------
-- Seitentyp anlegen
-- Seitentyp ändern
-- Seitentyp löschen
 - Seitentyp "Link" ?
+- Fehler beim Speichern
 
 Images
 ------
@@ -21,8 +19,9 @@ Images
 
 Datenbank
 =========
-- script to create a new database
+- Script zum Anlegen einer Datenbank
 - Import der Hochzeitsmessen - Seiten
+- Datenbank auf NeDB umstellen ?
 - User für Administration mit Schreib-Berechtigung
 - User für Frontent ohne Schreib-Berechtigung
 - Datenbank für Counter mit Schreibberechtigung auch fürs Frontend
@@ -35,11 +34,14 @@ Frontend
 
 Allgemein
 =========
+- Berechtigung
+  - Schutz des upload Verzeichnisses
 - Mehrere Homepages (feste-feiern-in-guetersloh, ...) -> Layout setzen
 - Seite in mehrere Kategorien (wie machen wir das?)
 - Preview
 - Deployment
 - Backup
+- alternative URL
 
 Feste-feiern-in-Bielefeld
 =========================

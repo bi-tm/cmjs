@@ -13,6 +13,7 @@ sap.ui.define([
             this.getView().setModel(new JSONModel({
 				busy: false,
 				showPageType: false,
+				new: false,
 				editable: false,
 				pageTypes: [],
 				fieldTypes: [ 
@@ -40,6 +41,7 @@ sap.ui.define([
         _onPagetypesMatched: function(oEvent) {
 			var oViewModel = this.getModel("view");
 			oViewModel.setProperty("/editable", false);
+			oViewModel.setProperty("/new", false);
 			oViewModel.setProperty("/showPageType", false);
 			this._loadPageTypes();
         },
@@ -53,11 +55,22 @@ sap.ui.define([
 			var oViewModel = this.getModel("view");
 			var selectedId = oEvent.getParameter("arguments")._id;
 			oViewModel.setProperty("/editable", false);
+			oViewModel.setProperty("/new", false);
 			oViewModel.setProperty("/showPageType", false);
 			this._loadPageTypes()
-			.then(function() {
-				var aPageTypes = oViewModel.getProperty("/pageTypes");
-				var index = aPageTypes.findIndex(p => p._id === selectedId);
+			.then(function(aPageTypes) {
+				if (selectedId === "$new") {
+					// add new page
+					oViewModel.setProperty("/new", true);
+					oViewModel.setProperty("/editable", true);
+					aPageTypes.push({_id:"neu", fields:[]});
+					var index = aPageTypes.length - 1;
+					// set focus
+					setTimeout(function(){ this.getView().byId("_id").focus(); }.bind(this), 400);					
+				}
+				else {
+					var index = aPageTypes.findIndex(p => p._id === selectedId);
+				}
 				var oContext = new sap.ui.model.Context(oViewModel, `/pageTypes/${index}`);
 				this.getView().byId("page").setBindingContext(oContext, "view");
 				oViewModel.setProperty("/showPageType", true);
@@ -72,6 +85,7 @@ sap.ui.define([
 			return Database.getPageTypes(refresh)
 					.then(function(result){
 						this.getModel("view").setProperty("/pageTypes", result);
+						return Promise.resolve(result);
 					}.bind(this))
 					.catch(function(error) {
 						if(error.status == 401) {
@@ -98,27 +112,63 @@ sap.ui.define([
 			this.getRouter().navTo("pagetype", {_id: oContext.getProperty("_id")});
 		},
 		
+		/**
+		 * user pressed button for new page type
+		 * @param {object} oEvent 
+		 */
+		onNewpagePressed: function(oEvent) {
+			this.getRouter().navTo("pagetype", {_id: "$new"});
+		},
+
 		onEditPress: function(oEvent) {
 			var oModel = this.getModel("view");			
 			oModel.setProperty("/editable", true);
 		},
 
 		/**
-		 * handle field delete button press
-		 * @param {object} oEvenet 
-		 */
-		onFieldDelete: function(oEvenet) {
-			
-		},
-
-		/**
-		 * handle delete buttoen press
-		 * checks if page type is still used in any page
+		 * handle delete button press
 		 * show confirmation popup and delete page type
 		 * @param {object} oEvent 
 		 */
 		onDeletePress: function(oEvent) {
-			// ToDo
+			// ToDo: checks if page type is still used in any page
+			MessageBox.show(
+				"Möchten Sie den Seitentyp löschen?", 
+				{
+					icon: MessageBox.Icon.QUESTION,
+					title: "Seitentyp löschen",
+					actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+					emphasizedAction: MessageBox.Action.CANCEL,
+					onClose: function (oAction) { 
+						if (oAction === MessageBox.Action.OK) {
+							var oViewModel = this.getModel("view");
+							var aPageTypes = oViewModel.getProperty("/pageTypes");
+							var oContext = this.getView().byId("page").getBindingContext("view");
+							var oPageType = oContext.getObject();
+							Database.deletePageType(oPageType);
+							var index = aPageTypes.findIndex(p => p._id === oPageType._id);
+							aPageTypes.splice(index,1);
+							oViewModel.setProperty("/pageTypes", aPageTypes);
+							this.getRouter().navTo("pagetypes");
+						}
+					}.bind(this)
+				}
+			)
+		},
+
+
+		/**
+		 * handle field delete button press
+		 * @param {object} oEvenet 
+		 */
+		onFieldDelete: function(oEvent) {
+			var oViewModel = this.getModel("view");
+			var sPath = this.getView().byId("page").getBindingContext("view").getPath();
+			var oPageType = oViewModel.getProperty(sPath); 
+			var oField = oEvent.getSource().getBindingContext("view").getObject();
+			var index = oPageType.fields.findIndex(f => f.id === oField.id);
+			oPageType.fields.splice(index,1);
+			oViewModel.setProperty(sPath, oPageType);
 		},
 
 		/**
@@ -133,7 +183,7 @@ sap.ui.define([
 			var oPageType = oContext.getObject();
 			Database.savePageType(oPageType)
 			.then(function(oResult){
-				oViewModel.setProperty(sPath, oResult);
+				oViewModel.setProperty(sPath, oResult);				
 			}.bind(this));
 		},
 
