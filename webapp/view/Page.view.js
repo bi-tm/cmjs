@@ -7,8 +7,8 @@ sap.ui.define([
 	"sap/m/Input",
 	"sap/m/CheckBox",
 	"sap/m/HBox", 
-	"cmjs/richtexteditor/RichTextEditor"],
-function(SimpleForm, Select, Item, Button, Label, Input, CheckBox, HBox, RichTextEditor) {
+	"cmjs/editor/Editor"],
+function(SimpleForm, Select, Item, Button, Label, Input, CheckBox, HBox, Editor) {
 	"use strict";
 
     return sap.ui.jsview("cmjs.view.Page", {  
@@ -56,7 +56,7 @@ function(SimpleForm, Select, Item, Button, Label, Input, CheckBox, HBox, RichTex
 										},
 										
 									}),
-									new sap.m.Label({text: "{tree>title}", design:"Bold", class:"sapUiSmalllMarginTop"}),
+									new sap.m.Label({text: "{tree>title}", design:"Bold"}),
 								]
 							}),
 							new sap.m.ToolbarSpacer(),
@@ -126,7 +126,7 @@ function(SimpleForm, Select, Item, Button, Label, Input, CheckBox, HBox, RichTex
 							break;
 
 						case 'RichText':
-							var oRichTextEditor = new RichTextEditor( {
+							var oEditor = new Editor( {
 								id: "editor",
 								value: "{tree>text}",
 								editable:"{view>/editable}",
@@ -137,12 +137,12 @@ function(SimpleForm, Select, Item, Button, Label, Input, CheckBox, HBox, RichTex
 								showGroupUndo: true,
 								showGroupInsert: true
 							});
-							oRichTextEditor.attachBeforeEditorInit(function(oEvent) {
+							oEditor.attachBeforeEditorInit(function(oEvent) {
 								var oConfig = oEvent.getParameter('configuration');
 								oConfig.plugins = oConfig.plugins.replace(/,?powerpaste/, "");
 								oConfig.image_list = this._load_image_list();
 							}.bind(this));
-							parent.addContent( oRichTextEditor );
+							parent.addContent( oEditor );
 							break;
 
 						default:

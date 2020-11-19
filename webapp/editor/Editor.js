@@ -1,9 +1,16 @@
-/*!
- * SAPUI5
-
-(c) Copyright 2009-2020 SAP SE. All rights reserved
- */
-sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/ResizeHandler', './library', "sap/ui/core/RenderManager", "sap/ui/dom/includeScript", "sap/base/Log", "sap/base/security/sanitizeHTML", "sap/ui/events/KeyCodes", "sap/base/security/encodeXML", "sap/ui/Device", "sap/ui/core/Core", "./RichTextEditorRenderer", "sap/ui/dom/jquery/Selectors", "sap/ui/dom/jquery/control"], function (q, C, R, l, a, b, L, s, K, e, D, c) {
+sap.ui.define([
+    "sap/ui/thirdparty/jquery", 
+    'sap/ui/core/Control', 
+    'sap/ui/core/ResizeHandler', 
+    "sap/ui/dom/includeScript", 
+    "sap/base/Log", 
+    "sap/base/security/sanitizeHTML", 
+    "sap/ui/events/KeyCodes", 
+    "sap/ui/Device", 
+    "sap/ui/core/Core", 
+    "sap/ui/dom/jquery/Selectors", 
+    "sap/ui/dom/jquery/control"], 
+    function (q, C, R, b, L, s, K, D, c) {
     "use strict";
     var E = {
         Initial: "Initial",
@@ -13,82 +20,13 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
         Ready: "Ready",
         Destroyed: "Destroyed"
     };
-    /**
-     * Constructor for a new RichTextEditor.
-     *
-     *
-     * @param {string} [sId] ID for the new control, generated automatically if no ID is given
-     * @param {object} [mSettings] Initial settings for the new control
-     *
-     * @class
-     *
-     * The RichTextEditor-Control is used to enter formatted text. It uses the third-party component called TinyMCE.
-     * In addition to the native toolbar, you can also use a toolbar built with SAPUI5 controls.
-     * <h3>Overview</h3>
-     *
-     * With version 1.48 onward, aside from the native toolbar of the TinyMCE, the <code>RichTextEditor</code> can also use a
-     * toolbar built with SAPUI5 controls. Which toolbar is used is taken into consideration only while the
-     * control is being initialized and it will not be possible to change it during runtime, because of
-     * lifecycle incompatibilities between the SAPUI5 and the third-party library.
-     * The custom toolbar acts like a wrapper to the native toolbar and takes care of
-     * synchronizing the state of its internal controls with the current state of the selection in the editor
-     * (bold, italics, font styles etc.).
-     *
-     * <h4>Limitations</h4>
-     *
-     * <b>Note: The <code>RichTextEditor</code> uses a third-party component and therefore
-     * some additional limitations apply for its proper usage and support.
-     * For more information see the Preamble section in {@link topic:d4f3f1598373452bb73f2120930c133c sap.ui.richtexteditor}.
-     * </b>
-     *
-     * <h3>Guidelines</h3>
-     * <ul>
-     * <li> The <code>RichTextEditor</code> should be used for desktop apps only. However, if it is essential for your use case, you can enable the mobile version of TinyMCE, whilst having in mind the limitations. For more information see the {@link topic:d4f3f1598373452bb73f2120930c133c sap.ui.richtexteditor documentation}.</li>
-     * <li> In order to be usable, the control needs a minimum width 17.5 rem and height of 12.5 rem.</li>
-     * <li> Do not instantiate the <code>RichTextEditor</code> from a hidden container.</li>
-     * <li> Make sure you destroy the <code>RichTextEditor</code> instance instead of hiding it and create a new one when you show it again.</li>
-     * </ul>
-     *
-     * <h3>Usage</h3>
-     *
-     * <h4>When to use</h4>
-     * <ul>
-     * <li>You want to enable users to enter text and other elements (tables, images) with different styles and colors.</li>
-     * <li>You need to provide a tool for texts that require additional formatting.</li>
-     * </ul>
-     *
-     * <h4> When not to use</h4>
-     * <ul>
-     * <li>You want to let users add simple text that doesn’t require formatting. Use {@link sap.m.TextArea text area} instead.</li>
-     * <li>Use callbacks to the native third-party API with care, as there may be compatibility issues with later versions.</li>
-     * </ul>
-     *
-     * @extends sap.ui.core.Control
-     *
-     * @author SAP SE
-     *
-     * @constructor
-     * @public
-     * @disclaimer Since version 1.6.0.
-     * The RichTextEditor of SAPUI5 contains a third party component TinyMCE provided by Moxiecode Systems AB. The SAP license agreement covers the development of applications with RichTextEditor of SAPUI5 (as of May 2014).
-     * @alias sap.ui.richtexteditor.RichTextEditor
-     * @see {@link fiori:https://experience.sap.com/fiori-design-web/rich-text-editor/ Rich Text Editor}
-     * @see {@link topic:d4f3f1598373452bb73f2120930c133c}
-     * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
-     */
-    var d = C.extend("sap.ui.richtexteditor.RichTextEditor", {
+    var d = C.extend("cmjs.editor.Editor", {
         metadata: {
-            library: "sap.ui.richtexteditor",
             properties: {
                 value: {
                     type: "string",
                     group: "Data",
                     defaultValue: ''
-                },
-                textDirection: {
-                    type: "sap.ui.core.TextDirection",
-                    group: "Appearance",
-                    defaultValue: sap.ui.core.TextDirection.Inherit
                 },
                 width: {
                     type: "sap.ui.core.CSSSize",
@@ -99,17 +37,6 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
                     type: "sap.ui.core.CSSSize",
                     group: "Dimension",
                     defaultValue: null
-                },
-                editorType: {
-                    type: "string",
-                    group: "Misc",
-                    defaultValue: 'TinyMCE4'
-                },
-                editorLocation: {
-                    type: "string",
-                    group: "Misc",
-                    defaultValue: 'js/tiny_mce4/tinymce.js',
-                    deprecated: true
                 },
                 editable: {
                     type: "boolean",
@@ -208,141 +135,82 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
                     singularName: "ariaLabelledBy"
                 }
             }
+        },
+        renderer: function (r, o) {
+            r.openStart('div', o);
+            r.style('width', o.getWidth());
+            r.style('height', o.getHeight());
+            if (o.getTooltip_AsString()) {
+              r.attr('title', o.getTooltip_AsString());
+            }
+            r.accessibilityState(o, {
+              role: 'region',
+              label: 'Rich-Text-Editor',
+              labelledby: null
+            });
+            r.openEnd();
+            r.close('div');
         }
     });
     d._lastId = 0;
     d._iCountInstances = 0;
-    d.BUTTON_GROUPS = l.ButtonGroups;
-    d.EDITORTYPE_TINYMCE4 = l.EditorType.TinyMCE4;
-    d.EDITORLOCATION_TINYMCE4 = "js/tiny_mce4/tinymce.min.js";
-    if (c.getConfiguration().getDebug()) {
-        d.EDITORLOCATION_TINYMCE4 = "js/tiny_mce4/tinymce.js";
-    }
-    d.MAPPED_LANGUAGES_TINYMCE4 = {
-        "sh": "sr",
-        "ji": "yi",
-        "in": "id",
-        "iw": "he",
-        "no": "nb"
+    d.BUTTON_GROUPS = {
+    'font-style': [
+        'Bold',
+        'Italic',
+        'Underline',
+        'Strikethrough'
+    ],
+    'text-align': [
+        'TextAlign'
+    ],
+    'formatselect': [
+        'FormatBlock'
+    ],
+    'font': [
+        'FontFamily',
+        'FontSize',
+        'TextColor',
+        'BackgroundColor'
+    ],
+    'structure': [
+        'UnorderedList',
+        'OrderedList',
+        'Outdent',
+        'Indent'
+    ],
+    'link': [
+        'InsertLink',
+        'Unlink'
+    ],
+    'insert': [
+        'InsertImage'
+    ],
+    'undo': [
+        'Undo',
+        'Redo'
+    ],
+    'clipboard': [
+        'Cut',
+        'Copy',
+        'Paste'
+    ],
+    'custom': [
+    ]
     };
-    d.SUPPORTED_LANGUAGES_TINYMCE4 = {
-        "en": true,
-        "ar": true,
-        "ar_SA": true,
-        "hy": true,
-        "az": true,
-        "eu": true,
-        "be": true,
-        "bn_BD": true,
-        "bs": true,
-        "bg_BG": true,
-        "ca": true,
-        "zh_CN": true,
-        "zh_TW": true,
-        "hr": true,
-        "cs": true,
-        "da": true,
-        "dv": true,
-        "nl": true,
-        "en_CA": true,
-        "en_GB": true,
-        "et": true,
-        "fo": true,
-        "fi": true,
-        "fr_FR": true,
-        "gd": true,
-        "gl": true,
-        "ka_GE": true,
-        "de": true,
-        "de_AT": true,
-        "el": true,
-        "he_IL": true,
-        "hi_IN": true,
-        "hu_HU": true,
-        "is_IS": true,
-        "id": true,
-        "it": true,
-        "ja": true,
-        "kk": true,
-        "km_KH": true,
-        "ko_KR": true,
-        "ku": true,
-        "ku_IQ": true,
-        "lv": true,
-        "lt": true,
-        "lb": true,
-        "ml": true,
-        "ml_IN": true,
-        "mn_MN": true,
-        "nb_NO": true,
-        "fa": true,
-        "fa_IR": true,
-        "pl": true,
-        "pt_BR": true,
-        "pt_PT": true,
-        "ro": true,
-        "ru": true,
-        "ru@petr1708": true,
-        "sr": true,
-        "si_LK": true,
-        "sk": true,
-        "sl_SI": true,
-        "es": true,
-        "es_MX": true,
-        "sv_SE": true,
-        "tg": true,
-        "ta": true,
-        "ta_IN": true,
-        "tt": true,
-        "th_TH": true,
-        "tr_TR": true,
-        "ug": true,
-        "uk": true,
-        "uk_UA": true,
-        "vi": true,
-        "vi_VN": true,
-        "cy": true
-    };
-    d.SUPPORTED_LANGUAGES_DEFAULT_REGIONS = {
-        "zh": "CN",
-        "fr": "FR",
-        "bn": "BD",
-        "bg": "BG",
-        "ka": "GE",
-        "he": "IL",
-        "hi": "IN",
-        "hu": "HU",
-        "is": "IS",
-        "km": "KH",
-        "ko": "KR",
-        "ku": "IQ",
-        "ml": "IN",
-        "mn": "MN",
-        "nb": "NO",
-        "pt": "PT",
-        "si": "SI",
-        "sl": "SI",
-        "sv": "SE",
-        "th": "TH",
-        "tr": "TR",
-        "vi": "VN"
-    };
-    d.pLoadTinyMCE = null;
-    d.loadTinyMCE = function (f) {
-        if (f) {
-            var r = sap.ui.resource('sap.ui.richtexteditor', f),
-            S = document.querySelector("#sapui5-tinyMCE"),
-            g = S ? S.getAttribute("src") : "";
-            if (r !== g && d._iCountInstances === 1) {
-                delete window.tinymce;
-                delete window.TinyMCE;
-                d.pLoadTinyMCE = null;
-            }
-            if (!d.pLoadTinyMCE) {
-                d.pLoadTinyMCE = new Promise(function (h, i) {
-                    b(r, "sapui5-tinyMCE", h, i);
-                });
-            }
+    d.loadTinyMCE = function () {
+        var r = sap.ui.resource('cmjs/editor/tinymce', 'tinymce.min.js'),
+        S = document.querySelector("#cmjs-editor"),
+        g = S ? S.getAttribute("src") : "";
+        if (r !== g && d._iCountInstances === 1) {
+            delete window.tinymce;
+            delete window.TinyMCE;
+            d.pLoadTinyMCE = null;
+        }
+        if (!d.pLoadTinyMCE) {
+            d.pLoadTinyMCE = new Promise(function (h, i) {
+                b(r, "cmjs-editor", h, i);
+            });
         }
         return d.pLoadTinyMCE;
     };
@@ -356,29 +224,54 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
         this._textAreaDom.id = this._textAreaId;
         this._textAreaDom.style.height = "100%";
         this._textAreaDom.style.width = "100%";
-        this.setEditorType(l.EditorType.TinyMCE4);
         this._setupToolbar();
     };
     d.prototype.onBeforeRendering = function () {
-        if (this.isPropertyInitial("editorType")) {
-            L.warning("editorType property is automatically set to TinyMCE 4, because of the removal of TinyMCE 3");
+        if (!window.tinymce || window.tinymce.majorVersion != "4") {
+            this._TinyMCEStatus = E.Loading;
+            this._pTinyMCELoaded = d.loadTinyMCE().then(function () {
+                this._TinyMCEStatus = E.Loaded;
+            }
+                    .bind(this));
+        } else {
+            this._pTinyMCELoaded = Promise.resolve();
+            this._TinyMCEStatus = E.Loaded;
         }
-        this.onBeforeRenderingTinyMCE4();
     };
     d.prototype.onAfterRendering = function () {
-        this.onAfterRenderingTinyMCE4();
-        this.getDomRef() && q(this).toggleClass("sapUiRTELegacyTheme", this.getUseLegacyTheme());
+        var o = this.getDomRef();
+        if (!window.tinymce || window.tinymce.majorVersion != "4") {
+            this._pTinyMCELoaded.then(this.onAfterRendering.bind(this));
+        } else if (o) {
+            switch (this._TinyMCEStatus) {
+            case E.Initializing:
+                o.appendChild(this._textAreaDom);
+                break;
+            case E.Loaded:
+            case E.Loading:
+                this.getDomRef().appendChild(this._textAreaDom);
+                this.reinitializeTinyMCE();
+                break;
+            case E.Ready:
+                o.appendChild(this._textAreaDom);
+                this.reinitializeTinyMCE();
+                break;
+            default:
+                L.error("Unknown TinyMCE status: " + this._TinyMCEStatus);
+                break;
+            }
+        }
     };
     d.prototype.reinitialize = function () {
         clearTimeout(this._iReinitTimeout);
-        this._iReinitTimeout = window.setTimeout(this.reinitializeTinyMCE4.bind(this), 0);
+        this._iReinitTimeout = window.setTimeout(this.reinitializeTinyMCE.bind(this), 0);
     };
     d.prototype.getNativeApi = function () {
-        return this.getNativeApiTinyMCE4();
+        return this.getNativeApiTinyMCE();
     };
     d.prototype.exit = function () {
         clearTimeout(this._reinitDelay);
-        this.exitTinyMCE4();
+        this.exitTinyMCE();
         d._iCountInstances--;
     };
     d.prototype.setValue = function (v) {
@@ -392,12 +285,7 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
         }
         this.setProperty("value", v, true);
         v = this.getProperty("value");
-        var m = "setValue" + this.getEditorType();
-        if (this[m] && typeof this[m] === "function") {
-            this[m].call(this, v);
-        } else {
-            this.reinitialize();
-        }
+        this.setValueTinyMCE(v);
         return this;
     };
     d.prototype.setEditable = function (f) {
@@ -694,27 +582,6 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
             buttons: ["alignleft", "aligncenter", "alignright", "alignjustify"]
         });
     };
-    d.prototype.setEditorType = function (f) {
-        if (!this._bEditorCreated) {
-            this.setProperty("editorType", f);
-            this.setEditorLocation(d.EDITORLOCATION_TINYMCE4);
-            if (f !== l.EditorType.TinyMCE4) {
-                L.error('TinyMCE3 is removed now due to security concerns, please do NOT use it anymore. The framework automatically will load TinyMCE4 since v1.60');
-            }
-            this.initTinyMCE4();
-        } else {
-            L.error("editorType property cannot be set after the RichtextEditor has been rendered");
-        }
-        return this;
-    };
-    d.prototype.setEditorLocation = function (f) {
-        if (!this._bEditorCreated) {
-            this.setProperty("editorLocation", f);
-        } else {
-            L.error("editorLocation property cannot be set after the RichtextEditor has been rendered");
-        }
-        return this;
-    };
     d.prototype._createButtonRowsTinyMCE = function (B, g) {
         B = B === undefined ? "," : B;
         g = g === undefined ? "|" : g;
@@ -845,78 +712,42 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
         f = m[f] ? m[f] : f;
         return f;
     };
-    d.prototype.initTinyMCE4 = function () {
+    d.prototype.initTinyMCE = function () {
         this._oEditor = null;
-        this._tinyMCE4Status = E.Initial;
-        this._boundResizeEditorTinyMCE4 = this._resizeEditorTinyMCE4.bind(this);
+        this._TinyMCEStatus = E.Initial;
+        this._boundResizeEditorTinyMCE = this._resizeEditorTinyMCE.bind(this);
         this._bInitializationPending = false;
         this._lastRestHeight = 0;
     };
-    d.prototype.exitTinyMCE4 = function () {
+    d.prototype.exitTinyMCE = function () {
         this._bUnloading = true;
         R.deregister(this._resizeHandlerId);
         this._resizeHandlerId = null;
-        this._removeEditorTinyMCE4();
+        this._removeEditorTinyMCE();
     };
-    d.prototype._removeEditorTinyMCE4 = function () {
-        switch (this._tinyMCE4Status) {
+    d.prototype._removeEditorTinyMCE = function () {
+        switch (this._TinyMCEStatus) {
         case E.Initial:
         case E.Loading:
         case E.Loaded:
             break;
         case E.Initializing:
-            this._pTinyMCE4Initialized.then(this._removeEditorTinyMCE4.bind(this, this._oEditor));
+            this._pTinyMCEInitialized.then(this._removeEditorTinyMCE.bind(this, this._oEditor));
             break;
         case E.Ready:
             this._oEditor.remove();
-            this._tinyMCE4Status = E.Destroyed;
-            this._boundResizeEditorTinyMCE4 = null;
+            this._TinyMCEStatus = E.Destroyed;
+            this._boundResizeEditorTinyMCE = null;
             this._oEditor = null;
             break;
         case E.Destroyed:
             break;
         default:
-            L.error("Unknown TinyMCE4 status: " + this._tinyMCE4Status);
+            L.error("Unknown TinyMCE status: " + this._TinyMCEStatus);
             break;
         }
     };
-    d.prototype.onBeforeRenderingTinyMCE4 = function () {
-        if (!window.tinymce || window.tinymce.majorVersion != "4") {
-            this._tinyMCE4Status = E.Loading;
-            this._pTinyMCE4Loaded = d.loadTinyMCE(this.getEditorLocation()).then(function () {
-                this._tinyMCE4Status = E.Loaded;
-            }
-                    .bind(this));
-        } else {
-            this._pTinyMCE4Loaded = Promise.resolve();
-            this._tinyMCE4Status = E.Loaded;
-        }
-    };
-    d.prototype.onAfterRenderingTinyMCE4 = function () {
-        var o = this.getDomRef();
-        if (!window.tinymce || window.tinymce.majorVersion != "4") {
-            this._pTinyMCE4Loaded.then(this.onAfterRenderingTinyMCE4.bind(this));
-        } else if (o) {
-            switch (this._tinyMCE4Status) {
-            case E.Initializing:
-                o.appendChild(this._textAreaDom);
-                break;
-            case E.Loaded:
-            case E.Loading:
-                this.getDomRef().appendChild(this._textAreaDom);
-                this.reinitializeTinyMCE4();
-                break;
-            case E.Ready:
-                o.appendChild(this._textAreaDom);
-                this.reinitializeTinyMCE4();
-                break;
-            default:
-                L.error("Unknown TinyMCE4 status: " + this._tinyMCE4Status);
-                break;
-            }
-        }
-    };
-    d.prototype.reinitializeTinyMCE4 = function () {
+    d.prototype.reinitializeTinyMCE = function () {
         if (this._bInitializationPending || this._bUnloading) {
             return;
         }
@@ -924,19 +755,19 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
             if (this._oEditor) {
                 this._oEditor.remove();
             }
-            this._initializeTinyMCE4();
+            this._initializeTinyMCE();
         }
         .bind(this);
-        switch (this._tinyMCE4Status) {
+        switch (this._TinyMCEStatus) {
         case E.Initial:
             break;
         case E.Loading:
             this._bInitializationPending = true;
-            this._pTinyMCE4Loaded.then(r);
+            this._pTinyMCELoaded.then(r);
             break;
         case E.Initializing:
             this._bInitializationPending = true;
-            this._pTinyMCE4Initialized.then(r);
+            this._pTinyMCEInitialized.then(r);
             break;
         case E.Loaded:
         case E.Ready:
@@ -946,15 +777,15 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
             }, 0);
             break;
         default:
-            L.error("Unknown TinyMCE4 status: " + this._tinyMCE4Status);
+            L.error("Unknown TinyMCE status: " + this._TinyMCEStatus);
             break;
         }
     };
-    d.prototype.getNativeApiTinyMCE4 = function () {
+    d.prototype.getNativeApiTinyMCE = function () {
         return this._oEditor;
     };
-    d.prototype.setValueTinyMCE4 = function (v) {
-        switch (this._tinyMCE4Status) {
+    d.prototype.setValueTinyMCE = function (v) {
+        switch (this._TinyMCEStatus) {
         case E.Initial:
         case E.Initializing:
         case E.Loading:
@@ -970,20 +801,20 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
             }
             break;
         default:
-            L.error("Unknown TinyMCE4 status: " + this._tinyMCE4Status);
+            L.error("Unknown TinyMCE status: " + this._TinyMCEStatus);
             break;
         }
     };
-    d.prototype._initializeTinyMCE4 = function () {
-        this._pTinyMCE4Initialized = new Promise(function (r, f) {
+    d.prototype._initializeTinyMCE = function () {
+        this._pTinyMCEInitialized = new Promise(function (r, f) {
             this._bInitializationPending = false;
-            this._tinyMCE4Status = E.Initializing;
-            this._textAreaDom.value = this._patchTinyMCE4Value(this.getValue());
-            window.tinymce.init(this._createConfigTinyMCE4(function () {
-                    this._tinyMCE4Status = E.Ready;
+            this._TinyMCEStatus = E.Initializing;
+            this._textAreaDom.value = this._patchTinyMCEValue(this.getValue());
+            window.tinymce.init(this._createConfigTinyMCE(function () {
+                    this._TinyMCEStatus = E.Ready;
                     setTimeout(function () {
                         if (!this._bInitializationPending) {
-                            this._onAfterReadyTinyMCE4();
+                            this._onAfterReadyTinyMCE();
                         }
                         r();
                     }
@@ -993,15 +824,15 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
         }
                 .bind(this));
     };
-    d.prototype._patchTinyMCE4Value = function (v) {
+    d.prototype._patchTinyMCEValue = function (v) {
         if (v.indexOf("<!--") === 0) {
             v = "&#8203;" + v;
         }
         return v;
     };
-    d.prototype._onAfterReadyTinyMCE4 = function () {
+    d.prototype._onAfterReadyTinyMCE = function () {
         var o = document.getElementById(this._iframeId),
-        r = c.getLibraryResourceBundle("sap.ui.richtexteditor");
+        r = jQuery.sap.resources({url:'./i18n.properties'});
         if (o) {
             o.setAttribute("aria-labelledby", this.getAriaLabelledBy().join(" "));
         }
@@ -1034,15 +865,15 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
             this._oEditor.getBody().setAttribute("title", i);
             g.attr("title", i);
         }
-        this._registerWithPopupTinyMCE4();
+        this._registerWithPopupTinyMCE();
         if (!this._resizeHandlerId) {
-            this._resizeHandlerId = R.register(this, this._boundResizeEditorTinyMCE4);
+            this._resizeHandlerId = R.register(this, this._boundResizeEditorTinyMCE);
         }
         this._resizeEditorOnDocumentReady();
-        this.fireReadyTinyMCE4();
+        this.fireReadyTinyMCE();
     };
     d.prototype._resizeEditorOnDocumentReady = function () {
-        var r = this._resizeEditorTinyMCE4.bind(this);
+        var r = this._resizeEditorTinyMCE.bind(this);
         var o = this._oEditor.getDoc();
         if (!o) {
             return;
@@ -1060,8 +891,8 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
     d.prototype._tinyMCEDesktopDetected = function () {
         return window.tinymce && window.tinymce.Env.desktop;
     };
-    d.prototype.fireReadyTinyMCE4 = function () {
-        switch (this._tinyMCE4Status) {
+    d.prototype.fireReadyTinyMCE = function () {
+        switch (this._TinyMCEStatus) {
         case E.Initial:
         case E.Loading:
         case E.Loaded:
@@ -1077,18 +908,11 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
             }
             break;
         default:
-            L.error("Unknown TinyMCE4 status: " + this._tinyMCE4Status);
+            L.error("Unknown TinyMCE status: " + this._TinyMCEStatus);
             break;
         }
     };
-    d.prototype._getTextDirection = function () {
-        if (this.getTextDirection() === this.getMetadata().getProperty("textDirection").getDefaultValue()) {
-            return c.getConfiguration().getRTL() ? "rtl" : "ltr";
-        } else {
-            return this.getTextDirection().toLowerCase();
-        }
-    };
-    d.prototype._createConfigTinyMCE4 = function (o) {
+    d.prototype._createConfigTinyMCE = function (o) {
         var B = this._createButtonRowsTinyMCE(" ", "|");
         if (B.length === 0) {
             B = false;
@@ -1098,11 +922,11 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
             p = p.replace(/(,powerpaste|powerpaste,)/gi, "");
         }
         var g = {
-            directionality: this._getTextDirection(),
+            directionality: "ltr",
             selector: "[id='" + this._textAreaId + "']",
             theme: "modern",
             menubar: false,
-            language: this._getLanguageTinyMCE4(),
+            language: "de",
             browser_spellcheck: true,
             convert_urls: false,
             plugins: p,
@@ -1124,26 +948,8 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
         this._bHasNativeMobileSupport = g.mobile;
         return g;
     };
-    d.prototype._getLanguageTinyMCE4 = function () {
-        var o = new sap.ui.core.Locale(c.getConfiguration().getLanguage()),
-        f = o.getLanguage(),
-        r = o.getRegion(),
-        g;
-        f = d.MAPPED_LANGUAGES_TINYMCE4[f] || f;
-        if (!r) {
-            r = d.SUPPORTED_LANGUAGES_DEFAULT_REGIONS[f];
-        }
-        g = r ? f + "_" + r.toUpperCase() : f;
-        if (!d.SUPPORTED_LANGUAGES_TINYMCE4[g]) {
-            g = f;
-        }
-        if (!d.SUPPORTED_LANGUAGES_TINYMCE4[g]) {
-            g = "en";
-        }
-        return g;
-    };
-    d.prototype._resizeEditorTinyMCE4 = function () {
-        if (this._tinyMCE4Status !== E.Ready) {
+    d.prototype._resizeEditorTinyMCE = function () {
+        if (this._TinyMCEStatus !== E.Ready) {
             return;
         }
         var o = this._oEditor.getContentAreaContainer(),
@@ -1163,7 +969,7 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
         }
         this._lastRestHeight = r;
     };
-    d.prototype._registerWithPopupTinyMCE4 = function () {
+    d.prototype._registerWithPopupTinyMCE = function () {
         var B = c.getEventBus(),
         p = this.$().closest("[data-sap-ui-popup]");
         setTimeout(function () {
@@ -1194,5 +1000,3 @@ sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/core/Control', 'sap/ui/core/R
     
     return d;
 });
-
-//# sourceURL=http://localhost:8080/admin/resources/sap/ui/richtexteditor/RichTextEditor.js?eval
