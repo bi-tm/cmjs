@@ -1,14 +1,14 @@
 sap.ui.define([
 	"sap/ui/layout/form/SimpleForm", 
-	"sap/ui/richtexteditor/RichTextEditor",
 	"sap/m/Select",
 	"sap/ui/core/Item",
 	"sap/m/Button", 
 	"sap/m/Label", 
 	"sap/m/Input",
 	"sap/m/CheckBox",
-	"sap/m/HBox"], 
-function(SimpleForm, RichTextEditor, Select, Item, Button, Label, Input, CheckBox, HBox) {
+	"sap/m/HBox", 
+	"cmjs/richtexteditor/RichTextEditor"],
+function(SimpleForm, Select, Item, Button, Label, Input, CheckBox, HBox, RichTextEditor) {
 	"use strict";
 
     return sap.ui.jsview("cmjs.view.Page", {  
@@ -130,7 +130,6 @@ function(SimpleForm, RichTextEditor, Select, Item, Button, Label, Input, CheckBo
 								id: "editor",
 								value: "{tree>text}",
 								editable:"{view>/editable}",
-								editorType: sap.ui.richtexteditor.EditorType.TinyMCE4,
 								width: "100%",
 								height: "600px",
 								showGroupLink: true,

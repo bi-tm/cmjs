@@ -3,11 +3,10 @@ metadata:
   name: openui5-basic-template-app
 type: application
 framework:
-  name: SAPUI5
-  version: "1.79.2"
+  name: OpenUI5
+  version: "1.84.0"
   libraries:
     - name: sap.m
-    - name: sap.ui.richtexteditor
     - name: sap.ui.core
     - name: sap.ui.layout
     - name: sap.tnt
