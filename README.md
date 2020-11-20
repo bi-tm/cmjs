@@ -9,7 +9,6 @@ Seiten
 
 Seitentyp
 ---------
-- Feldreihenfolge ändern
 - Seitentyp "Link" ?
 
 Images

@@ -8,7 +8,7 @@
         <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 
         <link rel="shortcut icon" href="/favicon.ico" />
-        <link href='https://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700' rel='stylesheet' type='text/css' />
+        <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700' rel='stylesheet' type='text/css' />
 
         <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="/css/layout.css" />
@@ -44,7 +44,7 @@
 									{{#menu}}
 										{{#active}}<li class="active">{{/active}}
 										{{^active}}<li>{{/active}}
-											<a href="/{{_id}}">{{menuTitle}}</a>
+											<a href="/{{_id}}/">{{menuTitle}}</a>
 										</li>
 									{{/menu}}
 								</ul>
@@ -53,7 +53,11 @@
 						
 						<div class="col-sm-9 col-xs-12 typography">
 
-                            <div class="breadcrumbs">Breadcrumbs</div>
+                            <div class="breadcrumbs">
+								{{#breadcrumbs}}
+									&raquo; <a href="/{{_id}}/">{{menuTitle}}</a> 
+								{{/breadcrumbs}}
+							</div>
 							
                             <div class="row">
                                 <div class="col-xs-12">

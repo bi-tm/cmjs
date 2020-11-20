@@ -1,4 +1,4 @@
-const {database} = require("../cmjs/database");
+const children = require("../cmjs/children");
 module.exports = {
 
     /**
@@ -9,14 +9,10 @@ module.exports = {
      * @returns {Promise}
      */
     init: function(content) {
-        return database.pages.find({
-            selector: { parentId: content._id, published:true },
-            fields: ["_id","title"],
-            sort: ['parentId', 'sort']
-        })
-        .then(function(result){
-            content.children = result.docs;
-        });
+        return children.get(content._id)
+            .then(function(result){
+                content.children = result;
+            });
     }
 
 };

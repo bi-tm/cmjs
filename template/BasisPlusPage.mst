@@ -1,3 +1,4 @@
+<div class="frame">
 <h1>{{title}}</h1>
 <p>
 {{name1}}<br/>
@@ -9,3 +10,4 @@
 {{email}}<br/>
 <a href="{{homepage}}">{{homepage}}</a>
 </p>
+</div>

@@ -1,3 +1,4 @@
+<div class="frame">
 <h1>{{title}}</h1>
 <p>
 {{name1}}<br/>
@@ -10,3 +11,4 @@
 <a href="{{homepage}}">{{homepage}}</a>
 </p>
 {{{text}}}
+</div>

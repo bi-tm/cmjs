@@ -1,38 +1,49 @@
-const config = require("../config.json")
-	, { database } = require("./database")
-	, menu = require("./menu")
+const { database } = require("./database")
+	, menu         = require("./menu")
+	, breadcrumbs  = require("./breadcrumbs")
 	;
-	
+
 module.exports = function (request, response) {
-	var content = {};
-	// reset cache if query parameter ?flush is set
-	if (typeof (request.query.flush) !== "undefined") {
-		content.cache = false;
+
+	// is there a page id in the URL?
+	if (!request.params.id) {
+		// redirect to root page
+		database.pages.find({
+			selector: { parentId: null, showInMenu: true, published: true },
+			fields: ['_id'],
+			sort: ['parentId', 'showInMenu', 'published', 'sort'],
+			limit: 1
+		})
+		.then(function(root){
+			response.redirect("/" + root.docs[0]._id);
+		})
+		return;
 	}
-	// get menu
-	menu.get(!content.cache)
-	.then(function(menuData) {
-		content.menu = menuData;
-		
-		// is there a page id in the URL?
-		if (!request.params.id) {
-			// redirect to root page
-			response.redirect("/" + content.menu[0]._id);
+
+	// reset cache if query parameter ?flush is set
+	var refresh = typeof (request.query.flush) !== "undefined";
+
+	// get page and menu
+	var content = {};
+	Promise.all([
+		database.pages.get(request.params.id), 
+		menu.get(refresh),
+		breadcrumbs.get(request.params.id)
+	]) 
+	.then(function(data) {
+		content = data[0];
+		content.menu = data[1];
+		content.breadcrumbs = data[2];
+		content.cache = !refresh;		
+
+		// mark current entry in menu as active
+		for(var i=0; i<content.menu.length; i++) {				
+			content.menu[i].active = (content.menu[i]._id === request.params.id);
 		}
-		else {
-			// mark current entry in menu as active
-			for(var i=0; i<content.menu.length; i++) {				
-				content.menu[i].active = (content.menu[i]._id === request.params.id);
-			}
-			// read page from database
-			return database.pages.get(request.params.id);
-		}
-	})
-	.then(function(page) {
-		content = Object.assign(content, page);
+
 		// read sepcial functions of page type
 		try {
-			var hooks = require(`../template/${page.pageType}.js`);
+			var hooks = require(`../template/${content.pageType}.js`);
 			content = Object.assign(content, hooks);
 			// call init hook, if it is defined
 			if (typeof(hooks.init) === "function") {

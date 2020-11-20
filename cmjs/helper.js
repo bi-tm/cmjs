@@ -9,7 +9,7 @@ sync.then(function() {
                 console.log(`document updated ${row.doc._id} ${row.doc.title}`);
             }
             row.doc.showInMenu = true;
-            row.doc.menuTitle  = null;
+            if (!row.doc.menuTitle) row.doc.menuTitle = row.doc.title;
             row.doc.published  = true;
             if(typeof(row.doc.sort)==="string") {
                 row.doc.sort = parseInt(row.doc.sort);

@@ -1,3 +1,4 @@
+<div class="frame">
 <h1>{{title}}</h1>
 <p>
 {{name1}}<br/>
@@ -7,3 +8,4 @@
 {{phone}}<br/>
 {{mobil}}
 </p>
+</div>
