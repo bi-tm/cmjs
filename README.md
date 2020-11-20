@@ -9,8 +9,8 @@ Seiten
 
 Seitentyp
 ---------
+- Feldreihenfolge ändern
 - Seitentyp "Link" ?
-- Fehler beim Speichern
 
 Images
 ------

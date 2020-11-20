@@ -72,6 +72,12 @@
                 </f:SimpleForm>
                 <Table
                     items="{view>fields}">
+                    <headerToolbar>
+                        <Toolbar>
+                            <ToolbarSpacer/>
+                            <Button icon="sap-icon://create-form" text="{i18n>addField}" type="Emphasized" enabled="{view>/editable}" press=".onFieldAdd"/>
+                        </Toolbar>
+                    </headerToolbar>
                     <columns>
                         <Column width="20em">
                             <Label text="Feld"/>

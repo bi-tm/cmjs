@@ -172,7 +172,23 @@ sap.ui.define([
 		},
 
 		/**
-		 * 
+		 * handle field add button
+		 * @param {object} oEvent 
+		 */
+		onFieldAdd: function(oEvent) {
+			var oViewModel = this.getModel("view");
+			var sPath = this.getView().byId("page").getBindingContext("view").getPath();
+			var oPageType = oViewModel.getProperty(sPath); 
+			oPageType.fields.push({
+				"id": "field_" + oPageType.fields.length,
+				"label": "Neues Feld",
+				"fieldType": "Text"
+			  });
+			oViewModel.setProperty(sPath, oPageType);
+		},
+
+		/**
+		 * handle save button press
 		 * @param {object} oEvent 
 		 */
 		onSavePress: function(oEvent) {
@@ -183,8 +199,22 @@ sap.ui.define([
 			var oPageType = oContext.getObject();
 			Database.savePageType(oPageType)
 			.then(function(oResult){
-				oViewModel.setProperty(sPath, oResult);				
-			}.bind(this));
+				oPageType._rev = oResult.rev;
+				oViewModel.setProperty(sPath, oPageType);				
+			}.bind(this))
+			.catch(error => {
+				if(error.status == 401) {
+					this.getRouter().navTo("logon");		
+				}
+				else {
+					MessageBox.show(error.message, {
+							icon: MessageBox.Icon.ERROR,
+							title: "savePageType",
+							actions: [MessageBox.Action.CLOSE]
+					});
+				}
+			});
+
 		},
 
 		/**
