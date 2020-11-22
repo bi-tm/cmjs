@@ -8,11 +8,7 @@ module.exports = {
      * @param {object} content 
      * @returns {Promise}
      */
-    beforeRendering: function(content) {
-        return children.get(content._id)
-            .then(function(result){
-                content.children = result;
-            });
-    }
+    // beforeRendering: function(content) {
+    // },
 
 };

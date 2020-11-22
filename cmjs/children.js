@@ -3,16 +3,20 @@ const { database } = require("./database");
 
 module.exports = {
 
-    get: function (_id) {
+    get: function (_id, additionalFields) {
         if (typeof(_id) === "undefined") {
             var _id = null;
         }
-        return database.pages.createIndex({ name: 'menu', index: { fields: ['parentId', 'showInMenu', 'published', 'sort'] } })
+        var fields = ['_id', "title", "menuTitle", "parentId"];
+        if (Array.isArray(additionalFields)) {
+            fields = fields.concat(additionalFields);
+        }
+        return database.pages.createIndex({ name: 'menu', index: { fields: ['parentId', 'published', 'sort'] } })
             .then(function () {
                 return database.pages.find({
-                    selector: { parentId: _id, showInMenu: true, published: true },
-                    fields: ['_id', "title", "menuTitle", "parentId"],
-                    sort: ['parentId', 'showInMenu', 'published', 'sort']
+                    selector: { parentId: _id, published: true },
+                    fields: fields,
+                    sort: ['parentId', 'published', 'sort']
                 });
             })
             .then(function(result){

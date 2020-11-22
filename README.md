@@ -19,16 +19,12 @@ Images
 Datenbank
 =========
 - Script zum Anlegen einer Datenbank
-- Import der Hochzeitsmessen - Seiten
 - Datenbank auf NeDB umstellen ?
 - User für Administration mit Schreib-Berechtigung
-- User für Frontent ohne Schreib-Berechtigung
-- Datenbank für Counter mit Schreibberechtigung auch fürs Frontend
+- Datenbank für Counter 
 
 Frontend
 ========
-- Breadcrumbs
-- Hochzeitsmessen - Terminseite
 - Navigation nächster Eintrag - vorheriger Eintrag
 
 Allgemein
@@ -44,8 +40,6 @@ Allgemein
 
 Feste-feiern-in-Bielefeld
 =========================
-- Termin-Seite (Hochzeitsmessen)
-    - Gültigkeitsdatum von-bis
 - Zähler der Seitenaufrufe
 - Zähler der Unterseiten
-- Zugriffstatistik (Google Analytics?)
+- Zugriffstatistik (access.log ? Google Analytics?)

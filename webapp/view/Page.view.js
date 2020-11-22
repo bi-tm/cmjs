@@ -4,11 +4,13 @@ sap.ui.define([
 	"sap/ui/core/Item",
 	"sap/m/Button", 
 	"sap/m/Label", 
+	"sap/m/Text", 
 	"sap/m/Input",
 	"sap/m/CheckBox",
+	"sap/m/DatePicker",
 	"sap/m/HBox", 
 	"cmjs/editor/Editor"],
-function(SimpleForm, Select, Item, Button, Label, Input, CheckBox, HBox, Editor) {
+function(SimpleForm, Select, Item, Button, Label, Text, Input, CheckBox, DatePicker, HBox, Editor) {
 	"use strict";
 
     return sap.ui.jsview("cmjs.view.Page", {  
@@ -85,10 +87,11 @@ function(SimpleForm, Select, Item, Button, Label, Input, CheckBox, HBox, Editor)
 			parent.addContent( new Label({text: "{i18n>legacyUrl}"}));
 			parent.addContent( new Input({value: "{tree>legacyUrl}", editable:"{view>/editable}"}));
 			parent.addContent( new Label({text: "{i18n>title}"}));
-			parent.addContent( new Input({value: "{tree>title}", editable:"{view>/editable}"}));
+			parent.addContent( new Input({value: "{tree>title}", editable:"{view>/editable}", required: true}));
 			parent.addContent( new Label({text: "{i18n>showInMenu}"}));
 			parent.addContent( new CheckBox({selected: "{tree>showInMenu}", editable:"{view>/editable}"}));
-			parent.addContent( new Input({value: "{tree>menuTitle}", editable:"{= ${view>/editable} && ${tree>showInMenu} }"}));
+			parent.addContent( new Label({text: "{i18n>menuTitle}"}));
+			parent.addContent( new Input({value: "{tree>menuTitle}", editable:"{= ${view>/editable} && ${tree>showInMenu} }", required:true}));
 			// parent.addContent( new HBox({
 			// 	width: "100%",
 			// 	items: [
@@ -109,7 +112,6 @@ function(SimpleForm, Select, Item, Button, Label, Input, CheckBox, HBox, Editor)
 
 			var oPageType = aPageTypes.find(t => t._id === sPageType);
 			if (oPageType) {
-				var bFirst = true;
 				oPageType.fields.forEach(field => {
 					parent.addContent( new Label({text: field.label}));
 					switch(field.fieldType) {
@@ -118,11 +120,8 @@ function(SimpleForm, Select, Item, Button, Label, Input, CheckBox, HBox, Editor)
 							parent.addContent( new Input({
 								value:"{tree>" + field.id + "}", 
 								editable:"{view>/editable}",
-								required: bFirst, 
-								valueLiveUpdate:bFirst, 
 								liveChange: [oController.onTitleChange, oController]
 							}));	
-							bFirst = false;
 							break;
 
 						case 'RichText':
@@ -143,6 +142,15 @@ function(SimpleForm, Select, Item, Button, Label, Input, CheckBox, HBox, Editor)
 								oConfig.image_list = this._load_image_list();
 							}.bind(this));
 							parent.addContent( oEditor );
+							break;
+
+						case "Date":
+							parent.addContent(new DatePicker({
+								value:"{tree>" + field.id + "}", 
+								editable:"{view>/editable}",
+								valueFormat:"dd.MM.yyyy",
+								displayFormat:"medium"
+							}));
 							break;
 
 						default:

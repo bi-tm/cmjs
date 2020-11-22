@@ -9,10 +9,10 @@ module.exports = {
      * @returns {Promise}
      */
     beforeRendering: function(content) {
-        return children.get(content._id)
+        return children.get(content._id,["dateFrom","dateTo"])
             .then(function(result){
-                content.children = result;
+                const now = new Date();
+                content.children = result.filter(child => new Date(child.dateTo) >= now);
             });
     }
-
 };

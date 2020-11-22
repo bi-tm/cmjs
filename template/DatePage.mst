@@ -1,0 +1,4 @@
+<div class="frame">
+<h1>{{title}}</br/>{{dateFormat dateFrom}} -  {{dateFormat dateTo}}</h1>
+{{{text}}}
+</div>

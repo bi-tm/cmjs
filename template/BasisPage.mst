@@ -1,11 +1,19 @@
 <div class="frame">
-<h1>{{title}}</h1>
-<p>
-{{name1}}<br/>
-{{name2}}<br/>
-{{street}}<br/>
-{{city}}<br/>
-{{phone}}<br/>
-{{mobil}}
-</p>
+    <h1>{{title}}</h1>
+    <p>
+    {{name1}}<br/>
+    {{name2}}<br/>
+    {{street}}<br/>
+    {{city}}<br/>
+    {{phone}}<br/>
+    {{mobil}}
+    </p>
+    <div class="row">
+        <div class="col-xs-6">
+            {{#with previous}}<a href="/{{_id}}">&lt;Vorheriger</a>{{/with}}
+        </div>
+        <div class="col-xs-6 text-right">
+            {{#with next}}<a href="/{{_id}}">Nächster&gt;</a>{{/with}}
+        </div>
+    </div>
 </div>
