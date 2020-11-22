@@ -2,3 +2,5 @@ node_modules
 dist
 coverage
 access.log
+.vscode
+.reuse
