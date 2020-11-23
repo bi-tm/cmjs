@@ -13,19 +13,7 @@ module.exports = {
                 fields[f] = 1;
             }
         }
-        return new Promise(function(resolve, reject) {
-            database.pages
-            .find({parentId: _id, published: true })
-            .projection(fields)
-            .sort({sort:1})
-            .exec(function(err,docs){
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    resolve(docs);
-                }
-            });
-        });
+        return database.findPages({parentId: _id, published: true }, fields, {sort:1});
     }
+
 };

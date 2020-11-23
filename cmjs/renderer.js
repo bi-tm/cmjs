@@ -1,58 +1,22 @@
 const database     = require("./database")
 	, menu         = require("./menu")
 	, breadcrumbs  = require("./breadcrumbs")
-	, children     = require("./children")
 	;
 
-function _getPage(_id) {
-	return new Promise(function(resolve, reject) {
-		database.pages.findOne({_id: _id}, function(err,doc) {
-			if (err) {
-				reject(err);
-			}
-			else if (!doc) {
-				reject("unkown page " + _id);
-			}
-			else {
-				resolve(doc);
-			}
-		});
-	});
-}
-
 function _next(sort, parentId) {
-	return new Promise(function(resolve, reject) {
-		database.pages.find({parentId: parentId, published: true, sort: {"$gt": sort}})
-		.projection({_id:1, menuTitle:1})
-		.sort({sort: 1})
-		.limit(1)
-		.exec(function(err,docs){
-			if (err) {
-				reject(err)
-			}
-			else {
-				resolve(docs[0]);
-			}
-		});
-	});
+	return database.findPages(
+		{parentId: parentId, published: true, sort: {"$gt": sort}},
+		{_id:1, menuTitle:1},
+		{sort: 1},
+		1);
 };
 
-
 function _previous(sort, parentId) {
-	return new Promise(function(resolve, reject) {
-		database.pages.find({parentId: parentId, published: true, sort: {"$lt": sort}})
-		.projection({_id:1, menuTitle:1})
-		.sort({sort: -1})
-		.limit(1)
-		.exec(function(err,docs){
-			if (err) {
-				reject(err)
-			}
-			else {
-				resolve(docs[0]);
-			}
-		});
-	});
+	return database.findPages(
+		{parentId: parentId, published: true, sort: {"$lt": sort}},
+		{_id:1, menuTitle:1},
+		{sort: -1},
+		1);
 }
 
 async function _render(request, response) {
@@ -60,16 +24,17 @@ async function _render(request, response) {
 	// is there a page id in the URL?
 	if (!request.params.id) {
 		// redirect to root page
-		database.pages.find({ parentId: null, showInMenu: true, published: true })
-		.projection({ _id:1 })
-		.sort({sort: 1})
-		.limit(1)
-		.exec(function(err, docs) {
-			if (err) {
-				response.status(500).end(err);
+		database.findPages(
+			{ parentId: null, showInMenu: true, published: true },
+			{ _id:1 },
+			{ sort: 1 },
+			1)
+		.then(function(docs) {
+			if (docs.length) {
+				response.redirect("/" + docs[0]._id);
 			}
 			else {
-				response.redirect("/" + docs[0]._id);
+				response.status(500).end(err);
 			}
 		});
 		return;
@@ -80,7 +45,7 @@ async function _render(request, response) {
 
 	// get page, menu, breadcrumbs
 	const results = await Promise.all([
-		_getPage(request.params.id),
+		database.getPage(request.params.id),
 		menu.get(refresh)
 	])
 	.catch(function(err){
@@ -102,8 +67,8 @@ async function _render(request, response) {
 	.catch(function(err){
 		console.error(err);
 	});
-	content.previous = prevNext[0];
-	content.next = prevNext[1];
+	content.previous = prevNext[0][0];
+	content.next = prevNext[1][0];
 	content.breadcrumbs = prevNext[2];
 
 	// mark current entry in menu as active

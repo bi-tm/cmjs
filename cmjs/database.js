@@ -22,7 +22,48 @@ var database = {
         }
 
         return result;                
+    },
+
+    findPages: function(selector, projection, sort, limit) {
+        return new Promise(function(resolve, reject) {
+            var cursor = database.pages.find(selector);
+            if(projection) {
+                cursor = cursor.projection(projection);
+            }
+            if(sort) {
+                cursor = cursor.sort(sort);
+            }
+            if(limit) {
+                cursor = cursor.limit(limit);
+            }
+            cursor.exec(function(err,docs){
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(docs);
+                }
+            });
+        });
+    },
+
+    getPage: function(_id, projection) {
+        return new Promise(function(resolve, reject) {
+            var cursor = database.pages.findOne({_id:_id});
+            if(projection) {
+                cursor = cursor.projection(projection);
+            }
+            cursor.exec(function(err,doc){
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(doc);
+                }
+            });
+        });
     }
+
 };
 
 module.exports = database;

@@ -30,7 +30,7 @@
     "databases": ["pages","page_types"],
     "index": {
       "pages": [
-        { "fieldname": "parentId"}
+        { "fieldName": "parentId"}
       ]
     }
   },
