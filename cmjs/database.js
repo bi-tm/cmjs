@@ -1,18 +1,22 @@
-var nedb = require("nedb")
-  , path = require('path')
+var nedb     = require("nedb")
+  , path     = require('path')
+  , nedbRest = require('express-nedb-rest')
   ;
   
 var database = {
     init: function(config) {
         var result = {};
 
+        database.restApi = nedbRest();
+
         for(var db of config.nedb.databases) {
             // create db
-            const param ={filename: path.join(config.root, config.nedb.path, `${db}.db`)};
+            const param ={filename: path.join(config.root, config.nedb.dataPath, `${db}.db`)};
             this[db] = new nedb(param);
             this[db].loadDatabase(function(err) {
                 console.log(`database loaded`);
-            });            
+            });
+            this.restApi.addDatastore(db, this[db]);  
         }
         // index 
         for(var db in config.nedb.index) {
@@ -26,7 +30,7 @@ var database = {
 
     findPages: function(selector, projection, sort, limit) {
         return new Promise(function(resolve, reject) {
-            var cursor = database.pages.find(selector);
+            var cursor = this.pages.find(selector);
             if(projection) {
                 cursor = cursor.projection(projection);
             }

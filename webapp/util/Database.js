@@ -27,30 +27,21 @@ sap.ui.define([
     return {
         
         logon: function(user,password) {
-           return ajax({
-               type: "POST",
-               url: url + "_session",
-               data: { 
-                    name: user,
-                    password: password
-               }
-           });
+        //    return ajax({
+        //        type: "POST",
+        //        url: url + "_session",
+        //        data: { 
+        //             name: user,
+        //             password: password
+        //        }
+        //    });
+            return Promise.resolve();
         },
 
         getPages: function(fields) {
             return ajax({
-                type: "POST",
-                url: url + "pages/_find",
-                data: {
-                    "selector": {
-                        "_id": {
-                            "$gte": null
-                        }
-                    },
-                    "limit": 10000
-                }
-            }).then(function(data) {
-                return data.docs
+                type: "GET",
+                url: url + "pages"
             });
         },
 
@@ -65,47 +56,27 @@ sap.ui.define([
             // page clone without 'nodes' property
             var oClone = Object.assign({}, oPage);
             oClone.nodes = undefined;
-            return ajax({
-                type: "PUT",
-                url: url + "pages/" + oPage._id,
-                data: oClone,                 
-            });
-        },
-
-        savePages: function(aPages) {
-            if (!aPages || aPages.length === 0) return Promise.resolve([]);
-            var aDocs = aPages.map(oPage => {
-                var oClone = Object.assign({}, oPage);
-                oClone.nodes = undefined;
-                return oClone;
-            });
-            return ajax({
-                type: "POST",
-                url: url + "pages/_bulk_docs",
-                data: {docs:aDocs},                 
-            });
-
+            if (oPage._id) {
+                return ajax({
+                    type: "PUT",
+                    url: url + "pages/" + oPage._id,
+                    data: oClone,                 
+                });
+            }
+            else {
+                return ajax({
+                    type: "POST",
+                    url: url + "pages",
+                    data: oClone,                 
+                });
+            }
         },
 
         getPageTypes: function(refresh) {
             if (refresh || !pageTypes) {
                 pageTypes = ajax({
-                    type: "POST",
-                    url: url + "page_types/_find",
-                    data: {
-                        "selector": {
-                            "_id": {
-                                "$gte": null
-                            }
-                        },
-                        "limit": 10000
-                    }
-                    }).then(function(data) {
-                    return data.docs
-                })
-                .catch(error => {
-                    pageTypes = null;
-                    throw(error);
+                    type: "GET",
+                    url: url + "page_types"
                 });
             }
             return pageTypes;
@@ -128,7 +99,7 @@ sap.ui.define([
         deletePageType: function(oPageType) {
             return ajax({
                 type: "DELETE",
-                url: `${url}page_types/${oPageType._id}?rev=${oPageType._rev}`
+                url: `${url}page_types/${oPageType._id}`
             });
         },
     }

@@ -14,6 +14,7 @@ module.exports = {
     
     // init database
     database.init(config);
+    app.use(config.nedb.mountPath, database.restApi);
 
     // log
     // create a write stream (in append mode)

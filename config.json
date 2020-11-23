@@ -10,23 +10,11 @@
     { "mountPath": "/uploads",  "localPath": "/uploads"}
   ],
   "proxy": [
-    { "mountPath": "/db",              "url": "https://couchdb.feste-feiern-in-bielefeld.de" },
-    { "mountPath": "/admin/resources", "url": "https://sapui5.hana.ondemand.com/resources" }
+    { "mountPath": "/admin/resources", "url": "https://openui5.hana.ondemand.com/resources" }
   ],
-  "pouchdb": {
-    "sync": {
-      "url_DEL": "http://couchdb:5984/",
-      "url": "https://couchdb.feste-feiern-in-bielefeld.de/",
-      "username": "admin",
-      "password": "Rv8eRDBp#Jp2"
-    },
-    "databases": [
-      { "name": "pages" },
-      { "name": "pageTypes" }
-    ]  
-  },
   "nedb": {
-    "path": ".nedb",
+    "mountPath": "/db",
+    "dataPath": ".nedb",
     "databases": ["pages","page_types"],
     "index": {
       "pages": [

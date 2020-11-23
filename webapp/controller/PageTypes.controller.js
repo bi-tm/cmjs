@@ -2,8 +2,9 @@ sap.ui.define([
     "./Base.controller",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
+	"sap/m/MessageToast",
     "../util/Database"
-], function(BaseController, JSONModel, MessageBox, Database) {
+], function(BaseController, JSONModel, MessageBox, MessageToast, Database) {
 	"use strict";
 
 	return BaseController.extend("cmjs.controller.PageTypes", {
@@ -199,8 +200,7 @@ sap.ui.define([
 			var oPageType = oContext.getObject();
 			Database.savePageType(oPageType)
 			.then(function(oResult){
-				oPageType._rev = oResult.rev;
-				oViewModel.setProperty(sPath, oPageType);				
+				MessageToast.show("Seitentyo´p gespeichert");
 			}.bind(this))
 			.catch(error => {
 				if(error.status == 401) {

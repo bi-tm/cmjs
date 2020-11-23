@@ -84,7 +84,7 @@ sap.ui.define([
          */
         newPage: function(sPageType) {
             return {
-                _id:         Date.now().toString(),
+                _id:        Date.now(),
                 legacyUrl:  "neue-seite",
                 title:      "neue Seite",
                 pageType:   sPageType,
@@ -101,13 +101,11 @@ sap.ui.define([
          * @returns {Promise}
          */
         savePage: function(oPage) {
-            // clone page without 'node' property
-            var sPath = this.getPath(oPage._id);
             // save
             return Database.savePage(oPage)
             .then(function(result) {
-                // update revision
-                this.setProperty(sPath+'/_rev', result.rev);
+                // update _id
+                this.setProperty(sPath+'/_id', result._id);
             }.bind(this));
         },
 
@@ -116,19 +114,13 @@ sap.ui.define([
          * @param {array} aPages 
          */
         savePages: function(aPages) {
-            return Database.savePages(aPages)
-            .then(function(result) {
-                // update revision
-                for (var oPage of result) {
-                    if (oPage.ok) {
-                        var sPath = this.getPath(oPage.id);
-                        this.setProperty(sPath+'/_rev', oPage.rev);    
-                    }
-                    else {
-                        throw(oPage);
-                    }
-                }
+            if (!aPages || aPages.length === 0) {
+                return Promise.resolve([]);
+            }
+            var promises = aPages.map(function(oPage) {
+                return this.savePage(oPage)
             }.bind(this));
+            return Promise.all(promises);
         },
 
         /**
