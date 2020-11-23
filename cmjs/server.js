@@ -4,6 +4,7 @@ const express    = require('express')
     , morgan     = require('morgan')
     , fs         = require('fs')
     , path       = require('path')
+    , database   = require('./database')
     , renderer   = require("./renderer")
     ;
 
@@ -11,6 +12,9 @@ module.exports = {
   start: function(config) {
     var app = express();
     
+    // init database
+    database.init(config);
+
     // log
     // create a write stream (in append mode)
     var accessLogStream = fs.createWriteStream(path.join(config.root, 'access.log'), { flags: 'a' })

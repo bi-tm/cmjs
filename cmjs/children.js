@@ -1,4 +1,4 @@
-const { database } = require("./database");
+const database = require("./database");
     
 
 module.exports = {
@@ -7,23 +7,25 @@ module.exports = {
         if (typeof(_id) === "undefined") {
             var _id = null;
         }
-        var fields = ['_id', "title", "menuTitle", "parentId"];
+        var fields = {_id: 1, title:1, menuTitle:1, parentId: 1};
         if (Array.isArray(additionalFields)) {
-            fields = fields.concat(additionalFields);
+            for (var f of additionalFields) {
+                fields[f] = 1;
+            }
         }
-        return database.pages.createIndex({ name: 'menu', index: { fields: ['parentId', 'published', 'sort'] } })
-            .then(function () {
-                return database.pages.find({
-                    selector: { parentId: _id, published: true },
-                    fields: fields,
-                    sort: ['parentId', 'published', 'sort']
-                });
-            })
-            .then(function(result){
-                return result.docs;
-            })
-            .catch(function (err) {
-                console.error(`error children.js ${err}`);
+        return new Promise(function(resolve, reject) {
+            database.pages
+            .find({parentId: _id, published: true })
+            .projection(fields)
+            .sort({sort:1})
+            .exec(function(err,docs){
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(docs);
+                }
             });
+        });
     }
 };

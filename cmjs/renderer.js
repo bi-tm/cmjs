@@ -1,37 +1,57 @@
-const { database } = require("./database")
+const database     = require("./database")
 	, menu         = require("./menu")
 	, breadcrumbs  = require("./breadcrumbs")
 	, children     = require("./children")
 	;
 
-function _next(sort, parentId) {
-	return database.pages.createIndex({ name: 'prevNext', index: { fields: ['parentId', 'published', 'sort'] } })
-	.then(function() {
-		return database.pages.find({
-			selector: { "parentId": parentId, "published": true, "sort": {"$gt": sort} },
-			fields: ["_id", "menuTitle"],
-			sort: ["parentId", "published", {"sort": "asc"}],
-			limit: 1
+function _getPage(_id) {
+	return new Promise(function(resolve, reject) {
+		database.pages.findOne({_id: _id}, function(err,doc) {
+			if (err) {
+				reject(err);
+			}
+			else if (!doc) {
+				reject("unkown page " + _id);
+			}
+			else {
+				resolve(doc);
+			}
 		});
-	})
-	.then(function(result){
-		return Promise.resolve(result.docs[0]);
+	});
+}
+
+function _next(sort, parentId) {
+	return new Promise(function(resolve, reject) {
+		database.pages.find({parentId: parentId, published: true, sort: {"$gt": sort}})
+		.projection({_id:1, menuTitle:1})
+		.sort({sort: 1})
+		.limit(1)
+		.exec(function(err,docs){
+			if (err) {
+				reject(err)
+			}
+			else {
+				resolve(docs[0]);
+			}
+		});
 	});
 };
 
 
 function _previous(sort, parentId) {
-	return database.pages.createIndex({ name: 'prevNext', index: { fields: ['parentId', 'published', 'sort'] }})
-	.then(function() {
-		return database.pages.find({
-			selector: { "parentId": parentId, "published": true, "sort": {"$lt": sort} },
-			fields: ["_id", "menuTitle"],
-			sort: ["parentId", "published", {"sort": "desc"}],
-			limit: 1
+	return new Promise(function(resolve, reject) {
+		database.pages.find({parentId: parentId, published: true, sort: {"$lt": sort}})
+		.projection({_id:1, menuTitle:1})
+		.sort({sort: -1})
+		.limit(1)
+		.exec(function(err,docs){
+			if (err) {
+				reject(err)
+			}
+			else {
+				resolve(docs[0]);
+			}
 		});
-	})
-	.then(function(result){
-		return Promise.resolve(result.docs[0]);
 	});
 }
 
@@ -40,13 +60,18 @@ async function _render(request, response) {
 	// is there a page id in the URL?
 	if (!request.params.id) {
 		// redirect to root page
-		const root = await database.pages.find({
-			selector: { parentId: null, showInMenu: true, published: true },
-			fields: ['_id'],
-			sort: ['parentId', 'showInMenu', 'published', 'sort'],
-			limit: 1
+		database.pages.find({ parentId: null, showInMenu: true, published: true })
+		.projection({ _id:1 })
+		.sort({sort: 1})
+		.limit(1)
+		.exec(function(err, docs) {
+			if (err) {
+				response.status(500).end(err);
+			}
+			else {
+				response.redirect("/" + docs[0]._id);
+			}
 		});
-		response.redirect("/" + root.docs[0]._id);
 		return;
 	}
 
@@ -54,22 +79,32 @@ async function _render(request, response) {
 	var refresh = typeof (request.query.flush) !== "undefined";
 
 	// get page, menu, breadcrumbs
-	const readResult = await Promise.all([
-		database.pages.get(request.params.id), 
-		menu.get(refresh),
-		breadcrumbs.get(request.params.id)
-	]);
-	var content = readResult[0];
-	content.menu = readResult[1];
-	content.breadcrumbs = readResult[2];
-	
+	const results = await Promise.all([
+		_getPage(request.params.id),
+		menu.get(refresh)
+	])
+	.catch(function(err){
+		console.error(err);
+	});
+	if (!results) {
+		response.status(500).end("page not found");
+		return;
+	}
+	var content = results[0];
+	content.menu = results[1];
+
 	// read previous and next page
 	const prevNext = await Promise.all([
 		_previous(content.sort, content.parentId),
-		_next(content.sort, content.parentId)
-	]);	
+		_next(content.sort, content.parentId),
+		breadcrumbs.get(request.params.id)
+	])
+	.catch(function(err){
+		console.error(err);
+	});
 	content.previous = prevNext[0];
 	content.next = prevNext[1];
+	content.breadcrumbs = prevNext[2];
 
 	// mark current entry in menu as active
 	for(var i=0; i<content.menu.length; i++) {				

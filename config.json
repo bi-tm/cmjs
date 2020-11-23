@@ -25,6 +25,15 @@
       { "name": "pageTypes" }
     ]  
   },
+  "nedb": {
+    "path": ".nedb",
+    "databases": ["pages","page_types"],
+    "index": {
+      "pages": [
+        { "fieldname": "parentId"}
+      ]
+    }
+  },
   "engine": {
     "module": "express-handlebars",
     "mountPath": "/",
