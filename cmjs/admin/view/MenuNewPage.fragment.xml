@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:u="sap.ui.unified">
+		<u:Menu>
+			<u:MenuItem
+				text="Vor dieser Page"
+				select=".onInsertBefore" />
+			<u:MenuItem
+				text="Nach dieser Page"
+				select=".onInsertAfter" />
+			<u:MenuItem
+				text="Unterhalb dieser Page"
+				startsSection="true"
+				select=".onInsertUnder" />
+		</u:Menu>
+</core:FragmentDefinition>

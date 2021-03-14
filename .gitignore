@@ -1,0 +1,14 @@
+node_modules
+coverage
+access.log
+.vscode
+.reuse
+dist
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+feste-feiern
+yarn.lock

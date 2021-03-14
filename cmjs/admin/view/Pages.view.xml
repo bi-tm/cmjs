@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<mvc:View
+	controllerName="cmjs.controller.Pages"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:l="sap.ui.layout"
+    xmlns:mvc="sap.ui.core.mvc">
+	
+    <NavContainer>
+        <pages>
+            <l:Splitter
+                id="mainSplitter"
+                height="100%"
+                width="100%">
+                <ScrollContainer>
+                    <layoutData>
+                        <l:SplitterLayoutData size="300px" />
+                    </layoutData>
+                    <content>
+                        <mvc:XMLView viewName="cmjs.view.PageTree"/>
+                    </content>
+                </ScrollContainer>
+                <ScrollContainer>
+                    <layoutData>
+                        <l:SplitterLayoutData size="auto" />
+                    </layoutData>
+                    <content>
+                        <mvc:JSView viewName="cmjs.view.Page"/>
+                    </content>
+                </ScrollContainer>
+            </l:Splitter>
+        </pages>
+    </NavContainer>
+</mvc:View>
+

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<mvc:View
+	controllerName="cmjs.controller.Sites"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+
+    <l:Splitter
+        id="mainSplitter"
+        height="100%"
+        width="100%">
+        <ScrollContainer>
+            <layoutData>
+                <l:SplitterLayoutData size="300px" />
+            </layoutData>
+            <content>
+                <List 
+                    items="{view>/sites}"
+                    mode="None">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="{i18n>webSites}"/>
+                            <ToolbarSpacer/>
+                            <Button icon="sap-icon://add-document" press=".onNewpagePressed"/>
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <items>
+                        <CustomListItem
+                            type="Navigation"
+                            press=".onListItemPress">
+                            <Text text="{view>_id}" class="sapUiTinyMargin"/>
+                        </CustomListItem>
+                    </items>
+                </List>
+            </content>
+        </ScrollContainer>
+        <VBox visible="{view>/showSite}" id="page" height="100%">
+            <layoutData>
+                <l:SplitterLayoutData size="auto" />
+            </layoutData>            
+            <items>
+                <f:SimpleForm
+                    layout="ResponsiveGridLayout"
+                    columnsL="1"
+                    columnsM="1"
+                    columnsXL="1"
+                    editable="true"
+                    emptySpanXL="6"
+                    emptySpanL="4"
+                    emptySpanM="0"
+                    emptySpanS="0"
+                    labelSpanXL="1"
+                    labelSpanL="2"
+                    labelSpanM="2"
+                    labelSpanS="12">
+                    <f:toolbar>
+                        <OverflowToolbar>
+                            <Title text="{view>_id}"/>
+                            <ToolbarSpacer/>
+							<Button icon="sap-icon://edit" text="{i18n>edit}" type="Emphasized" visible="{= ! ${view>/editable} }" press=".onEditPress"/>
+							<Button icon="sap-icon://delete" text="{i18n>delete}" type="Reject" visible="{= ! ${view>/editable} }" press=".onDeletePress"/>
+							<Button icon="sap-icon://accept" text="{i18n>save}" type="Accept" visible="{view>/editable}" press=".onSavePress"/>
+							<Button icon="sap-icon://decline" text="{i18n>cancel}" type="Reject" visible="{view>/editable}" press=".onCancelPress"/>
+                        </OverflowToolbar>
+                    </f:toolbar>
+                    <f:content>
+                        <Label text="{i18n>site}"/>
+                        <Input id="_id" value="{view>_id}" editable="{view>/new}"/>
+                    </f:content>
+                </f:SimpleForm>
+                <Table
+                    items="{view>domains}">
+                    <headerToolbar>
+                        <Toolbar>
+                            <ToolbarSpacer/>
+                            <Button icon="sap-icon://create-form" text="{i18n>addDomain}" type="Emphasized" enabled="{view>/editable}" press=".onDomainAdd"/>
+                        </Toolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column width="20em">
+                            <Label text="Domain"/>
+                        </Column>
+                        <Column>                        
+                            <Label text="Löschen"/>
+                        </Column>
+                    </columns>
+                    <ColumnListItem>
+                        <cells>
+                            <Input value="{view>}" editable="{view>/editable}"/>
+                            <Button icon="sap-icon://delete" type="Transparent" press=".onDomainDelete"  enabled="{view>/editable}"/>
+                        </cells>
+                    </ColumnListItem>
+                </Table>
+            </items>
+        </VBox>
+    </l:Splitter>
+
+</mvc:View>

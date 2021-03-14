@@ -1,0 +1,177 @@
+{
+	"_version": "1.12.0",
+	"sap.app": {
+		"id": "cmjs",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"resources": "resources.json",
+		"ach": "ach"
+	},
+
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "cmjs.view.App",
+			"type": "XML",
+			"async": true,
+			"id": "app"
+		},
+		"dependencies": {
+			"minUI5Version": "1.60.0",
+			"libs": {
+				"sap.ui.core": {},
+				"sap.m": {},
+				"sap.ui.layout": {}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "cmjs.i18n.i18n"
+				}
+			}
+		},
+		"resources": {
+			"css": [{
+				"uri": "css/style.css"
+			}]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"viewPath": "cmjs.view",
+				"controlId": "pageContainer",
+				"controlAggregation": "pages",
+				"clearAggregation": true,
+				"async": true
+			},
+			"routes": [
+				{
+					"pattern": "",
+					"name": "home",
+					"target": ["empty"]
+				},
+				{
+					"pattern": "pages",
+					"name": "pages",
+					"target": ["pages"]
+				},
+				{
+					"pattern": "page/{_id}",
+					"name": "page",
+					"target": ["pages"]
+				},
+				{
+					"pattern": "newpage/{relation}-{relationId}",
+					"name": "newpage",
+					"target": ["pages"]
+				},
+				{
+					"pattern": "media",
+					"name": "media",
+					"target": ["media"]
+				},
+				{
+					"pattern": "pagetypes",
+					"name": "pagetypes",
+					"target": ["pagetypes"]
+				},
+				{
+					"pattern": "pagetype/{_id}",
+					"name": "pagetype",
+					"target": ["pagetypes"]
+				},
+				{
+					"pattern": "sites",
+					"name": "sites",
+					"target": ["sites"]
+				},
+				{
+					"pattern": "site/{_id}",
+					"name": "site",
+					"target": ["sites"]
+				},
+				{
+					"pattern": "users",
+					"name": "users",
+					"target": ["users"]
+				},
+				{
+					"pattern": "user/{_id}",
+					"name": "user",
+					"target": ["users"]
+				}
+			],
+			"targets": {
+				"pages": {
+					"viewName": "Pages",
+					"viewId": "pages",
+					"viewLevel": 1
+				},
+				"tree": {
+					"viewName": "PageTree",
+					"viewId": "tree",
+					"viewLevel": 1
+				},
+				"page": {
+					"viewType": "JS",
+					"viewName": "Page",
+					"viewId": "page",
+					"viewLevel": 1
+				},
+				"media": {
+					"viewName": "Media",
+					"viewId": "media",
+					"viewLevel": 1
+				},
+				"pagetypes": {
+					"viewName": "PageTypes",
+					"viewId": "pagetypes",
+					"viewLevel": 1
+				},
+				"sites": {
+					"viewName": "Sites",
+					"viewId": "sites",
+					"viewLevel": 1
+				},
+				"users": {
+					"viewName": "Users",
+					"viewId": "users",
+					"viewLevel": 1
+				},
+				"empty": {
+					"viewName": "Empty",
+					"viewId": "empty",
+					"viewLevel": 1
+				}
+			}
+		}
+	}
+}

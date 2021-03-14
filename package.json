@@ -1,0 +1,26 @@
+{
+  "name": "admin5",
+  "version": "0.1.0",
+  "description": "CMS Admin based on OpenUI5",
+  "private": true,
+  "scripts": {
+    "start": "nodejs cmjs.js",
+    "build": "ui5 build self-contained --all --clean-dest --dest cmjs/dist"
+  },
+  "devDependencies": {
+    "@ui5/cli": "^2.6.6",
+    "lex-parser": "^0.1.4"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.2.0",
+    "express-http-proxy": "^1.6.2",
+    "express-middleware-upload": "0.0.4",
+    "express-nedb-rest": "^1.4.1",
+    "helmet": "^4.4.1",
+    "morgan": "^1.10.0",
+    "nedb": "^1.8.0",
+    "sharp": "^0.26.3"
+  }
+}

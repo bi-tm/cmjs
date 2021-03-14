@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<mvc:View
+	controllerName="cmjs.controller.Media"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:u="sap.ui.unified"
+	xmlns:mvc="sap.ui.core.mvc">
+
+	<OverflowToolbar>
+		<Title text="{i18n>media}"/>
+		<u:FileUploader
+			id="fileUploader"
+			name="file"
+			uploadUrl="/api/uploads/"
+			multiple="false"
+			sendXHR="true"
+			placeholder="Datei auswählen"
+			tooltip="Upload your file to server"
+			uploadComplete=".onUploadComplete"
+			width="50%"/>
+		<Button
+			text="Upload File"
+			press=".onUploadPress"/>
+	</OverflowToolbar>
+
+	<ScrollContainer
+		content="{images>/}">
+		<content>
+			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+				backgroundImage="/uploads/thumbnails/{images>name}" 
+				url="/uploads/{images>name}" 
+				scope="ActionRemove"
+				press=".onRemovePress">
+				<TileContent footer="{images>size} Bytes">
+					<NewsContent contentText="{images>name}" subheader="{images>mimeType}" press=".onTilePress"/>
+				</TileContent>
+			</GenericTile>
+		</content>
+	</ScrollContainer>
+</mvc:View>
