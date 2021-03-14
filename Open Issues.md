@@ -25,15 +25,12 @@ Open Issues
 - Welcome Page je Subsite
 - Hook, zum Setzen der Subsite
 
-## Datenbank
-- Script zum Anlegen einer Datenbank
-
 ## Frontend
 
 Allgemein
 =========
-- nach Login müssen die Daten richtig nachgelesen werden
-- Seite in mehrere Kategorien (wie machen wir das?)
+- automatisches UI5 build, wenn dist Verzeichnis fehlt
+- nach Login müssen die Daten richtig nachgelesen werden (im Moment muss man F5 drücken)
 - Umschalter zwischen Cookie Session und URL-Session
 - Preview
 - Deployment

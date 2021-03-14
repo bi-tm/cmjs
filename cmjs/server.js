@@ -58,14 +58,24 @@ module.exports = function(projectConfig) {
       app.get(/^\/[^\/]*$/, morgan('combined', { stream: accessLogStream }));
     }
 
+
     // serve static files of admin tool
     if (config.devMode) {
       app.use("/admin", express.static("./cmjs/admin"));
       app.use("/admin/resources", proxy("https://openui5.hana.ondemand.com/resources") );
     }
     else {
-      app.use("/", express.static("./cmjs/dist"));
-    }
+      if (!fs.existsSync("./dist")) {
+        // ui5 build
+        console.log("building ui5 admin tool ...")
+        var { spawn } = require('child_process');
+        var process = spawn("npx", ["ui5", "build", "self-contained", "--all"]);
+        process.on("exit",(code)=>{
+          console.log(`build process exited with code ${code}`);
+        });
+      }
+      app.use("/admin", express.static("./dist"));
+  }
 
     // serve public files of template
     app.use("/public", express.static(path.join(config.projectPath, "/template/public")));
