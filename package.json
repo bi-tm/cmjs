@@ -18,6 +18,7 @@
     "express-http-proxy": "^1.6.2",
     "express-middleware-upload": "0.0.4",
     "express-nedb-rest": "^1.4.1",
+    "fs-extra": "^9.1.0",
     "helmet": "^4.4.1",
     "morgan": "^1.10.0",
     "nedb": "^1.8.0",

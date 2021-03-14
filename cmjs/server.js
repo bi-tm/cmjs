@@ -1,12 +1,11 @@
-module.exports = function(localConfig) {
+module.exports = function(projectConfig) {
 
-  // overwrite default config with local values
-  var config = require("./config.json")
-  if (localConfig) {
-    Object.assign(config,localConfig);
+  var config = require("./config.json");
+  if (projectConfig) {
+    Object.assign(config,projectConfig);
   }
 
-  this.start = function(localConfig) {
+  this.start = function() {
 
     // load modules
     const express      = require('express')
@@ -17,7 +16,7 @@ module.exports = function(localConfig) {
         , cookieParser = require('cookie-parser')
         , sharp        = require("sharp")
         , morgan       = require('morgan')
-        , fs           = require('fs')
+        , fs           = require('fs-extra')
         , path         = require('path')
         , auth         = require("./auth")
         , session      = require("./session")
@@ -54,8 +53,10 @@ module.exports = function(localConfig) {
 
     // log
     // create a write stream (in append mode)
-    var accessLogStream = fs.createWriteStream(config.express.log, { flags: 'a' })
-    app.get(/^\/[^\/]*$/, morgan('combined', { stream: accessLogStream }));
+    if (config.log) {
+      var accessLogStream = fs.createWriteStream(config.log, { flags: 'a' })
+      app.get(/^\/[^\/]*$/, morgan('combined', { stream: accessLogStream }));
+    }
 
     // serve static files of admin tool
     if (config.devMode) {
@@ -99,7 +100,7 @@ module.exports = function(localConfig) {
     app.get("/:id?", renderer);
     
     // express listens 
-    const port = config.express.port || "8080";
+    const port = config.port || "8080";
     app.listen(port);
     console.log(`frontend running on http://localhost:${port}/`);
     console.log(`admin tool running on http://localhost:${port}/admin`);
