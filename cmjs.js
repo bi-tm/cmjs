@@ -20,7 +20,7 @@ var projectConfig = null;
 if (typeof(projectPath) === "string") {
     try {
         projectConfig = require(path.join(projectPath, "config.json"));
-        projectConfig.projectPath = projectPath;
+        projectConfig.projectPath = path.resolve(projectPath);
     }
     catch (err) {
         // it is okay, if there is no config file in project path
