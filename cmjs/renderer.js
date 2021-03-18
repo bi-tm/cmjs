@@ -32,8 +32,8 @@ async function _render(request, response) {
 		return;
 	}
 
-	// reset cache if query parameter ?flush is set
-	var refresh = typeof (request.query.flush) !== "undefined";
+	// reset cache if query parameter ?refresh is set
+	var refresh = typeof (request.query.refresh) !== "undefined";
 
 	// get page, menu, breadcrumbs
 	var content = await database.getPage(request.params.id);
@@ -70,7 +70,7 @@ async function _render(request, response) {
 		const hookName = require.resolve(path.join(config.projectPath, `/template/${content.pageType}.js`));
 		if (refresh) {
 			delete require.cache[hookName];
-		}
+		}		
 		var hooks = require(hookName);
 		Object.assign(content.helpers, hooks);
 		// call hook beforeRendering, if it is defined
@@ -79,7 +79,8 @@ async function _render(request, response) {
 		}
 	}
 	catch(e) {
-		// it is okay, if there is no Javascript code for a page template
+		// it is okay, if there is no Javascript code for a page template		
+		console.error(e);
 	}
 
 	// template helpers

@@ -6,6 +6,8 @@ Open Issues
 - Seite erst privat ändern, dann publizieren ?
 - Filter nach _Sites_
 - Editor Imageauswahl verbessern
+- Funktion "Seit löschen" geht nicht
+- URL wird zu oft geändert
 
 ### Seitentyp
 - Seitentyp "Link" ?
@@ -18,6 +20,7 @@ Open Issues
   
 ### Images
 - Anzeige des Image in LightBox oder Dialog Popup
+- Thumbnail erzeugen für neue Dateien
 
 ### Subsites
 - Sitetree je Subsite
