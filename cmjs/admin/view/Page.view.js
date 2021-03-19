@@ -48,9 +48,9 @@ function(SimpleForm, Select, Item, Button, Label, Text, Input, CheckBox, Switch,
 					new sap.m.OverflowToolbar({
 						content:  [
 							new Button({icon:"sap-icon://edit", text:"{i18n>edit}", type:"Emphasized", visible:"{= ! ${view>/editable} }", press:[controller.onEditPress, controller]}),
-							new Button({icon:"sap-icon://delete", text:"{i18n>delete}", type:"Reject", visible:"{= ! ${view>/editable} }", press:[controller.onDeletePress, controller]}),
 							new Button({icon:"sap-icon://accept", text:"{i18n>save}", type:"Accept", visible:"{view>/editable}", press:[controller.onSavePress, controller]}),
 							new Button({icon:"sap-icon://decline", text:"{i18n>cancel}", type:"Reject", visible:"{view>/editable}", press:[controller.onCancelPress, controller]}),
+							new Button({icon:"sap-icon://delete", text:"{i18n>delete}", visible:"{view>/editable}", press:[controller.onDeletePress, controller]}),
 							new sap.m.ToolbarSpacer(),
 							new sap.m.HBox({
 								items: [
@@ -89,7 +89,7 @@ function(SimpleForm, Select, Item, Button, Label, Text, Input, CheckBox, Switch,
 			parent.addContent( new Label({text: "{i18n>legacyUrl}"}));
 			parent.addContent( new Input({value: "{tree>legacyUrl}", editable:"{view>/editable}"}));
 			parent.addContent( new Label({text: "{i18n>title}"}));
-			parent.addContent( new Input({value: "{tree>title}", editable:"{view>/editable}", required: true}));
+			parent.addContent( new Input({value: "{tree>title}", editable:"{view>/editable}", required: true, liveChange: [oController.onTitleChange, oController]}));
 			parent.addContent( new Label({text: "{i18n>showInMenu}"}));
 			parent.addContent( new Switch({state: "{tree>showInMenu}", type:"AcceptReject", enabled:"{= ${view>/editable} && ${tree>published} }"}));
 			parent.addContent( new Label({text: "{i18n>menuTitle}"}));
@@ -121,8 +121,7 @@ function(SimpleForm, Select, Item, Button, Label, Text, Input, CheckBox, Switch,
 						case 'Text':
 							parent.addContent( new Input({
 								value:"{tree>" + field.id + "}", 
-								editable:"{view>/editable}",
-								liveChange: [oController.onTitleChange, oController]
+								editable:"{view>/editable}"
 							}));	
 							break;
 

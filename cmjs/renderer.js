@@ -11,58 +11,27 @@ const database     = require("./database")
 
 async function _render(request, response) {
 
-	// is there a page id in the URL?
-	if (!request.params.id) {
-		// redirect to root page
-		database.findPages(
-			{ parentId: null, showInMenu: true, published: true },
-			[ "_id" ],
-			{ sort: 1 },
-			1
-		)
-		.then(function(docs) {
-			if (docs.length) {
-				response.redirect("/" + docs[0]._id);
-			}
-			else {
-				response.status(404).end("no root page");
-			}
-		})
-		.catch(function(err){
-			response.status(500).end(err);
-		});
-		return;
-	}
+	var content = response.locals.content;
+	content.session = response.locals.session;
 
 	// reset cache if query parameter ?refresh is set
 	var refresh = typeof (request.query.refresh) !== "undefined";
 
-	// get page, menu, breadcrumbs
-	var content = await database.getPage(request.params.id);
-	if (!content) {
-		content = await database.findPages({legacyUrl: request.params.id})[0];
-	}
-	if (!content) {
-		response.status(500).end(`page ${request.params.id} not found`);
-		return;
-	}
-
 	// read menu and breadcrumbs
 	const data = await Promise.all([
 		menu.get(refresh),
-		breadcrumbs.get(content._id)
+		breadcrumbs.get(response.locals._id)
 	])
 	.catch(function(err){
 		console.error(err);
 	});
 	content.menu = data[0];
 	content.breadcrumbs = data[1];
-	content.session = response.locals.session;
-
+	
 	// mark current entry in menu as active
-	for(var i=0; i<content.menu.length; i++) {				
-		content.menu[i].active = (content.menu[i]._id === content._id);
-	}
+	content.menu.forEach(menuItem => {
+		menuItem.active = (menuItem._id === content._id);
+	})
 	
 	// CMJS  helpers
 	content.helpers = helpers;

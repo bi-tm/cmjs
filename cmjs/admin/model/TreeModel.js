@@ -84,7 +84,7 @@ sap.ui.define([
          */
         newPage: function(sPageType) {
             return {
-                _id:        Date.now(),
+                _id:        Date.now().toString(),
                 legacyUrl:  "neue-seite",
                 title:      "neue Seite",
                 pageType:   sPageType,

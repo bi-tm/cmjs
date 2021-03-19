@@ -89,7 +89,7 @@ database.findPages= function(selector, projection, sort, limit) {
  */
 database.getPage= function(_id, projection) {
     return new Promise(function(resolve, reject) {
-        var cursor = database.pages.findOne({_id:_id});
+        var cursor = database.pages.findOne({"_id":_id});
         if(projection) {
             cursor = cursor.projection(projection);
         }

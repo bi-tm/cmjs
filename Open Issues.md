@@ -6,6 +6,7 @@ Open Issues
 - Seite erst privat ändern, dann publizieren ?
 - Filter nach _Sites_
 - Editor Imageauswahl verbessern
+- Editor Link Auswahl verbessern
 - Funktion "Seit löschen" geht nicht
 - URL wird zu oft geändert
 
@@ -32,13 +33,7 @@ Open Issues
 
 Allgemein
 =========
-- automatisches UI5 build, wenn dist Verzeichnis fehlt
 - nach Login müssen die Daten richtig nachgelesen werden (im Moment muss man F5 drücken)
 - Umschalter zwischen Cookie Session und URL-Session
 - Preview
-- Deployment
-- Backup
-- Vererbung Felder und Helper
-- Entwicklungsmodus / Produktivmodus (Verzeichnis für /admin/ und /resources/)
-- Automatischer Build des OpenUI5 Frontends
 - Hook zum Setzen des Templates
