@@ -1,3 +1,4 @@
+const { fstat } = require("fs");
 const database     = require("./database")
 	, menu         = require("./menu")
 	, breadcrumbs  = require("./breadcrumbs")
@@ -5,6 +6,7 @@ const database     = require("./database")
 	, helpers      = require("./helpers")
 	, config       = require("./config.json")
 	, path         = require("path")
+	, fs           = require("fs")
 	;
 
 async function _render(request, response) {
@@ -45,7 +47,7 @@ async function _render(request, response) {
 		return;
 	}
 
-	// read previous and next page
+	// read menu and breadcrumbs
 	const data = await Promise.all([
 		menu.get(refresh),
 		breadcrumbs.get(content._id)
@@ -57,44 +59,47 @@ async function _render(request, response) {
 	content.breadcrumbs = data[1];
 	content.session = response.locals.session;
 
-	// CMJS  helpers
-	content.helpers = helpers;
-
 	// mark current entry in menu as active
 	for(var i=0; i<content.menu.length; i++) {				
 		content.menu[i].active = (content.menu[i]._id === content._id);
 	}
+	
+	// CMJS  helpers
+	content.helpers = helpers;
 
 	// hook functions of page type
-	try {
-		const hookName = require.resolve(path.join(config.projectPath, `/template/${content.pageType}.js`));
-		if (refresh) {
-			delete require.cache[hookName];
-		}		
-		var hooks = require(hookName);
-		Object.assign(content.helpers, hooks);
-		// call hook beforeRendering, if it is defined
-		if (typeof(hooks.beforeRendering) === "function") {
-			await hooks.beforeRendering(content, database);
+	const hookName = path.join(config.projectPath, `/template/${content.pageType}.js`);
+	if (fs.existsSync(hookName)) {
+		try {
+			if (refresh) {
+				delete require.cache[hookName];
+			}		
+			var hooks = require(hookName);
+			// call hook beforeRendering, if it is defined
+			if (typeof(hooks.beforeRendering) === "function") {
+				await hooks.beforeRendering(content, database);
+			}
 		}
-	}
-	catch(e) {
-		// it is okay, if there is no Javascript code for a page template		
-		console.error(e);
+		catch(e) {
+			console.error(e);
+		}
 	}
 
 	// template helpers
-	try {
-		const helpersName = require.resolve(path.join(config.projectPath, "/template/helpers.js"));
-		if (refresh) {
-			delete require.cache[helpersName];
+	const helpersName = path.join(config.projectPath, "/template/helpers.js");
+	if (fs.existsSync(helpersName)) {
+		try {
+			if (refresh) {
+				delete require.cache[helpersName];
+			}
+			const templateHelpers = require(helpersName);
+			Object.assign(content.helpers, templateHelpers);
+
 		}
-		const templateHelpers = require(helpersName);
-		Object.assign(content.helpers, templateHelpers);
+		catch(e) {
+			console.error(e);
+		}
 	}	
-	catch(e) {
-		// it is okay, if there is no Javascript code for helpers in the template
-	}
 	
 	// set layout
 	if (refresh) {
