@@ -7,8 +7,6 @@ Open Issues
 - Filter nach _Sites_
 - Editor Imageauswahl verbessern
 - Editor Link Auswahl verbessern
-- Funktion "Seit löschen" geht nicht
-- URL wird zu oft geändert
 
 ### Seitentyp
 - Seitentyp "Link" ?
