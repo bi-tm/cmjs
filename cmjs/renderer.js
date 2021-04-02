@@ -9,10 +9,7 @@ const database     = require("./database")
 	, fs           = require("fs")
 	;
 
-async function _render(request, response) {
-
-	var content = response.locals.content;
-	content.session = response.locals.session;
+async function _render(request, response, next) {
 
 	// reset cache if query parameter ?refresh is set
 	var refresh = typeof (request.query.refresh) !== "undefined";
@@ -25,19 +22,19 @@ async function _render(request, response) {
 	.catch(function(err){
 		console.error(err);
 	});
-	content.menu = data[0];
-	content.breadcrumbs = data[1];
+	response.locals.menu = data[0];
+	response.locals.breadcrumbs = data[1];
 	
 	// mark current entry in menu as active
-	content.menu.forEach(menuItem => {
-		menuItem.active = (menuItem._id === content._id);
+	response.locals.menu.forEach(menuItem => {
+		menuItem.active = (menuItem._id === response.locals._id);
 	})
 	
 	// CMJS  helpers
-	content.helpers = helpers;
+	response.locals.helpers = helpers;
 
 	// hook functions of page type
-	const hookName = path.join(config.projectPath, `/template/${content.pageType}.js`);
+	const hookName = path.join(config.projectPath, `/template/${response.locals.pageType}.js`);
 	if (fs.existsSync(hookName)) {
 		try {
 			if (refresh) {
@@ -46,7 +43,7 @@ async function _render(request, response) {
 			var hooks = require(hookName);
 			// call hook beforeRendering, if it is defined
 			if (typeof(hooks.beforeRendering) === "function") {
-				await hooks.beforeRendering(content, database);
+				await hooks.beforeRendering(response.locals, database);
 			}
 		}
 		catch(e) {
@@ -62,7 +59,7 @@ async function _render(request, response) {
 				delete require.cache[helpersName];
 			}
 			const templateHelpers = require(helpersName);
-			Object.assign(content.helpers, templateHelpers);
+			Object.assign(response.locals.helpers, templateHelpers);
 
 		}
 		catch(e) {
@@ -74,11 +71,11 @@ async function _render(request, response) {
 	if (refresh) {
 		await layouts.refresh();
 	}
-	content.layout = layouts.get_by_host(request.headers.host);
+	response.locals.layout = layouts.get_by_host(request.headers.host);
 
 	// render 
-	content.cache = !refresh;
-	response.render(content.pageType, content, function (error, html) {
+	response.locals.cache = !refresh;
+	response.render(response.locals.pageType, function (error, html) {
 		if (error) {
 			// render error
 			console.error(error.message);
@@ -92,9 +89,9 @@ async function _render(request, response) {
 };
 
 
-module.exports = function (request, response) {
+module.exports = function (request, response, next) {
 	try {
-		_render(request, response);
+		_render(request, response, next);		
 	}
 	catch(error) {
 		// pouchdb error

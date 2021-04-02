@@ -35,7 +35,7 @@ async function loadContent(request, response, next) {
 		response.locals = await database.findPages({legacyUrl: request.params.id})[0];
 	}
 	if (content) {
-    response.locals.content = content;
+    Object.assign(response.locals, content);
     next();
   }
   else {
@@ -151,7 +151,9 @@ module.exports = function(projectConfig) {
     app.engine(".hbs", engine);
     app.set('view engine', ".hbs");
     app.set("views", path.join(config.projectPath,"template")); 
-    app.enable("view cache");
+    if (!config.devMode) {
+      app.enable("view cache");
+    }
     app.get("/", redirectToRoot);
     app.get("/*/:id", redirectToShortUrl);
     app.get("/:id", loadContent, renderer);
