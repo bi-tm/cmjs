@@ -21,6 +21,10 @@
 		<Button
 			text="Upload File"
 			press=".onUploadPress"/>
+		<Button
+		 	icon="sap-icon://synchronize"
+			tooltip="{i18n>refresh}"
+			press=".onRefreshPress"/>
 	</OverflowToolbar>
 
 	<ScrollContainer
@@ -31,7 +35,7 @@
 				url="/uploads/{images>name}" 
 				scope="ActionRemove"
 				press=".onRemovePress">
-				<TileContent footer="{images>size} Bytes">
+				<TileContent>
 					<NewsContent contentText="{images>name}" subheader="{images>mimeType}" press=".onTilePress"/>
 				</TileContent>
 			</GenericTile>

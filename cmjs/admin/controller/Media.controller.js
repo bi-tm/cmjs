@@ -75,6 +75,10 @@ sap.ui.define([
 			}).then(function() {
 				oFileUploader.clear();
 			});
+		},
+
+		onRefreshPress() {
+			ImageModel.load(true);
 		}
 
 	});

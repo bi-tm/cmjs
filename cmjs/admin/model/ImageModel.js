@@ -26,12 +26,16 @@ sap.ui.define([
         
         /**
          * loads images from /api/uploads
-         * @param {boolean} reload
+         * @param {boolean} refresh
          * @returns Promise
          */
-        load: function(reload) {
-            if (!loadPromise || reload) {
-                loadPromise =  Ajax({url:"/api/uploads"})
+        load: function(refresh) {
+            if (!loadPromise || refresh) {
+                var url = "/api/uploads";
+                if (refresh) {
+                    url = url + "?refresh";
+                }
+                loadPromise =  Ajax({url:url})
                 .then(function(aImages) {
                     this.setData(
                         aImages
