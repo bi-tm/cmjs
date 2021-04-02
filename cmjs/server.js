@@ -56,10 +56,8 @@ module.exports = function(projectConfig) {
     const express      = require('express')
         , helmet       = require("helmet")
         , proxy        = require('express-http-proxy')
-        , emu          = require('express-middleware-upload')
         , handlebars   = require("express-handlebars")
         , cookieParser = require('cookie-parser')
-        , sharp        = require("sharp")
         , morgan       = require('morgan')
         , fs           = require('fs-extra')
         , path         = require('path')
@@ -67,6 +65,7 @@ module.exports = function(projectConfig) {
         , session      = require("./session")
         , database     = require('./database')
         , renderer     = require("./renderer")
+        , uploads      = require("./uploads")
         ;
 
     console.log(`projectPath = ${config.projectPath}`);
@@ -92,6 +91,9 @@ module.exports = function(projectConfig) {
     // database api
     app.use("/api/db", database.restApi);
 
+    // api to maintain uploads
+    app.use("/api/uploads/:path?", uploads);  
+
     // set session in res.locals.session
     app.use(session.getByQueryParameter);
     app.use(session.getByCookie);
@@ -102,7 +104,6 @@ module.exports = function(projectConfig) {
       var accessLogStream = fs.createWriteStream(config.log, { flags: 'a' })
       app.get(/^\/[^\/]*$/, morgan('combined', { stream: accessLogStream }));
     }
-
 
     // serve static files of admin tool
     if (config.devMode) {
@@ -127,21 +128,7 @@ module.exports = function(projectConfig) {
 
     // serve public files of uploads
     app.use("/uploads", express.static(path.join(config.projectPath, "/uploads")));
-    
-    // api to maintain uploads
-    app.use(path.join("/api/uploads", "/:path?"), emu({
-      path: path.join(config.projectPath, "/uploads"),
-      postProcessing: function(req, res, next) {
-        // create thumbnails
-        for(var file of req.files) {
-          sharp(file.storagePath)
-          .resize(170,170,{fit:"inside"})
-          .toFile(file.storagePath.replace(/^(.*)\/([^\/]+)$/,"$1/thumbnails/$2"), function(err,info){});
-        }
-        next();
-      }
-    }));  
-        
+            
     // template engine
     const engine = handlebars({
       "defaultLayout":"default",
