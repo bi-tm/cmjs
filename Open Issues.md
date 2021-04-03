@@ -7,6 +7,7 @@ Open Issues
 - Filter nach _Sites_
 - Editor Imageauswahl verbessern
 - Editor Link Auswahl verbessern
+- Editor in HTML-Source umschaltbar
 
 ### Seitentyp
 - Seitentyp "Link" ?

@@ -128,7 +128,7 @@ module.exports = function(projectConfig) {
 
     // serve public files of uploads
     app.use("/uploads", express.static(path.join(config.projectPath, "/uploads")));
-            
+
     // template engine
     const engine = handlebars({
       "defaultLayout":"default",
@@ -141,10 +141,10 @@ module.exports = function(projectConfig) {
     if (!config.devMode) {
       app.enable("view cache");
     }
+
     app.get("/", redirectToRoot);
     app.get("/*/:id", redirectToShortUrl);
     app.get("/:id", loadContent, renderer);
-
     
     // express listens 
     const port = config.port || "8080";
