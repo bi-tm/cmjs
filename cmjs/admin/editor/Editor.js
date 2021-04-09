@@ -245,18 +245,6 @@ sap.ui.define([
             break;
         }
     };
-    Editor.prototype._getLanguageTinyMCE = function () {
-        var o = new sap.ui.core.Locale(Core.getConfiguration().getLanguage()),
-        f = o.getLanguage(),
-        r = o.getRegion(),
-        m = {
-            "zh": "zh-" + (r ? r.toLowerCase() : "cn"),
-            "sh": "sr",
-            "hi": "en"
-        };
-        f = m[f] ? m[f] : f;
-        return f;
-    };
     Editor.prototype.exitTinyMCE = function () {
         this._bUnloading = true;
         ResizeHandler.deregister(this._resizeHandlerId);
