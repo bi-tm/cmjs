@@ -83,15 +83,8 @@ sap.ui.define([
     Editor._lastId = 0;
     Editor._iCountInstances = 0;
     Editor.loadTinyMCE = function () {
-        var tinymce = sap.ui.resource('cmjs/editor/tinymce', 'tinymce.min.js'),
-        querySelector = document.querySelector("#cmjs-editor"),
-        src = querySelector ? querySelector.getAttribute("src") : "";
-        if (tinymce !== src && Editor._iCountInstances === 1) {
-            delete window.tinymce;
-            delete window.TinyMCE;
-            Editor.pLoadTinyMCE = null;
-        }
         if (!Editor.pLoadTinyMCE) {
+            var tinymce = sap.ui.resource('cmjs/editor/tinymce', 'tinymce.min.js');
             Editor.pLoadTinyMCE = new Promise(function (resolve, reject) {
                 includeScript(tinymce, "cmjs-editor", resolve, reject);
             });
@@ -115,12 +108,11 @@ sap.ui.define([
         this._textAreaDom.style.width = "100%";
     };
     Editor.prototype.onBeforeRendering = function () {
-        if (!window.tinymce || window.tinymce.majorVersion != "4") {
+        if (!window.tinymce) {
             this._TinyMCEStatus = EditorStatus.Loading;
             this._pTinyMCELoaded = Editor.loadTinyMCE().then(function () {
                 this._TinyMCEStatus = EditorStatus.Loaded;
-            }
-                    .bind(this));
+            }.bind(this));
         } else {
             this._pTinyMCELoaded = Promise.resolve();
             this._TinyMCEStatus = EditorStatus.Loaded;
@@ -128,26 +120,26 @@ sap.ui.define([
     };
     Editor.prototype.onAfterRendering = function () {
         var domRef = this.getDomRef();
-        if (!window.tinymce || window.tinymce.majorVersion != "4") {
-            this._pTinyMCELoaded.then(this.onAfterRendering.bind(this));
-        } else if (domRef) {
-            switch (this._TinyMCEStatus) {
-            case EditorStatus.Initializing:
-                domRef.appendChild(this._textAreaDom);
-                break;
-            case EditorStatus.Loaded:
-            case EditorStatus.Loading:
-                this.getDomRef().appendChild(this._textAreaDom);
-                this.reinitializeTinyMCE();
-                break;
-            case EditorStatus.Ready:
-                domRef.appendChild(this._textAreaDom);
-                this.reinitializeTinyMCE();
-                break;
-            default:
-                Log.error("Unknown TinyMCE status: " + this._TinyMCEStatus);
-                break;
-            }
+        if (domRef) {
+            this._pTinyMCELoaded.then(function(){
+                switch (this._TinyMCEStatus) {
+                case EditorStatus.Initializing:
+                    domRef.appendChild(this._textAreaDom);
+                    break;
+                case EditorStatus.Loaded:
+                case EditorStatus.Loading:
+                    domRef.appendChild(this._textAreaDom);
+                    this.reinitializeTinyMCE();
+                    break;
+                case EditorStatus.Ready:
+                    domRef.appendChild(this._textAreaDom);
+                    this.reinitializeTinyMCE();
+                    break;
+                default:
+                    Log.error("Unknown TinyMCE status: " + this._TinyMCEStatus);
+                    break;
+                }
+            }.bind(this));
         }
     };
     Editor.prototype.reinitialize = function () {
@@ -258,7 +250,7 @@ sap.ui.define([
         case EditorStatus.Loaded:
             break;
         case EditorStatus.Initializing:
-            this._pTinyMCEInitialized.then(this._removeEditorTinyMCE.bind(this, this._oEditor));
+            this._pTinyMCEInitialized.then(this._removeEditorTinyMCE.bind(this));
             break;
         case EditorStatus.Ready:
             this._oEditor.remove();
@@ -277,30 +269,27 @@ sap.ui.define([
         if (this._bInitializationPending || this._bUnloading) {
             return;
         }
-        var r = function () {
+        var removeEditor = function () {
             if (this._oEditor) {
                 this._oEditor.remove();
             }
             this._initializeTinyMCE();
-        }
-        .bind(this);
+        }.bind(this);
         switch (this._TinyMCEStatus) {
         case EditorStatus.Initial:
             break;
         case EditorStatus.Loading:
             this._bInitializationPending = true;
-            this._pTinyMCELoaded.then(r);
+            this._pTinyMCELoaded.then(removeEditor);
             break;
         case EditorStatus.Initializing:
             this._bInitializationPending = true;
-            this._pTinyMCEInitialized.then(r);
+            this._pTinyMCEInitialized.then(removeEditor);
             break;
         case EditorStatus.Loaded:
         case EditorStatus.Ready:
             this._bInitializationPending = true;
-            setTimeout(function () {
-                r();
-            }, 0);
+            setTimeout(removeEditor,0);
             break;
         default:
             Log.error("Unknown TinyMCE status: " + this._TinyMCEStatus);
@@ -336,19 +325,17 @@ sap.ui.define([
             this._bInitializationPending = false;
             this._TinyMCEStatus = EditorStatus.Initializing;
             this._textAreaDom.value = this._patchTinyMCEValue(this.getValue());
-            window.tinymce.init(this._createConfigTinyMCE(function () {
-                    this._TinyMCEStatus = EditorStatus.Ready;
-                    setTimeout(function () {
-                        if (!this._bInitializationPending) {
-                            this._onAfterReadyTinyMCE();
-                        }
-                        resolve();
-                    }
-                        .bind(this), 0);
+            var oConfig = this._createConfigTinyMCE();
+            oConfig.init_instance_callback = function (editor) {
+                this._oEditor = editor;
+                this._TinyMCEStatus = EditorStatus.Ready;
+                if (!this._bInitializationPending) {
+                    this._onAfterReadyTinyMCE();
                 }
-                    .bind(this)));
-        }
-                .bind(this));
+                resolve();
+            }.bind(this)
+            window.tinymce.init(oConfig);
+        }.bind(this));
     };
     Editor.prototype._patchTinyMCEValue = function (value) {
         if (value.indexOf("<!--") === 0) {
@@ -411,9 +398,6 @@ sap.ui.define([
             }.bind(this));
         }
     };
-    Editor.prototype._tinyMCEDesktopDetected = function () {
-        return window.tinymce && window.tinymce.Env.desktop;
-    };
     Editor.prototype.fireReadyTinyMCE = function () {
         switch (this._TinyMCEStatus) {
         case EditorStatus.Initial:
@@ -439,27 +423,21 @@ sap.ui.define([
         var oConfig = {
             directionality: "ltr",
             selector: "[id='" + this._textAreaId + "']",
-            theme: "modern",
+            theme: "silver",
             menubar: false,
             language: "de",
             browser_spellcheck: true,
             convert_urls: false,
             plugins: "lists,image,link,table",
-            toolbar_items_size: 'small',
             toolbar: ["bold italic underline strikethrough fontsizeselect | alignleft aligncenter alignright alignjustify | cut copy paste | bullist numlist outdent indent | table | undo redo | image | link unlink"],
             statusbar: false,
             image_advtab: true,
             readonly: !this.getEditable(),
-            nowrap: false,
-            init_instance_callback: function (h) {
-                this._oEditor = h;
-                callback();
-            }.bind(this)
+            nowrap: false
         };
         this.fireBeforeEditorInit({
             configuration: oConfig
         });
-        this._bHasNativeMobileSupport = oConfig.mobile;
         return oConfig;
     };
     Editor.prototype._resizeEditorTinyMCE = function () {

@@ -3,6 +3,6 @@
   "port": "8080",
   "log": "access.log",
   "salt": "8465165481668489",
-  "devMode": false,
+  "devMode": true,
   "autocompactionInterval":600000
 }
