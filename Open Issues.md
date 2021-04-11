@@ -8,6 +8,8 @@ Open Issues
 - Editor Imageauswahl verbessern
 - Editor Link Auswahl verbessern
 - Editor in HTML-Source umschaltbar
+- Drag&Drop Sortierung klappt nicht
+- Neue Seite, Feld "sort" fehlt
 
 ### Seitentyp
 - Seitentyp "Link" ?
@@ -17,16 +19,17 @@ Open Issues
 	- Number
 	- Time
 	- DateTime
+	- Media File
   
 ### Images
 - Anzeige des Image in LightBox oder Dialog Popup
-- Thumbnail erzeugen für neue Dateien
 
 ### Subsites
 - Sitetree je Subsite
 - 404 page je Subsite
 - Welcome Page je Subsite
 - Hook, zum Setzen der Subsite
+- Subsite Titel als Browser Titel (?)
 
 ## Frontend
 
@@ -35,4 +38,4 @@ Allgemein
 - nach Login müssen die Daten richtig nachgelesen werden (im Moment muss man F5 drücken)
 - Umschalter zwischen Cookie Session und URL-Session
 - Preview
-- Hook zum Setzen des Templates
+- HTTPS
