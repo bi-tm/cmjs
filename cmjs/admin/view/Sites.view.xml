@@ -69,6 +69,10 @@
                     <f:content>
                         <Label text="{i18n>site}"/>
                         <Input id="_id" value="{view>_id}" editable="{view>/new}"/>
+                        <Label text="{i18n>title}"/>
+                        <Input value="{view>title}" editable="{view>/editable}"/>
+                        <Label text="{i18n>layout}"/>
+                        <Input value="{view>layout}" editable="{view>/editable}"/>
                     </f:content>
                 </f:SimpleForm>
                 <Table
