@@ -3,6 +3,10 @@ var menu = require("./menu");
 var breadcrumbs = require("./breadcrumbs");
 
 module.exports = async function(request, response, next) {
+
+    // reset cache ?
+    response.locals.cache = (typeof(request.query.refresh) === "undefined");
+
     // get page
     var content = await database.getPage(request.params.id);
     if (!content) {
@@ -12,12 +16,9 @@ module.exports = async function(request, response, next) {
         // copy page data to repsonse.locals
         Object.assign(response.locals, content);
 
-        // reset menu cache ?
-        var refresh = typeof(request.query.refresh) !== "undefined";
-
         // read menu and breadcrumbs
         const data = await Promise.all([
-                menu.get(refresh),
+                menu.get(!response.locals.cache),
                 breadcrumbs.get(response.locals._id)
             ])
             .catch(function(err) {

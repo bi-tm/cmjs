@@ -8,9 +8,6 @@ const database = require("./database"),
 
 async function _render(request, response, next) {
 
-    // reset cache if query parameter ?refresh is set
-    var refresh = typeof(request.query.refresh) !== "undefined";
-
     // CMJS  helpers
     response.locals.helpers = helpers;
 
@@ -18,7 +15,7 @@ async function _render(request, response, next) {
     const hookName = path.join(config.projectPath, `/template/${response.locals.pageType}.js`);
     if (fs.existsSync(hookName)) {
         try {
-            if (refresh) {
+            if (!response.locals.cache) {
                 delete require.cache[hookName];
             }
             var hooks = require(hookName);
@@ -39,7 +36,7 @@ async function _render(request, response, next) {
     const helpersName = path.join(config.projectPath, "/template/helpers.js");
     if (fs.existsSync(helpersName)) {
         try {
-            if (refresh) {
+            if (!response.locals.cache) {
                 delete require.cache[helpersName];
             }
             const templateHelpers = require(helpersName);
@@ -52,14 +49,13 @@ async function _render(request, response, next) {
 
     // set layout, if not set by hook function
     if (!response.locals.layout) {
-        if (refresh) {
+        if (!response.locals.cache) {
             await layouts.refresh();
         }
         response.locals.layout = layouts.get_by_host(request.headers.host);
     }
 
     // render 
-    response.locals.cache = !refresh;
     response.render(response.locals.pageType, function(error, html) {
         if (error) {
             // render error
