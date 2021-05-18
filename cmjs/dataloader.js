@@ -16,16 +16,22 @@ module.exports = async function(request, response, next) {
         // copy page data to repsonse.locals
         Object.assign(response.locals, content);
 
-        // read menu and breadcrumbs
-        const data = await Promise.all([
-                menu.get(!response.locals.cache),
-                breadcrumbs.get(response.locals._id)
-            ])
+        // read menu and breadcrumbs parallel
+        var dbRequests = [
+            menu.get(!response.locals.cache),
+            breadcrumbs.get(response.locals._id)
+        ];
+        if (response.locals.parentId) {
+            // allso read parent pager
+            dbRequests.push(database.getPage(response.locals.parentId));
+        }
+        const data = await Promise.all(dbRequests)
             .catch(function(err) {
                 console.error(err);
             });
         response.locals.menu = data[0];
         response.locals.breadcrumbs = data[1];
+        response.locals.parent = data[2];
 
         // mark current entry in menu as active
         response.locals.menu.forEach(menuItem => {
