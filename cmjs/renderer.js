@@ -1,7 +1,5 @@
 const { fstat } = require("fs");
 const database = require("./database"),
-    menu = require("./menu"),
-    breadcrumbs = require("./breadcrumbs"),
     layouts = require("./layouts"),
     helpers = require("./helpers"),
     config = require("./config.json"),
@@ -12,22 +10,6 @@ async function _render(request, response, next) {
 
     // reset cache if query parameter ?refresh is set
     var refresh = typeof(request.query.refresh) !== "undefined";
-
-    // read menu and breadcrumbs
-    const data = await Promise.all([
-            menu.get(refresh),
-            breadcrumbs.get(response.locals._id)
-        ])
-        .catch(function(err) {
-            console.error(err);
-        });
-    response.locals.menu = data[0];
-    response.locals.breadcrumbs = data[1];
-
-    // mark current entry in menu as active
-    response.locals.menu.forEach(menuItem => {
-        menuItem.active = (menuItem._id === response.locals._id);
-    })
 
     // CMJS  helpers
     response.locals.helpers = helpers;

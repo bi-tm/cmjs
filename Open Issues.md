@@ -15,11 +15,11 @@ Open Issues
 - Seitentyp "Link" ?
 - Feld Typen:
 	- Email
-	- URL
+	- URL 
 	- Number
-	- Time
-	- DateTime
-	- Media File
+	- Time Time Picker
+	- DateTime -> Date Time Picker
+	- Media File -> Wertehilfe
   
 ### Images
 - Anzeige des Image in LightBox oder Dialog Popup
