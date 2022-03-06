@@ -73,8 +73,10 @@ module.exports = function(projectConfig) {
         app.use("/api/uploads/:path?", uploads);
 
         // set session in res.locals.session
-        app.use(session.getByQueryParameter);
         app.use(session.getByCookie);
+        if (config.session === "queryParaneter") {
+            app.use(session.getByQueryParameter);
+        }
 
         // log
         // create a write stream (in append mode)
