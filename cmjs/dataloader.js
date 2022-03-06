@@ -4,9 +4,6 @@ var breadcrumbs = require("./breadcrumbs");
 
 module.exports = async function(request, response, next) {
 
-    // reset cache ?
-    response.locals.cache = (typeof(request.query.refresh) === "undefined");
-
     // get page
     var content = await database.getPage(request.params.id);
     if (!content) {

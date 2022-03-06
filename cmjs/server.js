@@ -1,5 +1,7 @@
 const { nextTick } = require('process');
 
+var config = require("./config.json");
+
 async function redirectToRoot(request, response) {
     // redirect to root page
     try {
@@ -21,9 +23,13 @@ function redirectToShortUrl(request, response) {
     response.redirect("/" + request.params.id);
 }
 
+function cacheSwitch(request, response, next) {
+    response.locals.cache = (typeof(request.query.refresh) === "undefined") && ! config.devMode;
+    next();
+}
+
 module.exports = function(projectConfig) {
 
-    var config = require("./config.json");
     if (projectConfig) {
         Object.assign(config, projectConfig);
     }
@@ -117,13 +123,16 @@ module.exports = function(projectConfig) {
         app.engine(".hbs", engine);
         app.set('view engine', ".hbs");
         app.set("views", path.join(config.projectPath, "template"));
-        if (!config.devMode) {
+        if (config.devMode) {
+            app.disable("view cache");
+        } 
+        else {
             app.enable("view cache");
         }
 
         app.get("/", redirectToRoot);
         app.get("/*/:id", redirectToShortUrl);
-        app.get("/:id", dataloader, renderer);
+        app.get("/:id", cacheSwitch, dataloader, renderer);
 
         // express listens 
         const port = config.port || "8080";
