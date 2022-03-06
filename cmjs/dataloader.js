@@ -30,6 +30,11 @@ module.exports = async function(request, response, next) {
         response.locals.breadcrumbs = data[1];
         response.locals.parent = data[2];
 
+        // read grandparent
+        if (response.locals.parent.parentId) {
+            response.locals.grandparent= await database.getPage(response.locals.parent.parentId);
+        }
+
         // mark current entry in menu as active
         response.locals.menu.forEach(menuItem => {
                 menuItem.active = (menuItem._id === response.locals._id);
