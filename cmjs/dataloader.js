@@ -31,7 +31,7 @@ module.exports = async function(request, response, next) {
         response.locals.parent = data[2];
 
         // read grandparent
-        if (response.locals.parent.parentId) {
+        if (response.locals.parent && response.locals.parent.parentId) {
             response.locals.grandparent= await database.getPage(response.locals.parent.parentId);
         }
 
