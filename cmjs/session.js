@@ -44,7 +44,7 @@ const session = {
     getByCookie: function(req, res, next){
         if (!res.locals.session && req.cookies.cmjs) {
             const sessionId = req.cookies.cmjs;
-            result.locals.session = sessions[sessionId];
+            res.locals.session = sessions[sessionId];
         }
         next();        
     },
