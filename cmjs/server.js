@@ -92,7 +92,7 @@ module.exports = function(projectConfig) {
         }
 
         // serve static files of admin tool
-        if (!config.devMode) {
+        if (config.devMode) {
             app.use("/admin", express.static("./cmjs/admin"));
             app.use("/admin/resources", proxy("https://openui5.hana.ondemand.com/resources"));
         } else {
