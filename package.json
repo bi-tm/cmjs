@@ -4,8 +4,7 @@
   "description": "CMS Admin based on OpenUI5",
   "private": true,
   "scripts": {
-    "start": "nodejs cmjs.js",
-    "build": "ui5 build self-contained --all --clean-dest --dest cmjs/dist"
+    "start": "node cmjs.js"
   },
   "devDependencies": {
     "@ui5/cli": "^2.6.6",
