@@ -10,7 +10,8 @@ var result = {
      * @returns {string} layout
      */
     get_by_host: function(sHost) {
-        return this.layouts[sHost] || "default.hbs";
+        const host = sHost.split(":",1)[0];
+        return this.layouts[host] || "default.hbs";
     },
 
     /**
