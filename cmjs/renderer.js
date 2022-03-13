@@ -19,6 +19,14 @@ async function _render(request, response, next) {
                 delete require.cache[hookName];
             }
             var hooks = require(hookName);
+            // call hook redirect, if it is defined
+            if (typeof(hooks.redirect) === "function") {
+                var target = await hooks.redirect(response.locals, database);
+                if (target) {
+                    response.redirect(target);
+                    return;
+                }
+            }
             // call hook beforeRendering, if it is defined
             if (typeof(hooks.beforeRendering) === "function") {
                 await hooks.beforeRendering(response.locals, database);
