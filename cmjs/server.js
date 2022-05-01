@@ -143,8 +143,7 @@ module.exports = function (projectConfig) {
       app.enable("view cache");
     }
 
-    app.get("/index.*", redirectToRoot);
-    app.get("/", redirectToRoot);
+    app.get(["/", "/index.html", "/index.htm", "/index.php"], redirectToRoot);
     app.get("/*/:id", redirectToShortUrl);
     app.get("/:id", cacheSwitch, dataloader, renderer);
 
