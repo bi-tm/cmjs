@@ -23,9 +23,12 @@ module.exports = async function (request, response, next) {
   // get page
   var content = await database.getPage(request.params.id);
   if (!content) {
-    content = await database.findPages({
+    const legacy = await database.findPages({
       legacyUrl: request.params.id,
-    })[0];
+    });
+    if (Array.isArray(legacy) && legacy.length) {
+      content = legacy[0];
+    }
   }
   if (!content) {
     response.redirect("/");
