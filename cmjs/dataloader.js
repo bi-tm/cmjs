@@ -2,6 +2,23 @@ var database = require("./database");
 var menu = require("./menu");
 var breadcrumbs = require("./breadcrumbs");
 
+function getChildren(_id) {
+  return database.getChildren(_id).then(function (children) {
+    return children.sort((a, b) => {
+      const typeSort = "PremiumPage,BasisPlusPage,BasisPage";
+      const catA = typeSort.indexOf(a.pageType);
+      const catB = typeSort.indexOf(b.pageType);
+      if (catA < catB) {
+        return -1;
+      } else if (catA === catB) {
+        return a.sort - b.sort;
+      } else {
+        return 1;
+      }
+    });
+  });
+}
+
 module.exports = async function (request, response, next) {
   // get page
   var content = await database.getPage(request.params.id);
@@ -38,6 +55,9 @@ module.exports = async function (request, response, next) {
         response.locals.parent.parentId
       );
     }
+
+    // read children
+    response.locals.children = await getChildren(response.locals._id);
 
     // mark current entry in menu as active
     response.locals.menu.forEach((menuItem) => {
