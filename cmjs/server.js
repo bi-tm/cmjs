@@ -84,8 +84,9 @@ module.exports = function (projectConfig) {
 
     // set session in res.locals.session
     app.use(session.getByCookie);
-    if (config.session === "queryParaneter") {
+    if (config.session === "queryParameter") {
       app.use(session.getByQueryParameter);
+      session.enableQueryParameter();
     }
 
     // log
