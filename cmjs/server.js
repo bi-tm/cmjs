@@ -82,6 +82,13 @@ module.exports = function (projectConfig) {
     // api to maintain uploads
     app.use("/api/uploads/:path?", uploads);
 
+    // serve static files of admin tool
+    app.use(
+      "/admin/resources",
+      proxy("https://openui5.hana.ondemand.com/resources")
+    );
+    app.use("/admin", express.static("./cmjs/admin"));
+
     // set session in res.locals.session
     app.use(session.getByCookie);
     if (config.session === "queryParameter") {
@@ -98,11 +105,11 @@ module.exports = function (projectConfig) {
 
     // serve static files of admin tool
     // if (config.devMode) {
-    app.use("/admin", express.static("./cmjs/admin"));
-    app.use(
-      "/admin/resources",
-      proxy("https://openui5.hana.ondemand.com/resources")
-    );
+    // app.use("/admin", express.static("./cmjs/admin"));
+    // app.use(
+    //   "/admin/resources",
+    //   proxy("https://openui5.hana.ondemand.com/resources")
+    // );
     // } else {
     //     if (!fs.existsSync("./dist")) {
     //         // ui5 build
@@ -129,7 +136,7 @@ module.exports = function (projectConfig) {
     );
 
     // template engine
-    const engine = handlebars({
+    const engine = handlebars.engine({
       defaultLayout: "default",
       extname: ".hbs",
       defaultLayout: "default",
