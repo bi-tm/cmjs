@@ -36,6 +36,7 @@ module.exports = function (projectConfig) {
   if (projectConfig) {
     Object.assign(config, projectConfig);
   }
+  console.log("configuration", JSON.stringify(config));
 
   this.start = function () {
     // load modules
