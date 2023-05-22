@@ -1,6 +1,5 @@
 const { fstat } = require("fs");
 const database = require("./database"),
-    layouts = require("./layouts"),
     helpers = require("./helpers"),
     config = require("./config.json"),
     path = require("path"),
@@ -11,8 +10,11 @@ async function _render(request, response, next) {
     // CMJS  helpers
     response.locals.helpers = helpers;
 
-    // hook functions of page type
-    const hookName = path.join(config.projectPath, `/template/${response.locals.pageType}.js`);
+    // hook functions of page type    const 
+    var hookName = path.join(config.projectPath, "template", "layouts", response.locals.site.layout, "views", response.locals.pageType + ".js");
+    if (!fs.existsSync(hookName)) {
+        hookName = path.join(config.projectPath, "template", "views", response.locals.pageType + ".js");
+    }
     if (fs.existsSync(hookName)) {
         try {
             if (!response.locals.cache) {
@@ -20,7 +22,7 @@ async function _render(request, response, next) {
             }
             var hooks = require(hookName);
             // call hook redirect, if it is defined
-            if (typeof(hooks.redirect) === "function") {
+            if (typeof (hooks.redirect) === "function") {
                 var target = await hooks.redirect(response.locals, database);
                 if (target) {
                     response.redirect(target);
@@ -28,11 +30,11 @@ async function _render(request, response, next) {
                 }
             }
             // call hook beforeRendering, if it is defined
-            if (typeof(hooks.beforeRendering) === "function") {
+            if (typeof (hooks.beforeRendering) === "function") {
                 await hooks.beforeRendering(response.locals, database);
             }
             // call hook getLayout
-            if (typeof(hooks.getLayout) === "function") {
+            if (typeof (hooks.getLayout) === "function") {
                 response.locals.layout = await hooks.getLayout(response.locals, database);
             }
         } catch (e) {
@@ -41,7 +43,10 @@ async function _render(request, response, next) {
     }
 
     // template helpers
-    const helpersName = path.join(config.projectPath, "/template/helpers.js");
+    var helpersName = path.join(config.projectPath, "template", "layouts", response.locals.site.layout, "views", "helpers.js");
+    if (!fs.existsSync(helpersName)) {
+        helpersName = path.join(config.projectPath, "template", "views", "helpers.js");
+    }
     if (fs.existsSync(helpersName)) {
         try {
             if (!response.locals.cache) {
@@ -55,16 +60,16 @@ async function _render(request, response, next) {
         }
     }
 
-    // set layout, if not set by hook function
-    if (!response.locals.layout) {
-        if (!response.locals.cache) {
-            await layouts.refresh();
-        }
-        response.locals.layout = layouts.get_by_host(request.headers.host);
+    // render 
+    var view = path.join(config.projectPath, "template", "layouts", response.locals.site.layout, "views", response.locals.pageType);
+    if (!fs.existsSync(view + '.hbs')) {
+        view = path.join(config.projectPath, "template", "views", response.locals.pageType);
     }
 
-    // render 
-    response.render(response.locals.pageType, function(error, html) {
+    const options = {
+        layout: path.join(config.projectPath, "template", "layouts", response.locals.site.layout, "layout.hbs"),
+    };
+    response.render(view, options, function (error, html) {
         if (error) {
             // render error
             console.error(error.message);
@@ -77,7 +82,7 @@ async function _render(request, response, next) {
 };
 
 
-module.exports = function(request, response, next) {
+module.exports = function (request, response, next) {
     try {
         _render(request, response, next);
     } catch (error) {

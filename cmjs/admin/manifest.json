@@ -95,6 +95,11 @@
 					"target": ["pages"]
 				},
 				{
+					"pattern": "newroot",
+					"name": "newroot",
+					"target": ["pages"]
+				},
+				{
 					"pattern": "media",
 					"name": "media",
 					"target": ["media"]

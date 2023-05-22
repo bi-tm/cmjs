@@ -1,5 +1,3 @@
-const result = require("./layouts");
-
 var queryParameterEnabled = false;
 var sessions = {};
 const interval = 5 * 60 * 1000;
