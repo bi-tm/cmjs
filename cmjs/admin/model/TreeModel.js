@@ -257,7 +257,7 @@ sap.ui.define([
 
         /**
          * get all children of a parent page
-         * @param {*} parentId 
+         * @param {string} parentId 
          */
         getChildren(parentId) {
             return getNode(parentId).nodes;

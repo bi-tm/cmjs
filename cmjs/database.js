@@ -103,20 +103,21 @@ class database {
 
     /**
      * reads children of a parent page 
-     * @param {*} _id 
-     * @param {*} projection 
+     * @param {string} siteId 
+     * @param {string} _id 
+     * @param {object} projection 
      */
-    getChildren(_id, projection) {
+    getChildren(siteId, _id, projection) {
         if (typeof (_id) === "undefined") {
             var _id = null;
         }
-        return this.findPages({ parentId: _id, published: true }, projection, { sort: 1 });
+        return this.findPages({ siteId: siteId, parentId: _id, published: true }, projection, { sort: 1 });
     }
 
     /**
      * get site id of requests's domain name 
-     * @param {*} host
-     * @returns {Ptomise}
+     * @param {string} host
+     * @returns {Promise}
      */
     getSite(host) {
         return new Promise((resolve, reject) => {

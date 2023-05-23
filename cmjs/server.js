@@ -28,7 +28,7 @@ async function redirectToRoot(request, response) {
     if (docs.length) {
       response.redirect("/" + docs[0]._id);
     } else {
-      response.status(404).end("no root page");
+      response.status(404).end("no root page found");
     }
   } catch (err) {
     response.status(500).end(err);
@@ -41,7 +41,7 @@ function redirectToShortUrl(request, response) {
 
 function cacheSwitch(request, response, next) {
   response.locals.cache =
-    typeof request.query.refresh === "undefined" && !config.devMode;
+    typeof (request.query.refresh) === "undefined" && !config.devMode;
   next();
 }
 
