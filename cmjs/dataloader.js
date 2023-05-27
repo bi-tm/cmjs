@@ -58,6 +58,13 @@ module.exports = async function (request, response, next) {
     response.locals.breadcrumbs = data[1];
     response.locals.parent = data[2];
 
+    // read siblings
+    if (response.locals.parent) {
+      response.locals.siblings = await getChildren(response.locals.parent.siteId, response.locals.parent._id);
+    } else {
+      response.locals.siblings = [];
+    }
+
     // read grandparent
     if (response.locals.parent && response.locals.parent.parentId) {
       response.locals.grandparent = await database.getPage(
