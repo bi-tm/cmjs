@@ -2,8 +2,14 @@ var database = require("./database");
 var menu = require("./menu");
 var breadcrumbs = require("./breadcrumbs");
 
-function getChildren(_id) {
-  return database.getChildren(_id).then(function (children) {
+/**
+ * 
+ * @param {string} siteId 
+ * @param {string} _id 
+ * @returns 
+ */
+function getChildren(siteId, _id) {
+  return database.getChildren(siteId, _id).then(function (children) {
     return children.sort((a, b) => {
       const typeSort = "PremiumPage,BasisPlusPage,BasisPage";
       const catA = typeSort.indexOf(a.pageType);
@@ -38,7 +44,7 @@ module.exports = async function (request, response, next) {
 
     // read menu and breadcrumbs parallel
     var dbRequests = [
-      menu.get(!response.locals.cache),
+      menu.get(response.locals.site._id, !response.locals.cache),
       breadcrumbs.get(response.locals._id),
     ];
     if (response.locals.parentId) {
@@ -52,6 +58,13 @@ module.exports = async function (request, response, next) {
     response.locals.breadcrumbs = data[1];
     response.locals.parent = data[2];
 
+    // read siblings
+    if (response.locals.parent) {
+      response.locals.siblings = await getChildren(response.locals.parent.siteId, response.locals.parent._id);
+    } else {
+      response.locals.siblings = [];
+    }
+
     // read grandparent
     if (response.locals.parent && response.locals.parent.parentId) {
       response.locals.grandparent = await database.getPage(
@@ -60,7 +73,7 @@ module.exports = async function (request, response, next) {
     }
 
     // read children
-    response.locals.children = await getChildren(response.locals._id);
+    response.locals.children = await getChildren(response.locals.siteId, response.locals._id);
 
     // mark current entry in menu as active
     response.locals.menu.forEach((menuItem) => {

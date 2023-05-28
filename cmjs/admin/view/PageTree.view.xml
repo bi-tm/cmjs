@@ -3,6 +3,7 @@
 	controllerName="cmjs.controller.PageTree"
 	displayBlock="true"
 	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns:dnd="sap.ui.core.dnd">
 
@@ -15,7 +16,14 @@
 		toggleOpenState=".onToggleOpenState">
 		<headerToolbar>
 			<OverflowToolbar>
-				<Title text="{i18n>pages}"/>
+				<Select
+					items="{view>/sites}"
+					selectedKey="{view>/selectedSide}"
+					change=".onSiteChanged">
+					<items>
+						<core:ListItem text="{view>_id}" key="{view>_id}" icon="sap-icon://internet-browser" />
+					</items>
+				</Select>
 				<ToolbarSpacer/>
 				<Button icon="sap-icon://add-document" press=".onNewpagePressed"/>
 			</OverflowToolbar>

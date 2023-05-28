@@ -1,20 +1,20 @@
 sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "cmjs/util/Database"
-], function(
+], function (
     JSONModel,
     Database
 ) {
-	"use strict";
+    "use strict";
 
-    function _buildTree(docs,parentId) {
-        var result = docs.filter(doc => doc.parentId == parentId).sort( (a,b) => a.sort - b.sort );
+    function _buildTree(docs, parentId) {
+        var result = docs.filter(doc => doc.parentId == parentId).sort((a, b) => a.sort - b.sort);
         result.forEach(child => { child.nodes = _buildTree(docs, child._id); });
         return result;
     }
 
     function _findNodeRecursion(_id, aNodes) {
-        if  (aNodes && aNodes.find) {
+        if (aNodes && aNodes.find) {
             var result = aNodes.find(p => p._id === _id);
             if (result) {
                 return result;
@@ -27,7 +27,7 @@ sap.ui.define([
                     }
                 }
             }
-        } 
+        }
         return null;
     }
 
@@ -36,28 +36,39 @@ sap.ui.define([
         _changedPages: [],
         _newPages: [],
         _readPromise: null,
+        _siteId: "",
+
+        /**
+         * set site 
+         * @param {string} siteId 
+         */
+        setSite: function (siteId) {
+            if (this._siteId !== siteId) {
+                this._siteId = siteId;
+                this._readPromise = null;
+            }
+        },
 
         /**
          * read tree. the is tree is cached, 
-         * @param {*} refresh clear cache and reload
+         * @param {boolean} refresh clear cache and reload
          * @returns {Promise}
          */
-        read: function(refresh) {
-            var that = this;
-            if (refresh || ! that._readPromise) {
-                that.setProperty("/nodes", []);
-                that._readPromise = Database.getPages() //["_id", "title", "parentId"])
-                .then( docs => {
-                    var tree = _buildTree(docs);
-                    that.setProperty("/nodes", tree);
-                    return tree;
-                })
-                .catch(err => {
-                    that._readPromise = null;
-                    throw(err);
-                });
+        read: function (refresh) {
+            if (refresh || !this._readPromise) {
+                this.setProperty("/nodes", []);
+                this._readPromise = Database.getPages(this._siteId)
+                    .then(docs => {
+                        var tree = _buildTree(docs);
+                        this.setProperty("/nodes", tree);
+                        return tree;
+                    })
+                    .catch(err => {
+                        this._readPromise = null;
+                        throw (err);
+                    });
             }
-            return that._readPromise;
+            return this._readPromise;
         },
 
         /**
@@ -65,33 +76,33 @@ sap.ui.define([
          * @param {string} _id 
          * @returns {Promise}
          */
-        readPage: function(_id) {
-            var that = this;
+        readPage: function (_id) {
             return this.read()
-            .then( () => Database.getPage(_id) )            
-            .then(oPage => {
-                var sPath = that.getPath(_id);
-                var oOldPage = that.getProperty(sPath);
-                oPage.nodes = oOldPage.nodes;                
-                that.setProperty(sPath, oPage);
-                return oPage;
-            });
+                .then(() => Database.getPage(_id))
+                .then(oPage => {
+                    var sPath = this.getPath(_id);
+                    var oOldPage = this.getProperty(sPath);
+                    oPage.nodes = oOldPage.nodes;
+                    this.setProperty(sPath, oPage);
+                    return oPage;
+                });
         },
 
         /**
          * instantiate a new page, without saving
          * @param {string} sPageType _id of pageType
          */
-        newPage: function(sPageType) {
+        newPage: function (sPageType) {
             return {
-                _id:        Date.now().toString(),
-                legacyUrl:  "neue-seite",
-                title:      "neue Seite",
-                pageType:   sPageType,
+                _id: Date.now().toString(),
+                siteId: this._siteId,
+                legacyUrl: "neue-seite",
+                title: "neue Seite",
+                pageType: sPageType,
                 showInMenu: true,
-                menuTitle:  null,
-                published:  false,
-                parentId:   null
+                menuTitle: null,
+                published: false,
+                parentId: null
             };
         },
 
@@ -100,7 +111,7 @@ sap.ui.define([
          * @param {object} oPage
          * @returns {Promise}
          */
-        savePage: function(oPage) {
+        savePage: function (oPage) {
             // save
             return Database.savePage(oPage);
         },
@@ -109,13 +120,13 @@ sap.ui.define([
          * save multiple pages as bulk
          * @param {array} aPages 
          */
-        savePages: function(aPages) {
+        savePages: function (aPages) {
             if (!aPages || aPages.length === 0) {
                 return Promise.resolve([]);
             }
-            var promises = aPages.map(function(oPage) {
+            var promises = aPages.map((oPage) => {
                 return this.savePage(oPage)
-            }.bind(this));
+            });
             return Promise.all(promises);
         },
 
@@ -124,12 +135,12 @@ sap.ui.define([
          * @param {string} sPath 
          * @returns {object} removed node
          */
-        removeFromTree: function(sPath) {
+        removeFromTree: function (sPath) {
             var oNode = this.getProperty(sPath);
             var index = parseInt(sPath.replace(/^.*\/(\d+)$/, "$1"));
             var sNodesPath = sPath.replace(/\/\d+$/, "");
             var aNodes = this.getProperty(sNodesPath);
-            aNodes.splice(index,1);
+            aNodes.splice(index, 1);
             this.setProperty(sNodesPath, aNodes);
             return oNode;
         },
@@ -141,28 +152,34 @@ sap.ui.define([
          * @param {object} oRelationPage 
          * @returns {array} list of modified nodes
          */
-        insertIntoTree: function(oPage, sRelation, oRelationPage) {
+        insertIntoTree: function (oPage, sRelation, oRelationPage) {
             var aModified = [], sNodesPath, aNodes, index;
             switch (sRelation) {
+                case "Root":
+                    oPage.parentId = null;
+                    sNodesPath = "/nodes";
+                    aNodes = [oPage];
+                    index = 0;
+                    break;
                 case "Before":
                     oPage.parentId = oRelationPage.parentId;
-                    sNodesPath = this.getPath(oRelationPage.parentId) + "/nodes";                    
+                    sNodesPath = this.getPath(oRelationPage.parentId) + "/nodes";
                     aNodes = this.getProperty(sNodesPath);
                     index = aNodes.findIndex(node => node._id == oRelationPage._id);
-                    aNodes.splice(index,0,oPage);
+                    aNodes.splice(index, 0, oPage);
                     break;
                 case "On": // insert as sub node
                     oPage.parentId = oRelationPage._id;
-                    sNodesPath = this.getPath(oRelationPage._id) + "/nodes";                    
+                    sNodesPath = this.getPath(oRelationPage._id) + "/nodes";
                     aNodes = this.getProperty(sNodesPath);
-                    aNodes.push(oPage);                                        
+                    aNodes.push(oPage);
                     break;
                 case "After":
                     oPage.parentId = oRelationPage.parentId;
-                    sNodesPath = this.getPath(oRelationPage.parentId) + "/nodes";                    
+                    sNodesPath = this.getPath(oRelationPage.parentId) + "/nodes";
                     aNodes = this.getProperty(sNodesPath);
                     index = aNodes.findIndex(node => node._id == oRelationPage._id);
-                    aNodes.splice(index+1,0,oPage);
+                    aNodes.splice(index + 1, 0, oPage);
                     break;
             }
             // renumber sub pages
@@ -181,11 +198,11 @@ sap.ui.define([
          * @param {array} aNodes 
          * @returns {array} list of modified pages
          */
-        renumberChildren: function(aNodes) {
+        renumberChildren: function (aNodes) {
             var aModified = [];
             var iPrevSort = 0;
-            for(var oChild of aNodes) {
-                var iNewSort = typeof(oChild.sort) === "string" ? parseInt(oChild.sort) : oChild.sort;
+            for (var oChild of aNodes) {
+                var iNewSort = typeof (oChild.sort) === "string" ? parseInt(oChild.sort) : oChild.sort;
                 if (iNewSort <= iPrevSort) {
                     iNewSort = iPrevSort + 1;
                 }
@@ -201,9 +218,9 @@ sap.ui.define([
 
         /**
          * get all pages of the hierarchy path, including selected page
-         * @param {*} _id 
+         * @param {string} _id 
          */
-        getPathNodes: function(_id) {  
+        getPathNodes: function (_id) {
             var oNode = this.getNode(_id);
             if (oNode) {
                 return this.getPathNodes(oNode.parentId).concat([oNode]);
@@ -215,9 +232,10 @@ sap.ui.define([
 
         /**
          * get path as string
-         * @param {*} _id 
+         * @param {string} _id 
+         * @returns {string} path
          */
-        getPath: function(_id) {
+        getPath: function (_id) {
             var result = "";
             var aNodes = this.getProperty("/nodes");
             for (var oNode of this.getPathNodes(_id)) {
@@ -230,16 +248,16 @@ sap.ui.define([
 
         /**
          * get node of tree, which is the page and all sub-nodes
-         * @param {*} _id 
+         * @param {string} _id 
          */
-        getNode: function(_id) {			
-			var aNodes = this.getProperty("/nodes");
-			return _findNodeRecursion(_id, aNodes);
+        getNode: function (_id) {
+            var aNodes = this.getProperty("/nodes");
+            return _findNodeRecursion(_id, aNodes);
         },
-        
+
         /**
          * get all children of a parent page
-         * @param {*} parentId 
+         * @param {string} parentId 
          */
         getChildren(parentId) {
             return getNode(parentId).nodes;

@@ -1,76 +1,86 @@
 sap.ui.define([
     "cmjs/util/Ajax",
     "sap/m/MessageBox"
-], function(Ajax, MessageBox) {
+], function (Ajax, MessageBox) {
     'use strict';
 
     const url = "/api/db/";
     var pageTypes = null;
     var sites = null;
     var users = null;
-    
+
     return {
-        
-        getPages: function(fields) {
+
+        /**
+         * 
+         * @param {string} siteId 
+         * @returns {Promise}
+         */
+        getPages: function (siteId) {
             return Ajax({
                 type: "GET",
-                url: `${url}pages`
+                url: `${url}pages?$filter=siteId $eq ${siteId}`
             });
         },
 
-        getPage: function(_id) {
+        getPage: function (_id) {
             return Ajax({
                 type: "GET",
                 url: `${url}pages/${_id}`,
             });
         },
 
-        savePage: function(oPage) {
+        savePage: function (oPage) {
             // page clone without 'nodes' property
             var oClone = Object.assign({}, oPage);
             oClone.nodes = undefined;
             return Ajax({
                 type: "PUT",
                 url: `${url}pages/${oPage._id}?$upsert`,
-                data: oClone,                 
+                data: oClone,
             });
         },
 
-        getPageTypes: function(refresh) {
+        getPageTypes: function (refresh) {
             if (refresh || !pageTypes) {
                 pageTypes = Ajax({
                     type: "GET",
                     url: `${url}page_types`
                 })
-                .catch(function() {
-                    pageTypes = null;
-                });
+                    .catch(function () {
+                        pageTypes = null;
+                    });
             }
             return pageTypes;
         },
 
-        getPageType: function(_id, refresh) {
+        getPageType: function (_id, refresh) {
             return this.getPageTypes(refresh).then(data => {
                 return data.find(t => t._id === _id);
             });
         },
 
-        savePageType: function(oPageType) {
+        savePageType: function (oPageType) {
             return Ajax({
                 type: "PUT",
                 url: `${url}page_types/${oPageType._id}?$upsert`,
-                data: oPageType,                 
+                data: oPageType,
             });
         },
 
-        deletePageType: function(oPageType) {
+        deletePageType: function (oPageType) {
             return Ajax({
                 type: "DELETE",
                 url: `${url}page_types/${oPageType._id}`
             });
         },
 
-        getSites: function(refresh) {
+        /**
+         * read web sites 
+         * @param {boolean} refresh 
+         * @returns Promise
+         */
+        getSites: function (refresh) {
             if (refresh || !sites) {
                 sites = Ajax({
                     type: "GET",
@@ -80,28 +90,28 @@ sap.ui.define([
             return sites;
         },
 
-        getSite: function(_id, refresh) {
+        getSite: function (_id, refresh) {
             return this.getSites(refresh).then(data => {
                 return data.find(t => t._id === _id);
             });
         },
 
-        saveSite: function(oSite) {
+        saveSite: function (oSite) {
             return Ajax({
                 type: "PUT",
                 url: `${url}sites/${oSite._id}?$upsert`,
-                data: oSite,                 
+                data: oSite,
             });
         },
 
-        deletePageType: function(oSite) {
+        deletePageType: function (oSite) {
             return Ajax({
                 type: "DELETE",
                 url: `${url}sites/${oSite._id}`
             });
         },
 
-        getUsers: function(refresh) {
+        getUsers: function (refresh) {
             if (refresh || !users) {
                 users = Ajax({
                     type: "GET",
@@ -111,21 +121,21 @@ sap.ui.define([
             return users;
         },
 
-        getUser: function(_id, refresh) {
+        getUser: function (_id, refresh) {
             return this.getUsers(refresh).then(data => {
                 return data.find(t => t._id === _id);
             });
         },
 
-        saveUser: function(oUser) {
+        saveUser: function (oUser) {
             return Ajax({
                 type: "PUT",
                 url: `${url}users/${oUser._id}?$upsert`,
-                data: oUser,                 
+                data: oUser,
             });
         },
 
-        deleteUser: function(oUser) {
+        deleteUser: function (oUser) {
             return Ajax({
                 type: "DELETE",
                 url: `${url}users/${oUser._id}`

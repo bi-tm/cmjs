@@ -1,7 +1,10 @@
 sap.ui.define([
 	"./Base.controller",
-	"sap/ui/model/json/JSONModel"
-], function(BaseController, JSONModel) {
+	"sap/ui/model/json/JSONModel",
+	"cmjs/util/Database"
+], function (BaseController,
+	JSONModel,
+	Database) {
 	"use strict";
 
 	return BaseController.extend("cmjs.controller.App", {
@@ -9,34 +12,39 @@ sap.ui.define([
 		onInit: function () {
 			BaseController.prototype.onInit.apply(this, arguments);
 			this.getView().setModel(new JSONModel({
-				expanded:false,
+				expanded: false,
 				selectedKey: null
 			}), "view");
+			this.getRouter().getRoute("home").attachMatched(this.onRouteMatched, this);
 		},
 
-		onExpandSelect: function(oEvent) {
+		onRouteMatched: function (oEvent) {
+			Database.getSites();
+		},
+
+		onExpandSelect: function (oEvent) {
 			var oViewModel = this.getModel("view");
 			var bExpanded = oViewModel.getProperty("/expanded");
-			oViewModel.setProperty("/expanded", ! bExpanded);
+			oViewModel.setProperty("/expanded", !bExpanded);
 		},
 
-		onPagesSelect: function(oEvent) {
+		onPagesSelect: function (oEvent) {
 			this.getRouter().navTo("pages");
 		},
 
-		onPageTypesSelect: function(oEvent) {
+		onPageTypesSelect: function (oEvent) {
 			this.getRouter().navTo("pagetypes");
 		},
 
-		onMediaSelect: function(oEvent) {
+		onMediaSelect: function (oEvent) {
 			this.getRouter().navTo("media");
 		},
 
-		onWebSitesSelect: function(oEvent) {
+		onWebSitesSelect: function (oEvent) {
 			this.getRouter().navTo("sites");
 		},
 
-		onUsersSelect: function(oEvent) {
+		onUsersSelect: function (oEvent) {
 			this.getRouter().navTo("users");
 		}
 

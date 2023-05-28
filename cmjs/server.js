@@ -1,13 +1,26 @@
 const { nextTick } = require("process");
+const path = require("path");
 
 var config = require("./config.json");
+
+async function determineSite(request, response, next) {
+  try {
+    const database = require("./database");
+    const host = request.headers.host.split(":", 1)[0];
+    const site = await database.getSite(host);
+    response.locals.site = site;
+    next();
+  } catch (err) {
+    response.status(500).end(err);
+  }
+}
 
 async function redirectToRoot(request, response) {
   // redirect to root page
   try {
     var database = require("./database");
     var docs = await database.findPages(
-      { parentId: null, showInMenu: true, published: true },
+      { parentId: null, siteId: response.locals.site._id, showInMenu: true, published: true },
       ["_id"],
       { sort: 1 },
       1
@@ -15,7 +28,7 @@ async function redirectToRoot(request, response) {
     if (docs.length) {
       response.redirect("/" + docs[0]._id);
     } else {
-      response.status(404).end("no root page");
+      response.status(404).end("no root page found");
     }
   } catch (err) {
     response.status(500).end(err);
@@ -28,7 +41,7 @@ function redirectToShortUrl(request, response) {
 
 function cacheSwitch(request, response, next) {
   response.locals.cache =
-    typeof request.query.refresh === "undefined" && !config.devMode;
+    typeof (request.query.refresh) === "undefined" && !config.devMode;
   next();
 }
 
@@ -47,7 +60,6 @@ module.exports = function (projectConfig) {
       cookieParser = require("cookie-parser"),
       morgan = require("morgan"),
       fs = require("fs-extra"),
-      path = require("path"),
       auth = require("./auth"),
       session = require("./session"),
       database = require("./database"),
@@ -139,21 +151,20 @@ module.exports = function (projectConfig) {
     // template engine
     const engine = handlebars.engine({
       defaultLayout: "default",
+      partialsDir: path.join(config.projectPath, "template", "partials"),
       extname: ".hbs",
-      defaultLayout: "default",
     });
     app.engine(".hbs", engine);
     app.set("view engine", ".hbs");
-    app.set("views", path.join(config.projectPath, "template"));
     if (config.devMode) {
       app.disable("view cache");
     } else {
       app.enable("view cache");
     }
 
-    app.get(["/", "/index.html", "/index.htm", "/index.php"], redirectToRoot);
+    app.get(["/", "/index.html", "/index.htm", "/index.php"], determineSite, redirectToRoot);
     app.get("/*/:id", redirectToShortUrl);
-    app.get("/:id", cacheSwitch, dataloader, renderer);
+    app.get("/:id", cacheSwitch, determineSite, dataloader, renderer);
 
     // express listens
     const port = config.port || "8080";
