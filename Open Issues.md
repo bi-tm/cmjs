@@ -4,12 +4,14 @@ Open Issues
 
 ### Seiten
 - Seite erst privat ändern, dann publizieren ?
-- Filter nach _Sites_
 - Editor Imageauswahl verbessern
 - Editor Link Auswahl verbessern
 - Editor in HTML-Source umschaltbar
+- Editor in Markdown umschaltbar
 - Drag&Drop Sortierung klappt nicht
 - Neue Seite, Feld "sort" fehlt
+- Wenn beim Wechsel in diesen Bereicg bereits ein Seite selektiert ist, 
+  muss sie auch angezeigt werden.
 
 ### Seitentyp
 - Seitentyp "Link" ?
@@ -23,12 +25,10 @@ Open Issues
   
 ### Images
 - Anzeige des Image in LightBox oder Dialog Popup
+- Name des thumbnal Verzeichnisses ändern
 
 ### Subsites
-- Sitetree je Subsite
 - 404 page je Subsite
-- Welcome Page je Subsite
-- Hook, zum Setzen der Subsite
 - Subsite Titel als Browser Titel (?)
 
 ## Frontend
