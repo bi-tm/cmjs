@@ -6,14 +6,23 @@ const server = require("./cmjs/server")
 // optional project path from argument list or environment variable CMJS_PROJECT
 var projectPath = null;
 if (process.argv.length>2) {
-    projectPath = process.argv[2];
+    projectPath = path.resolve(process.argv[2]);
+}
+else if(process.env.CMJS_PROJECT) {
+    projectPath = path.resolve(process.env.CMJS_PROJECT);
 }
 else {
-    projectPath = process.env.CMJS_PROJECT
+    projectPath = path.resolve("./demo");
 }
 
-// check if project path exists
-
+// check if project path exists, if not create it
+if (!fs.existsSync(projectPath)) {
+    const source = path.resolve("./demo");
+    if (projectPath !== source)  {
+        console.log(`initializing project ${projectPath} ...`);
+        fs.copySync(source, projectPath);
+    }
+}
 
 // check if there is a config file in project path
 var projectConfig = null;
@@ -26,13 +35,7 @@ if (typeof(projectPath) === "string") {
         // it is okay, if there is no config file in project path
         projectConfig = { projectPath: projectPath };
     }
-
-    // init project if it is empty
-    if (!fs.existsSync(projectPath)) {
-        console.log(`initializing project ${projectPath} ...`);
-        fs.copySync("./project",projectPath);
-    };
 }
 
-const myServer = new server(projectConfig);
-myServer.start();
+// start server
+new server(projectConfig).start();
