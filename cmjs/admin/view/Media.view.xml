@@ -31,7 +31,7 @@
 		content="{images>/}">
 		<content>
 			<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop"
-				backgroundImage="/uploads/thumbnails/{images>name}" 
+				backgroundImage="/uploads/.thumbnails/{images>name}" 
 				url="/uploads/{images>name}" 
 				scope="ActionRemove"
 				press=".onRemovePress">

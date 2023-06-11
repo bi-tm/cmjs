@@ -8,7 +8,7 @@ const emu    = require('express-middleware-upload')
 function createThumbnail(file){
     sharp(file)
     .resize(170,170,{fit:"inside"})
-    .toFile(file.replace(/^(.*)\/([^\/]+)$/,"$1/thumbnails/$2"), function(err,info){});
+    .toFile(file.replace(/^(.*)\/([^\/]+)$/,"$1/.thumbnails/$2"), function(err,info){});
 }
 
 function listProcessing(req, res, next) {
