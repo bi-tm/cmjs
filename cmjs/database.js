@@ -121,10 +121,18 @@ class database {
      */
     getSite(host) {
         return new Promise((resolve, reject) => {
-            var cursor = this.sites.findOne({ "domains": host });
-            cursor.exec(function (err, doc) {
-                if (err) {
-                    reject(err);
+            this.sites.findOne({ "domains": host })
+              .exec( (err, doc) => {
+                if (err || !doc) {
+                    this.sites.findOne()
+                        .exec( (err, doc) => {
+                            if (err||!doc) {
+                                reject(err);
+                            }
+                            else {
+                                resolve(doc);
+                            }
+                       });
                 }
                 else {
                     resolve(doc);
