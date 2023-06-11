@@ -61,13 +61,13 @@ async function _render(request, response, next) {
     }
 
     // render 
-    var view = path.join(config.projectPath, "template", "layouts", response.locals.site.layout, "views", response.locals.pageType);
+    var view = path.resolve(config.projectPath, "template", "layouts", response.locals.site.layout, "views", response.locals.pageType);
     if (!fs.existsSync(view + '.hbs')) {
-        view = path.join(config.projectPath, "template", "views", response.locals.pageType);
+        view = path.resolve(config.projectPath, "template", "views", response.locals.pageType);
     }
 
     const options = {
-        layout: path.join(config.projectPath, "template", "layouts", response.locals.site.layout, "layout.hbs"),
+        layout: path.resolve(config.projectPath, "template", "layouts", response.locals.site.layout, "layout.hbs"),
     };
     response.render(view, options, function (error, html) {
         if (error) {
